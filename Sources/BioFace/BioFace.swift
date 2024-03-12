@@ -1,3 +1,5 @@
+import Alamofire
+
 public struct BioFace {
     public private(set) var token = ""
 
