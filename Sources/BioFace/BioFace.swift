@@ -22,13 +22,8 @@ public struct BioFace {
             multipartFormData: { multipartFormData in
                 multipartFormData.append(file, withName: "upload_data" , fileName: filename, mimeType: "image/jpg")
         },
-            to: "https://visteamlab.isr.uc.pt/facing/v2/api/collect", method: .post , headers: headers)
-            .response { response in
-                if let data = response.data{
-                    //handle the response however you like
-                    print(data)
-                }
-
-        }
+            to: "https://visteamlab.isr.uc.pt/facing/v2/api/collect", method: .post , headers: headers).responseDecodable(of: Response.self) { response in
+                debugPrint(response)
+            }
     }
 }
