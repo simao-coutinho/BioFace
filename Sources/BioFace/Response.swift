@@ -8,5 +8,5 @@
 import Foundation
 
 public struct Response: Decodable {
-    public private(set) var success = ""
+    public private(set) var success: Bool
 }
