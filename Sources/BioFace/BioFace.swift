@@ -1,29 +1,32 @@
 import Alamofire
 import Foundation
 
-public struct BioFace {
-    public private(set) var token = ""
+public class BioFace {
+    public static var apiToken: String?
+    public static let sharedHandler: BioFace = BioFace()
     public private(set) var sessionId = ""
-
-    public init(token: String) {
-        self.token = token
-    }
     
-    public mutating func setSessionId(_ mSessionId: String) {
+    private let url = "https://visteamlab.isr.uc.pt/facing/v2/api/"
+
+    public init() {}
+    
+    public func registerUser(_ mSessionId: String) {
         sessionId = mSessionId
     }
     
-    public func getToken() -> String {
-        return token
-    }
+    // (status, paymentIntent, error) in
     
-    public func uploadImage(_ file: Data,filename : String) {
-        guard let sessionIdData = sessionId.data(using: .utf8, allowLossyConversion: false) else { return }
+    public func uploadImage(_ file: Data,filename : String, completion: @escaping BioFaceResponse) {
+        guard let apiToken = BioFace.apiToken else { return completion(.failed, nil, _error(for: .invalidApiTokenErrorCode)) }
+        guard let sessionIdData = sessionId.data(using: .utf8, allowLossyConversion: false) else {
+            return completion(.failed, nil, _error(for: .invalidSessionIdErrorCode))
+            
+        }
         guard let collectionNameData = "teste anm".data(using: .utf8, allowLossyConversion: false) else { return }
         
         let headers: HTTPHeaders = [
             "Content-type": "multipart/form-data",
-            "authorization": "Bearer " + self.token
+            "authorization": "Bearer " + apiToken
         ]
 
         AF.upload(
@@ -32,8 +35,8 @@ public struct BioFace {
                 multipartFormData.append(collectionNameData, withName: "collection_name")
                 multipartFormData.append(file, withName: "collection" , fileName: filename, mimeType: "image/jpg")
         },
-            to: "https://visteamlab.isr.uc.pt/facing/v2/api/collect", method: .post , headers: headers).responseDecodable(of: Response.self) { response in
-                debugPrint(response)
+            to: url + "collect", method: .post , headers: headers).responseDecodable(of: Response.self) { response in
+                completion(.succeeded, nil, nil)
             }
     }
 }
