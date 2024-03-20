@@ -15,7 +15,7 @@ public class BioFace {
         sessionId = mSessionId
     }
     
-    public func makeRegistration() {
+    public static func makeRegistration() {
         let viewController = BioFaceViewController()
         if let rootViewController = UIApplication.shared.keyWindow?.rootViewController {
                 rootViewController.present(viewController, animated: true, completion: nil)
