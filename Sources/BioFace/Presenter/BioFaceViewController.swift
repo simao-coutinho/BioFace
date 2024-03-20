@@ -14,6 +14,7 @@ class BioFaceViewController: UIViewController {
     @IBOutlet weak var captureButton: UIButton!
     
     var frontFacingCamera: AVCaptureDevice?
+    var backFacingCamera: AVCaptureDevice?
     var currentDevice: AVCaptureDevice!
         
     var stillImageOutput: AVCapturePhotoOutput!
@@ -49,7 +50,7 @@ class BioFaceViewController: UIViewController {
             
         for device in deviceDiscoverySession.devices {
             if device.position == .back {
-                frontFacingCamera = device
+                backFacingCamera = device
             } else if device.position == .front {
                 frontFacingCamera = device
             }
