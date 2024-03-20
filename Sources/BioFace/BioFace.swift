@@ -1,5 +1,6 @@
 import Alamofire
 import Foundation
+import UIKit
 
 public class BioFace {
     public static var apiToken: String?
@@ -12,6 +13,11 @@ public class BioFace {
     
     public func registerUser(_ mSessionId: String) {
         sessionId = mSessionId
+    }
+    
+    public func makeRegistration(with: UIViewController) {
+        let viewController = BioFaceViewController()
+        with.present(viewController, animated: true)
     }
     
     // (status, paymentIntent, error) in
