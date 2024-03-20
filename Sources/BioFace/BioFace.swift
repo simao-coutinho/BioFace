@@ -15,9 +15,11 @@ public class BioFace {
         sessionId = mSessionId
     }
     
-    public func makeRegistration(with: UIViewController) {
+    public func makeRegistration() {
         let viewController = BioFaceViewController()
-        with.present(viewController, animated: true)
+        if let rootViewController = UIApplication.shared.keyWindow?.rootViewController {
+                rootViewController.present(viewController, animated: true, completion: nil)
+            }
     }
     
     // (status, paymentIntent, error) in
