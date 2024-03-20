@@ -8,7 +8,7 @@
 import UIKit
 import AVFoundation
 
-class BioFaceViewController: UIViewController {
+public class BioFaceViewController: UIViewController {
     
     @IBOutlet weak var buttonImageView: UIImageView!
     @IBOutlet weak var captureButton: UIButton!
