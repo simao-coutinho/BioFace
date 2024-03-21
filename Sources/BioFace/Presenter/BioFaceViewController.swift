@@ -23,6 +23,23 @@ class BioFaceViewController: UIViewController {
     var cameraPreviewLayer: AVCaptureVideoPreviewLayer?
         
     let captureSession = AVCaptureSession()
+    
+    private var imageResultListener: ImageResultListener?
+    private var serviceType: ServiceType = .makeRegistration
+    private var completion: BioFaceResponse?
+    
+    init(serviceType: ServiceType, imageResultListener: ImageResultListener, completion: @escaping BioFaceResponse) {
+        self.serviceType = serviceType
+        self.completion = completion
+        self.imageResultListener = imageResultListener
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    public required init?(coder aDecoder: NSCoder) {
+        self.imageResultListener = nil
+        self.completion = nil
+        super.init(coder: aDecoder)
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -94,6 +111,11 @@ extension BioFaceViewController: AVCapturePhotoCaptureDelegate {
             return
         }
         
-        stillImage = UIImage(data: imageData)
+        guard let image = UIImage(data: imageData) else { return }
+        
+        guard let completion = self.completion else { return }
+        
+        stillImage = image
+        imageResultListener?.onImageResult(from: serviceType, with: image, completion: completion)
     }
 }

@@ -15,8 +15,13 @@ public class BioFace {
         sessionId = mSessionId
     }
     
-    public static func makeRegistration() {
-        let viewController = BioFaceViewController()
+    public func makeRegistration(completion: @escaping BioFaceResponse) {
+        guard BioFace.apiToken != nil else { return completion(.failed, nil, _error(for: .invalidApiTokenErrorCode)) }
+        guard sessionId.data(using: .utf8, allowLossyConversion: false) != nil else {
+            return completion(.failed, nil, _error(for: .invalidSessionIdErrorCode))
+        }
+        
+        let viewController = BioFaceViewController(serviceType: .makeRegistration, imageResultListener: self, completion: completion)
         if let rootViewController = UIApplication.shared.keyWindow?.rootViewController {
                 rootViewController.present(viewController, animated: true, completion: nil)
             }
@@ -46,5 +51,23 @@ public class BioFace {
             to: url + "collect", method: .post , headers: headers).responseDecodable(of: Response.self) { response in
                 completion(.succeeded, nil, nil)
             }
+    }
+}
+
+extension BioFace : ImageResultListener {
+    func onImageResult(from: ServiceType, with: UIImage, completion: @escaping BioFaceResponse) {
+        guard let apiToken = BioFace.apiToken else { return completion(.failed, nil, _error(for: .invalidApiTokenErrorCode)) }
+        guard let sessionIdData = sessionId.data(using: .utf8, allowLossyConversion: false) else {
+            return completion(.failed, nil, _error(for: .invalidSessionIdErrorCode))
+        }
+        
+        switch from {
+        case .makeRegistration:
+            completion(.succeeded, nil, nil)
+        case .addCart:
+            completion(.succeeded, nil, nil)
+        case .verifyUser:
+            completion(.succeeded, nil, nil)
+        }
     }
 }
