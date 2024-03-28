@@ -15,7 +15,7 @@ class BioFaceViewController: UIViewController {
     
     var frontFacingCamera: AVCaptureDevice?
     var backFacingCamera: AVCaptureDevice?
-    var currentDevice: AVCaptureDevice!
+    let captureDevice = AVCaptureDevice.default(for: .video)
         
     var stillImageOutput: AVCapturePhotoOutput!
     var stillImage: UIImage?
@@ -58,6 +58,18 @@ class BioFaceViewController: UIViewController {
         stillImageOutput.capturePhoto(with: photoSettings, delegate: self)
     }
     
+    
+
+    func beginSession(){
+        do {
+            guard let captureDevice = captureDevice else {return}
+            let captureDeviceInput = try AVCaptureDeviceInput(device: captureDevice)
+            captureSession.addInput(captureDeviceInput)
+        }catch {
+            print(error.localizedDescription)
+        }
+    }
+    
     private func configure() {
         // Preset the session for taking photo in full resolution
         captureSession.sessionPreset = AVCaptureSession.Preset.photo
@@ -72,10 +84,12 @@ class BioFaceViewController: UIViewController {
                 frontFacingCamera = device
             }
         }
+        
+        beginSession()
+        
+        guard let mCaptureDevice = captureDevice else { return }
             
-        currentDevice = frontFacingCamera
-            
-        guard let captureDeviceInput = try? AVCaptureDeviceInput(device: currentDevice) else {
+        guard let captureDeviceInput = try? AVCaptureDeviceInput(device: mCaptureDevice) else {
                 return
         }
             
