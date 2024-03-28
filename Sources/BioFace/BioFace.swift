@@ -33,15 +33,19 @@ extension BioFace : ImageResultListener {
         case .makeRegistration:
             let serverConnection = ServerConnection()
             serverConnection.makeImageUpload(with: with) { status, response, error in
+                print("Collect Response: \(response)")
                 switch status {
                 case .succeeded:
                     serverConnection.makeGetConnection(url: "compliance") { status, response, error in
+                        print("compliance Response: \(response)")
                         switch status {
                         case .succeeded:
                             serverConnection.makeGetConnection(url: "liveness") { status, response, error in
+                                print("liveness Response: \(response)")
                                 switch status {
                                 case .succeeded:
                                     serverConnection.makeGetConnection(url: "extract") { status, response, error in
+                                        print("extract Response: \(response)")
                                         switch status {
                                             case .succeeded:
                                                 completion(.succeeded, nil, nil)
