@@ -41,7 +41,7 @@ class ServerConnection {
                 multipartFormData.append(file, withName: "collection" , fileName: "CollectImage", mimeType: "image/jpg")
         },
             to: url + "collect", method: .post , headers: headers).responseDecodable(of: Response.self) { response in
-                completion(.succeeded, nil, nil)
+                completion(.succeeded, response.value, nil)
             }
     }
     
@@ -53,7 +53,7 @@ class ServerConnection {
         }
         
         AF.request(self.url + url, method: .get, headers: headers).responseDecodable(of: Response.self) { response in
-            completion(.succeeded, nil, nil)
+            completion(.succeeded, response.value, nil)
         }
     }
 }

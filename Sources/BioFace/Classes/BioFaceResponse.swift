@@ -8,7 +8,7 @@
 import Foundation
 
 public typealias BioFaceResponse = (
-    BioFaceStatus, DetailedResponse?, NSError?
+    BioFaceStatus, Response?, NSError?
 ) -> Void
 
 @objc public enum BioFaceStatus: Int {
