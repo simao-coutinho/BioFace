@@ -12,6 +12,7 @@ class BioFaceViewController: UIViewController {
     
     @IBOutlet fileprivate weak var buttonImageView: UIImageView!
     @IBOutlet fileprivate weak var captureButton: UIButton!
+    @IBOutlet fileprivate weak var mainView: UIView!
     @IBOutlet fileprivate weak var btnCancel: UIButton!
     
     var frontFacingCamera: AVCaptureDevice?
@@ -92,13 +93,13 @@ class BioFaceViewController: UIViewController {
             
         // Provide a camera preview
         cameraPreviewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
-        view.layer.addSublayer(cameraPreviewLayer!)
+        mainView.layer.addSublayer(cameraPreviewLayer!)
         cameraPreviewLayer?.videoGravity = AVLayerVideoGravity.resizeAspectFill
         cameraPreviewLayer?.frame = view.layer.frame
             
         // Bring the camera button to front
-        //view.bringSubviewToFront(buttonImageView)
-        //view.bringSubviewToFront(captureButton)
+        view.bringSubviewToFront(buttonImageView)
+        view.bringSubviewToFront(captureButton)
         captureSession.startRunning()
     }
 }
