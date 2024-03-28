@@ -14,6 +14,8 @@ class BioFaceViewController: UIViewController {
     @IBOutlet fileprivate weak var captureButton: UIButton!
     @IBOutlet fileprivate weak var mainView: UIView!
     @IBOutlet fileprivate weak var btnCancel: UIButton!
+    @IBOutlet weak var ProgressView: UIView!
+    @IBOutlet weak var progressBar: UIProgressView!
     
     var frontFacingCamera: AVCaptureDevice?
     var backFacingCamera: AVCaptureDevice?
@@ -43,6 +45,15 @@ class BioFaceViewController: UIViewController {
         self.completion = completion
         self.imageResultListener = imageResultListener
     }
+    
+    public func setProgress(progress: Float, total: Float) {
+        ProgressView.isHidden = false
+        if progress == 0 {
+            progressBar.progress = 0
+        } else {
+            progressBar.progress = progress / total
+        }
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -55,34 +66,6 @@ class BioFaceViewController: UIViewController {
         // Set photo settings
         let photoSettings = AVCapturePhotoSettings(format: [AVVideoCodecKey: AVVideoCodecType.jpeg])
         // Configure photo settings
-        /*if #available(iOS 16.0, *) {
-            // Check supported formats to find a matching dimension
-            let supportedFormats = captureDevice?.formats
-            var matchedDimensions = CMVideoDimensions(width: 0, height: 0)
-            
-            if let supported = supportedFormats {
-                for format in supported {
-                    let formatDescription = format.formatDescription
-                    let dimensions = CMVideoFormatDescriptionGetDimensions(formatDescription)
-                    
-                    // Check if maxPhotoDimensions matches supported dimensions
-                    if dimensions.width > matchedDimensions.width || dimensions.height > matchedDimensions.height {
-                        matchedDimensions = dimensions
-                        break
-                    }
-                }
-
-                if matchedDimensions.width != 0 {
-                    // Use matchedDimensions for configuration
-                    photoSettings.maxPhotoDimensions = matchedDimensions
-                } else {
-                    print("Error: No matching dimensions found")
-                }
-            }
-        } else {
-            photoSettings.isHighResolutionPhotoEnabled = true
-        }*/
-            
         photoSettings.flashMode = .auto
                 
         stillImageOutput.photoSettingsForSceneMonitoring = photoSettings

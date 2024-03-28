@@ -11,9 +11,12 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="BioFaceViewController" customModuleProvider="target">
             <connections>
+                <outlet property="ProgressView" destination="ORW-NT-ZeE" id="WZR-WI-hGK"/>
+                <outlet property="btnCancel" destination="5jR-hf-YSl" id="Cfd-jo-qeL"/>
                 <outlet property="buttonImageView" destination="37D-JS-D4f" id="ctK-YU-5bC"/>
                 <outlet property="captureButton" destination="BIN-5U-Zv0" id="2s0-eQ-l33"/>
                 <outlet property="mainView" destination="sln-Jr-vYV" id="EEM-gk-XJj"/>
+                <outlet property="progressBar" destination="FdZ-NM-J9V" id="P9P-ID-gAp"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
@@ -24,7 +27,20 @@
             <subviews>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="sln-Jr-vYV" userLabel="MainView">
                     <rect key="frame" x="0.0" y="59" width="393" height="759"/>
+                    <subviews>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5jR-hf-YSl">
+                            <rect key="frame" x="16" y="713" width="61" height="30"/>
+                            <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                            <state key="normal" title="Cancelar">
+                                <color key="titleColor" systemColor="systemBackgroundColor"/>
+                            </state>
+                        </button>
+                    </subviews>
                     <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    <constraints>
+                        <constraint firstAttribute="bottom" secondItem="5jR-hf-YSl" secondAttribute="bottom" constant="16" id="hjm-HC-kCk"/>
+                        <constraint firstItem="5jR-hf-YSl" firstAttribute="leading" secondItem="sln-Jr-vYV" secondAttribute="leading" constant="16" id="mD5-pU-Dd9"/>
+                    </constraints>
                 </view>
                 <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" image="rec" translatesAutoresizingMaskIntoConstraints="NO" id="37D-JS-D4f">
                     <rect key="frame" x="164.66666666666666" y="746" width="64" height="64"/>
@@ -44,6 +60,39 @@
                         <action selector="takePictureClicked:" destination="-1" eventType="touchUpInside" id="Hpb-WK-OXI"/>
                     </connections>
                 </button>
+                <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ORW-NT-ZeE">
+                    <rect key="frame" x="0.0" y="59" width="393" height="793"/>
+                    <subviews>
+                        <view alpha="0.80000000000000004" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ZOF-eA-FCH">
+                            <rect key="frame" x="0.0" y="0.0" width="393" height="793"/>
+                            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        </view>
+                        <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="FdZ-NM-J9V">
+                            <rect key="frame" x="96.666666666666686" y="394.66666666666669" width="200" height="4"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="200" id="505-3w-BK0"/>
+                                <constraint firstAttribute="height" constant="4" id="Ppv-dv-Enk"/>
+                            </constraints>
+                        </progressView>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Progresso" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ziD-Ab-xMc">
+                            <rect key="frame" x="157.66666666666666" y="357.66666666666669" width="78" height="21"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                            <nil key="textColor"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                    </subviews>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <constraints>
+                        <constraint firstItem="ziD-Ab-xMc" firstAttribute="centerX" secondItem="ORW-NT-ZeE" secondAttribute="centerX" id="1CT-cX-4u7"/>
+                        <constraint firstItem="ZOF-eA-FCH" firstAttribute="leading" secondItem="ORW-NT-ZeE" secondAttribute="leading" id="Br2-Nv-58T"/>
+                        <constraint firstItem="FdZ-NM-J9V" firstAttribute="centerY" secondItem="ORW-NT-ZeE" secondAttribute="centerY" id="Oko-kL-bhx"/>
+                        <constraint firstItem="FdZ-NM-J9V" firstAttribute="top" secondItem="ziD-Ab-xMc" secondAttribute="bottom" constant="16" id="Wp4-ir-bxV"/>
+                        <constraint firstItem="FdZ-NM-J9V" firstAttribute="centerX" secondItem="ORW-NT-ZeE" secondAttribute="centerX" id="YxY-Kd-cvS"/>
+                        <constraint firstAttribute="bottom" secondItem="ZOF-eA-FCH" secondAttribute="bottom" id="jdg-Lu-FDX"/>
+                        <constraint firstAttribute="trailing" secondItem="ZOF-eA-FCH" secondAttribute="trailing" id="x7E-Rw-9VX"/>
+                        <constraint firstItem="ZOF-eA-FCH" firstAttribute="top" secondItem="ORW-NT-ZeE" secondAttribute="top" id="xec-8p-czZ"/>
+                    </constraints>
+                </view>
             </subviews>
             <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -52,10 +101,14 @@
                 <constraint firstItem="BIN-5U-Zv0" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="AaU-HX-Hkj"/>
                 <constraint firstItem="sln-Jr-vYV" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="HwL-9U-WuR"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="BIN-5U-Zv0" secondAttribute="bottom" constant="8" id="ImL-yn-oGI"/>
+                <constraint firstItem="ORW-NT-ZeE" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="Jja-Nl-Hgt"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="37D-JS-D4f" secondAttribute="bottom" constant="8" id="Kac-OC-Qtc"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="sln-Jr-vYV" secondAttribute="bottom" id="LtB-UU-JwB"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="sln-Jr-vYV" secondAttribute="trailing" id="Q3s-Ip-1D2"/>
+                <constraint firstAttribute="bottom" secondItem="ORW-NT-ZeE" secondAttribute="bottom" id="VVY-ne-i3h"/>
+                <constraint firstItem="ORW-NT-ZeE" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" id="qjx-2d-eQE"/>
                 <constraint firstItem="sln-Jr-vYV" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" id="tju-I2-t5H"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="ORW-NT-ZeE" secondAttribute="trailing" id="vw3-jb-4cx"/>
             </constraints>
             <point key="canvasLocation" x="12" y="-11"/>
         </view>
