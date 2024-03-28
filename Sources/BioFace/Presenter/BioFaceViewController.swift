@@ -96,8 +96,8 @@ class BioFaceViewController: UIViewController {
         cameraPreviewLayer?.frame = view.layer.frame
             
         // Bring the camera button to front
-        view.bringSubviewToFront(buttonImageView)
-        view.bringSubviewToFront(captureButton)
+        //view.bringSubviewToFront(buttonImageView)
+        //view.bringSubviewToFront(captureButton)
         captureSession.startRunning()
     }
 }
