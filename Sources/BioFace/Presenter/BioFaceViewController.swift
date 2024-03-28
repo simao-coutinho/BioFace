@@ -56,7 +56,29 @@ class BioFaceViewController: UIViewController {
         let photoSettings = AVCapturePhotoSettings(format: [AVVideoCodecKey: AVVideoCodecType.jpeg])
         // Configure photo settings
         if #available(iOS 16.0, *) {
-            photoSettings.maxPhotoDimensions = CMVideoDimensions(width: 768, height: 1024)
+            // Check supported formats to find a matching dimension
+            let supportedFormats = captureDevice?.formats
+            var matchedDimensions = CMVideoDimensions(width: 0, height: 0)
+            
+            if let supported = supportedFormats {
+                for format in supported {
+                    let formatDescription = format.formatDescription
+                    let dimensions = CMVideoFormatDescriptionGetDimensions(formatDescription)
+                    
+                    // Check if maxPhotoDimensions matches supported dimensions
+                    if dimensions.width > matchedDimensions.width || dimensions.height > matchedDimensions.height {
+                        matchedDimensions = dimensions
+                        break
+                    }
+                }
+
+                if matchedDimensions.width != 0 {
+                    // Use matchedDimensions for configuration
+                    photoSettings.maxPhotoDimensions = matchedDimensions
+                } else {
+                    print("Error: No matching dimensions found")
+                }
+            }
         } else {
             photoSettings.isHighResolutionPhotoEnabled = true
         }
