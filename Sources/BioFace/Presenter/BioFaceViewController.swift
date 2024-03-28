@@ -51,23 +51,17 @@ class BioFaceViewController: UIViewController {
     @IBAction func takePictureClicked(_ sender: UIButton) {
         // Set photo settings
         let photoSettings = AVCapturePhotoSettings(format: [AVVideoCodecKey: AVVideoCodecType.jpeg])
-        photoSettings.isHighResolutionPhotoEnabled = true
+        // Configure photo settings
+        if #available(iOS 16.0, *) {
+            photoSettings.maxPhotoDimensions = CMVideoDimensions(width: 768, height: 1024)
+        } else {
+            photoSettings.isHighResolutionPhotoEnabled = true
+        }
+            
         photoSettings.flashMode = .auto
                 
-        stillImageOutput.isHighResolutionCaptureEnabled = true
+        stillImageOutput.photoSettingsForSceneMonitoring = photoSettings
         stillImageOutput.capturePhoto(with: photoSettings, delegate: self)
-    }
-    
-    
-
-    func beginSession(){
-        do {
-            guard let captureDevice = captureDevice else {return}
-            let captureDeviceInput = try AVCaptureDeviceInput(device: captureDevice)
-            captureSession.addInput(captureDeviceInput)
-        }catch {
-            print(error.localizedDescription)
-        }
     }
     
     private func configure() {
@@ -75,29 +69,24 @@ class BioFaceViewController: UIViewController {
         captureSession.sessionPreset = AVCaptureSession.Preset.photo
             
         // Get the front and back-facing camera for taking photos
-        let deviceDiscoverySession = AVCaptureDevice.DiscoverySession(deviceTypes: [.builtInDualCamera], mediaType: AVMediaType.video, position: .unspecified)
+        let deviceDiscoverySession = AVCaptureDevice.DiscoverySession(deviceTypes: [.builtInWideAngleCamera], mediaType: AVMediaType.video, position: .front)
             
-        for device in deviceDiscoverySession.devices {
-            if device.position == .back {
-                backFacingCamera = device
-            } else if device.position == .front {
-                frontFacingCamera = device
-            }
-        }
-        
-        beginSession()
-        
-        guard let mCaptureDevice = captureDevice else { return }
-            
-        guard let captureDeviceInput = try? AVCaptureDeviceInput(device: mCaptureDevice) else {
+        guard let frontCamera = deviceDiscoverySession.devices.first else {
+                print("Front camera not available.")
                 return
+            }
+        
+        do {
+            let captureDeviceInput = try AVCaptureDeviceInput(device: frontCamera)
+            captureSession.addInput(captureDeviceInput)
+        } catch {
+            print(error.localizedDescription)
         }
-            
+        
         // Configure the session with the output for capturing still images
         stillImageOutput = AVCapturePhotoOutput()
             
         // Configure the session with the input and the output devices
-        captureSession.addInput(captureDeviceInput)
         captureSession.addOutput(stillImageOutput)
             
         // Provide a camera preview
@@ -110,7 +99,6 @@ class BioFaceViewController: UIViewController {
         view.bringSubviewToFront(buttonImageView)
         view.bringSubviewToFront(captureButton)
         captureSession.startRunning()
-            
     }
 }
 
