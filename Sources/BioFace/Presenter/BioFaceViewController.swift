@@ -55,7 +55,7 @@ class BioFaceViewController: UIViewController {
         // Set photo settings
         let photoSettings = AVCapturePhotoSettings(format: [AVVideoCodecKey: AVVideoCodecType.jpeg])
         // Configure photo settings
-        if #available(iOS 16.0, *) {
+        /*if #available(iOS 16.0, *) {
             // Check supported formats to find a matching dimension
             let supportedFormats = captureDevice?.formats
             var matchedDimensions = CMVideoDimensions(width: 0, height: 0)
@@ -81,7 +81,7 @@ class BioFaceViewController: UIViewController {
             }
         } else {
             photoSettings.isHighResolutionPhotoEnabled = true
-        }
+        }*/
             
         photoSettings.flashMode = .auto
                 
