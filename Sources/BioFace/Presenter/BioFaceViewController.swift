@@ -10,8 +10,9 @@ import AVFoundation
 
 class BioFaceViewController: UIViewController {
     
-    @IBOutlet weak var buttonImageView: UIImageView!
-    @IBOutlet weak var captureButton: UIButton!
+    @IBOutlet fileprivate weak var buttonImageView: UIImageView!
+    @IBOutlet fileprivate weak var captureButton: UIButton!
+    @IBOutlet fileprivate weak var btnCancel: UIButton!
     
     var frontFacingCamera: AVCaptureDevice?
     var backFacingCamera: AVCaptureDevice?
