@@ -34,7 +34,7 @@ class BioFaceViewController: UIViewController {
         self.serviceType = serviceType
         self.completion = completion
         self.imageResultListener = imageResultListener
-        super.init(nibName: nil, bundle: nil)
+        super.init(nibName: "BioFaceViewController", bundle: Bundle(for: BioFaceViewController.classForCoder()))
     }
 
     public required init?(coder aDecoder: NSCoder) {
