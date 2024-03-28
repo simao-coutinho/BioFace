@@ -30,12 +30,14 @@ class BioFaceViewController: UIViewController {
     private var serviceType: ServiceType = .makeRegistration
     private var completion: BioFaceResponse?
     
-     public func initialize(serviceType: ServiceType, imageResultListener: ImageResultListener, completion: @escaping BioFaceResponse) -> BioFaceViewController {
+     static public func initViewController() -> BioFaceViewController {
+         return BioFaceViewController(nibName: "BioFaceViewController", bundle: Bundle(for: BioFaceViewController.classForCoder()))
+    }
+    
+    public func setData(serviceType: ServiceType, imageResultListener: ImageResultListener, completion: @escaping BioFaceResponse) {
         self.serviceType = serviceType
         self.completion = completion
         self.imageResultListener = imageResultListener
-         
-         return BioFaceViewController(nibName: "BioFaceViewController", bundle: Bundle(for: BioFaceViewController.classForCoder()))
     }
 
     override func viewDidLoad() {

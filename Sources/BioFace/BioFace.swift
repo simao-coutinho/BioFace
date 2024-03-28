@@ -18,9 +18,9 @@ public class BioFace {
             return completion(.failed, nil, _error(for: .invalidSessionIdErrorCode))
         }
         
-        let viewController = BioFaceViewController()
+        let viewController = BioFaceViewController.initViewController()
         
-        viewController.initialize(serviceType: .makeRegistration, imageResultListener: self, completion: completion)
+        viewController.setData(serviceType: .makeRegistration, imageResultListener: self, completion: completion)
         if let rootViewController = UIApplication.shared.keyWindow?.rootViewController {
                 rootViewController.present(viewController, animated: true, completion: nil)
             }
