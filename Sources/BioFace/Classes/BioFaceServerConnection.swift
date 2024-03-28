@@ -52,8 +52,8 @@ class ServerConnection {
             return completion(.failed, nil, _error(for: .invalidSessionIdErrorCode))
         }
         
-        AF.request(self.url + url, method: .get, headers: headers).responseDecodable(of: Response.self) { response in
-            completion(.succeeded, response.value, nil)
+        AF.request(self.url + url, method: .get, headers: headers).response { response in
+            completion(.succeeded, Response(success: true, data: response.data), nil)
         }
     }
 }
