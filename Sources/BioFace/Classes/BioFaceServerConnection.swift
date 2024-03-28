@@ -48,11 +48,7 @@ class ServerConnection {
     func makeGetConnection(url: String, completion: @escaping BioFaceResponse) {
         guard let headers = getHeaders() else { return }
         
-        guard let sessionIdData = BioFace.sessionId?.data(using: .utf8, allowLossyConversion: false) else {
-            return completion(.failed, nil, _error(for: .invalidSessionIdErrorCode))
-        }
-        
-        AF.request(self.url + url, method: .get, headers: headers).responseString { response in
+        AF.request(self.url + url, method: .get, parameters: ["sesionId":BioFace.sessionId ?? ""], encoding: URLEncoding.httpBody, headers: headers).responseString { response in
             completion(.succeeded, Response(success: true, message: response.value), nil)
         }
     }
