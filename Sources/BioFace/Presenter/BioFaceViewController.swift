@@ -31,7 +31,7 @@ class BioFaceViewController: UIViewController {
     private var completion: BioFaceResponse?
     
      static public func initViewController() -> BioFaceViewController {
-         return BioFaceViewController(nibName: "BioFaceViewController", bundle: Bundle(for: BioFaceViewController.classForCoder()))
+         return BioFaceViewController(nibName: "BioFaceViewController", bundle: nil)
     }
     
     public func setData(serviceType: ServiceType, imageResultListener: ImageResultListener, completion: @escaping BioFaceResponse) {
