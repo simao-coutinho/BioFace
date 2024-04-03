@@ -15,15 +15,18 @@ public class BioFace {
     
     public func makeRegistration(_ sessionId: String, viewController: UIViewController, completion: @escaping BioFaceResponse) {
         BioFace.sessionId = sessionId
-        guard BioFace.apiToken != nil else { return completion(.failed, nil, _error(for: .invalidApiTokenErrorCode)) }
+        guard BioFace.apiToken != nil else { return completion(.failed, nil, _error(for: .invalidApiTokenErrorCode)) }	
         guard sessionId.data(using: .utf8, allowLossyConversion: false) != nil else {
             return completion(.failed, nil, _error(for: .invalidSessionIdErrorCode))
         }
         
         vc = BioFaceViewController.init()
         
-        vc?.setData(serviceType: .makeRegistration, imageResultListener: self, completion: completion)
-        viewController.present(viewController, animated: true, completion: nil)
+        guard let vc = vc else { return completion(.failed, nil, _error(for:.invalidApiTokenErrorCode))}
+        
+        vc.setData(serviceType: .makeRegistration, imageResultListener: self, completion: completion)
+        viewController.present(vc, animated: true, completion: nil)
+        
     }
 }
 
