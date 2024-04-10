@@ -72,10 +72,7 @@ class ServerConnection {
 
         guard let headers = getHeaders(sessionId: sessionId) else { return }
         
-        var request = try! URLRequest(url: self.url + url, method: .get, headers: headers)
-        request.httpBody = try! JSONSerialization.data(withJSONObject: ["session_id": sessionId])
-        
-        AF.request(request).responseString { response in
+        AF.request(self.url + url, method: .get, parameters: ["session_id": sessionId], encoding: URLEncoding.httpBody, headers: headers).responseString { response in
             print("URL: \(url) -> Response: \(response)")
             completion(.succeeded, Response(success: true, message: response.value), nil)
         }
