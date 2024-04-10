@@ -48,7 +48,7 @@ class ServerConnection {
         
         let parameters = "?session_id=\(sessionId)"
         
-        AF.request(self.url + url + parameters, method: .get, headers: headers).responseString { response in
+        AF.request(self.url + url + parameters, method: .get, parameters: ["session_id": sessionId], headers: headers).responseString { response in
             completion(.succeeded, Response(success: true, message: response.value), nil)
         }
     }
