@@ -48,7 +48,7 @@ class ServerConnection {
     }
     
     func makeGetConnection(url: String, sessionId: String, completion: @escaping BioFaceResponse) {
-        guard let apiToken = BioFace.apiToken else { return }
+        /*guard let apiToken = BioFace.apiToken else { return }
         let parameters = "session_id=\(sessionId)"
         let postData =  parameters.data(using: .utf8)
 
@@ -71,13 +71,13 @@ class ServerConnection {
           print(String(data: data, encoding: .utf8)!)
         }
 
-        task.resume()
+        task.resume()*/
 
-        /*guard let headers = getHeaders(sessionId: sessionId) else { return }
+        guard let headers = getHeaders(sessionId: sessionId) else { return }
         
-        AF.request(self.url + url, method: .get, parameters: ["session_id": sessionId], encoding: URLEncoding.httpBody, headers: headers).responseString { response in
+        AF.request(self.url + url, method: .get, parameters: ["session_id": sessionId], encoding: URLEncoding.queryString, headers: headers).responseString { response in
             print("URL: \(url) -> Response: \(response)")
             completion(.succeeded, Response(success: true, message: response.value), nil)
-        }*/
+        }
     }
 }
