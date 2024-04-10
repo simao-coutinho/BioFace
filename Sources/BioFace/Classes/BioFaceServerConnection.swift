@@ -13,23 +13,27 @@ class ServerConnection {
     
     private let url = "https://visteamlab.isr.uc.pt/facing/v2/api/"
     
-    private func getHeaders() -> HTTPHeaders? {
+    private func getHeaders(sessionId: String) -> HTTPHeaders? {
         guard let apiToken = BioFace.apiToken else { return nil}
         
         let headers: HTTPHeaders = [
-            "authorization": "Bearer " + apiToken
+            "authorization": "Bearer " + apiToken,
+            "Content-Type": "application/x-www-form-urlencoded",
+            "session_id": sessionId
         ]
         
         return headers
     }
     
     func makeImageUpload(with image: UIImage,sessionId: String, completion: @escaping BioFaceResponse) {
-        guard let headers = getHeaders() else { return }
+        guard let apiToken = BioFace.apiToken else { return }
+        let headers: HTTPHeaders = [
+            "authorization": "Bearer " + apiToken,
+        ]
         
         guard let sessionIdData = sessionId.data(using: .utf8, allowLossyConversion: false) else {
             return completion(.failed, nil, _error(for: .invalidSessionIdErrorCode))
         }
-        guard let collectionNameData = "collection".data(using: .utf8, allowLossyConversion: false) else { return }
         
         guard let file = image.jpegData(compressionQuality: 75) else { return }
         
@@ -44,11 +48,31 @@ class ServerConnection {
     }
     
     func makeGetConnection(url: String, sessionId: String, completion: @escaping BioFaceResponse) {
-        guard let headers = getHeaders() else { return }
-        var mHeaders = headers
-        mHeaders["Content-Type"] = "application/x-www-form-urlencoded"
+        /*guard let apiToken = BioFace.apiToken else { return }
+        let parameters = "session_id=\(sessionId)"
+        let postData =  parameters.data(using: .utf8)
+
+        var request = URLRequest(url: URL(string: self.url + url)!,timeoutInterval: Double.infinity)
+        request.addValue(sessionId, forHTTPHeaderField: "session_id")
+        request.addValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+        request.addValue("Bearer " + apiToken, forHTTPHeaderField: "Authorization")
+
+        request.httpMethod = "GET"
+        request.httpBody = postData
+
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+          guard let data = data else {
+            print(String(describing: error))
+            return
+          }
+          print(String(data: data, encoding: .utf8)!)
+        }
+
+        task.resume()*/
+
+        guard let headers = getHeaders(sessionId: sessionId) else { return }
         
-        AF.request(self.url + url, method: .get, parameters: ["session_id": sessionId], headers: mHeaders).responseString { response in
+        AF.request(self.url + url, method: .get, headers: headers).responseString { response in
             completion(.succeeded, Response(success: true, message: response.value), nil)
         }
     }
