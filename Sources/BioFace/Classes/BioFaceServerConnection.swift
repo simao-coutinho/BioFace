@@ -40,7 +40,7 @@ class ServerConnection {
                 multipartFormData.append(collectionNameData, withName: "collection_name")
                 multipartFormData.append(file, withName: "collection" , fileName: "collection.jpg", mimeType: "image/jpg")
         },
-            to: "https://musicplayer.cabeleireiroonline.pt/api/upload", method: .post , headers: headers).responseDecodable(of: Response.self) { response in
+            to: url + "collect", method: .post , headers: headers).responseDecodable(of: Response.self) { response in
                 completion(.succeeded, response.value, nil)
             }
     }
