@@ -30,7 +30,7 @@ class ServerConnection {
         guard let sessionIdData = BioFace.sessionId?.data(using: .utf8, allowLossyConversion: false) else {
             return completion(.failed, nil, _error(for: .invalidSessionIdErrorCode))
         }
-        guard let collectionNameData = "teste anm".data(using: .utf8, allowLossyConversion: false) else { return }
+        guard let collectionNameData = "collection".data(using: .utf8, allowLossyConversion: false) else { return }
         
         guard let file = image.jpegData(compressionQuality: 75) else { return }
         
@@ -51,7 +51,6 @@ class ServerConnection {
         let parameters = "?session_id=\(BioFace.sessionId ?? "")"
         
         AF.request(self.url + url + parameters, method: .get, headers: headers).responseString { response in
-            print("RESPONSE:", response)
             completion(.succeeded, Response(success: true, message: response.value), nil)
         }
     }
