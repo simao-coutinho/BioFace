@@ -36,48 +36,131 @@ extension BioFace : ImageResultListener {
         switch from {
         case .makeRegistration:
             let serverConnection = ServerConnection()
-                
-                serverConnection.makeImageUpload(with: with) { uploadStatus, _, uploadError in
-                    guard uploadStatus == .succeeded else {
-                        completion(uploadStatus, nil, uploadError)
+            serverConnection.makeImageUpload(with: with, sessionId: nil) { uploadStatus, _, uploadError in
+                guard uploadStatus == .succeeded else {
+                    completion(uploadStatus, nil, uploadError)
+                    return
+                }
+                self.vc?.setProgress(progress: 1, total: 4)
+                    
+                self.fetchFromServer(with: "compliance", sessionId: nil, progress: 2) { complianceStatus, _, complianceError in
+                    guard complianceStatus == .succeeded else {
+                        completion(complianceStatus, nil, complianceError)
                         return
                     }
-                    self.vc?.setProgress(progress: 1, total: 4)
-                    
-                    self.fetchFromServer(with: "compliance", progress: 2) { complianceStatus, _, complianceError in
-                        guard complianceStatus == .succeeded else {
-                            completion(complianceStatus, nil, complianceError)
+                        
+                    self.fetchFromServer(with: "liveness", sessionId: nil, progress: 3) { livenessStatus, _, livenessError in
+                        guard livenessStatus == .succeeded else {
+                            completion(livenessStatus, nil, livenessError)
                             return
                         }
+                            
+                        self.fetchFromServer(with: "extract", sessionId: nil, progress: 4) { extractStatus, _, extractError in
+                            guard extractStatus == .succeeded else {
+                                completion(extractStatus, nil, extractError)
+                                return
+                            }
+                                
+                            self.vc?.dismiss(animated: true)
+                            completion(.succeeded, nil, nil)
+                        }
+                    }
+                }
+            }
+        case .addCard:
+            let sessionId = UUID().uuidString
+            let serverConnection = ServerConnection()
+            serverConnection.makeImageUpload(with: with, sessionId: sessionId) { uploadStatus, _, uploadError in
+                guard uploadStatus == .succeeded else {
+                    completion(uploadStatus, nil, uploadError)
+                    return
+                }
+                self.vc?.setProgress(progress: 1, total: 4)
+                    
+                self.fetchFromServer(with: "dica", sessionId: sessionId, progress: 2) { complianceStatus, _, complianceError in
+                    guard complianceStatus == .succeeded else {
+                        completion(complianceStatus, nil, complianceError)
+                        return
+                    }
                         
-                        self.fetchFromServer(with: "liveness", progress: 3) { livenessStatus, _, livenessError in
-                            guard livenessStatus == .succeeded else {
-                                completion(livenessStatus, nil, livenessError)
+                    self.fetchFromServer(with: "cdta", sessionId: sessionId, progress: 3) { livenessStatus, _, livenessError in
+                        guard livenessStatus == .succeeded else {
+                            completion(livenessStatus, nil, livenessError)
+                            return
+                        }
+                            
+                        self.fetchFromServer(with: "smad", sessionId: sessionId, progress: 4) { extractStatus, _, extractError in
+                            guard extractStatus == .succeeded else {
+                                completion(extractStatus, nil, extractError)
                                 return
                             }
                             
-                            self.fetchFromServer(with: "extract", progress: 4) { extractStatus, _, extractError in
+                            self.fetchFromServer(with: "extract", sessionId: sessionId, progress: 4) { extractStatus, _, extractError in
                                 guard extractStatus == .succeeded else {
                                     completion(extractStatus, nil, extractError)
                                     return
                                 }
+                                    
+                                self.fetchFromServer(with: "compare", sessionId: sessionId, progress: 4) { extractStatus, _, extractError in
+                                    guard extractStatus == .succeeded else {
+                                        completion(extractStatus, nil, extractError)
+                                        return
+                                    }
+                                        
+                                    self.vc?.dismiss(animated: true)
+                                    completion(.succeeded, nil, nil)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        case .verifyUser:
+            let serverConnection = ServerConnection()
+            serverConnection.makeImageUpload(with: with, sessionId: nil) { uploadStatus, _, uploadError in
+                guard uploadStatus == .succeeded else {
+                    completion(uploadStatus, nil, uploadError)
+                    return
+                }
+                self.vc?.setProgress(progress: 1, total: 4)
+                    
+                self.fetchFromServer(with: "compliance", sessionId: nil, progress: 2) { complianceStatus, _, complianceError in
+                    guard complianceStatus == .succeeded else {
+                        completion(complianceStatus, nil, complianceError)
+                        return
+                    }
+                        
+                    self.fetchFromServer(with: "liveness", sessionId: nil, progress: 3) { livenessStatus, _, livenessError in
+                        guard livenessStatus == .succeeded else {
+                            completion(livenessStatus, nil, livenessError)
+                            return
+                        }
+                            
+                        self.fetchFromServer(with: "extract", sessionId: nil, progress: 4) { extractStatus, _, extractError in
+                            guard extractStatus == .succeeded else {
+                                completion(extractStatus, nil, extractError)
+                                return
+                            }
                                 
+                            self.fetchFromServer(with: "compare", sessionId: nil, progress: 4) { extractStatus, _, extractError in
+                                guard extractStatus == .succeeded else {
+                                    completion(extractStatus, nil, extractError)
+                                    return
+                                }
+                                    
                                 self.vc?.dismiss(animated: true)
                                 completion(.succeeded, nil, nil)
                             }
                         }
                     }
                 }
-        case .addCard:
-            completion(.succeeded, nil, nil)
-        case .verifyUser:
-            completion(.succeeded, nil, nil)
+            }
         }
     }
     
-    private func fetchFromServer(with url: String, progress: Float, completion: @escaping (BioFaceStatus, Any?, NSError?) -> Void) {
+    private func fetchFromServer(with url: String, sessionId: String?, progress: Float, completion: @escaping (BioFaceStatus, Any?, NSError?) -> Void) {
         let serverConnection = ServerConnection()
-        serverConnection.makeGetConnection(url: url) { status, response, error in
+        serverConnection.makeGetConnection(url: url,sessionId: sessionId) { status, response, error in
             self.vc?.setProgress(progress: progress, total: 4)
             print("\(url) Response: \(String(describing: response))")
             completion(status, response, error)
