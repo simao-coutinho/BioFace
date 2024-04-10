@@ -35,27 +35,28 @@ extension BioFace : ImageResultListener {
         vc?.setProgress(progress: 0, total: 4)
         switch from {
         case .makeRegistration:
+            guard let sessionId = BioFace.sessionId else { return }
             let serverConnection = ServerConnection()
-            serverConnection.makeImageUpload(with: with, sessionId: nil) { uploadStatus, _, uploadError in
+            serverConnection.makeImageUpload(with: with, sessionId: sessionId) { uploadStatus, _, uploadError in
                 guard uploadStatus == .succeeded else {
                     completion(uploadStatus, nil, uploadError)
                     return
                 }
                 self.vc?.setProgress(progress: 1, total: 4)
                     
-                self.fetchFromServer(with: "compliance", sessionId: nil, progress: 2) { complianceStatus, _, complianceError in
+                self.fetchFromServer(with: "compliance", sessionId: sessionId, progress: 2) { complianceStatus, _, complianceError in
                     guard complianceStatus == .succeeded else {
                         completion(complianceStatus, nil, complianceError)
                         return
                     }
                         
-                    self.fetchFromServer(with: "liveness", sessionId: nil, progress: 3) { livenessStatus, _, livenessError in
+                    self.fetchFromServer(with: "liveness", sessionId: sessionId, progress: 3) { livenessStatus, _, livenessError in
                         guard livenessStatus == .succeeded else {
                             completion(livenessStatus, nil, livenessError)
                             return
                         }
                             
-                        self.fetchFromServer(with: "extract", sessionId: nil, progress: 4) { extractStatus, _, extractError in
+                        self.fetchFromServer(with: "extract", sessionId: sessionId, progress: 4) { extractStatus, _, extractError in
                             guard extractStatus == .succeeded else {
                                 completion(extractStatus, nil, extractError)
                                 return
@@ -116,33 +117,34 @@ extension BioFace : ImageResultListener {
                 }
             }
         case .verifyUser:
+            let sessionId = UUID().uuidString
             let serverConnection = ServerConnection()
-            serverConnection.makeImageUpload(with: with, sessionId: nil) { uploadStatus, _, uploadError in
+            serverConnection.makeImageUpload(with: with, sessionId: sessionId) { uploadStatus, _, uploadError in
                 guard uploadStatus == .succeeded else {
                     completion(uploadStatus, nil, uploadError)
                     return
                 }
                 self.vc?.setProgress(progress: 1, total: 4)
                     
-                self.fetchFromServer(with: "compliance", sessionId: nil, progress: 2) { complianceStatus, _, complianceError in
+                self.fetchFromServer(with: "compliance", sessionId: sessionId, progress: 2) { complianceStatus, _, complianceError in
                     guard complianceStatus == .succeeded else {
                         completion(complianceStatus, nil, complianceError)
                         return
                     }
                         
-                    self.fetchFromServer(with: "liveness", sessionId: nil, progress: 3) { livenessStatus, _, livenessError in
+                    self.fetchFromServer(with: "liveness", sessionId: sessionId, progress: 3) { livenessStatus, _, livenessError in
                         guard livenessStatus == .succeeded else {
                             completion(livenessStatus, nil, livenessError)
                             return
                         }
                             
-                        self.fetchFromServer(with: "extract", sessionId: nil, progress: 4) { extractStatus, _, extractError in
+                        self.fetchFromServer(with: "extract", sessionId: sessionId, progress: 4) { extractStatus, _, extractError in
                             guard extractStatus == .succeeded else {
                                 completion(extractStatus, nil, extractError)
                                 return
                             }
                                 
-                            self.fetchFromServer(with: "compare", sessionId: nil, progress: 4) { extractStatus, _, extractError in
+                            self.fetchFromServer(with: "compare", sessionId: sessionId, progress: 4) { extractStatus, _, extractError in
                                 guard extractStatus == .succeeded else {
                                     completion(extractStatus, nil, extractError)
                                     return
@@ -158,7 +160,7 @@ extension BioFace : ImageResultListener {
         }
     }
     
-    private func fetchFromServer(with url: String, sessionId: String?, progress: Float, completion: @escaping (BioFaceStatus, Any?, NSError?) -> Void) {
+    private func fetchFromServer(with url: String, sessionId: String, progress: Float, completion: @escaping (BioFaceStatus, Any?, NSError?) -> Void) {
         let serverConnection = ServerConnection()
         serverConnection.makeGetConnection(url: url,sessionId: sessionId) { status, response, error in
             self.vc?.setProgress(progress: progress, total: 4)

@@ -23,12 +23,10 @@ class ServerConnection {
         return headers
     }
     
-    func makeImageUpload(with image: UIImage,sessionId: String?, completion: @escaping BioFaceResponse) {
+    func makeImageUpload(with image: UIImage,sessionId: String, completion: @escaping BioFaceResponse) {
         guard let headers = getHeaders() else { return }
         
-        let mSessionId = sessionId ?? BioFace.sessionId
-        
-        guard let sessionIdData = mSessionId?.data(using: .utf8, allowLossyConversion: false) else {
+        guard let sessionIdData = sessionId.data(using: .utf8, allowLossyConversion: false) else {
             return completion(.failed, nil, _error(for: .invalidSessionIdErrorCode))
         }
         guard let collectionNameData = "collection".data(using: .utf8, allowLossyConversion: false) else { return }
@@ -45,10 +43,10 @@ class ServerConnection {
             }
     }
     
-    func makeGetConnection(url: String, sessionId: String?, completion: @escaping BioFaceResponse) {
+    func makeGetConnection(url: String, sessionId: String, completion: @escaping BioFaceResponse) {
         guard let headers = getHeaders() else { return }
         
-        let parameters = "?session_id=\(sessionId ?? BioFace.sessionId ?? "")"
+        let parameters = "?session_id=\(sessionId)"
         
         AF.request(self.url + url + parameters, method: .get, headers: headers).responseString { response in
             completion(.succeeded, Response(success: true, message: response.value), nil)
