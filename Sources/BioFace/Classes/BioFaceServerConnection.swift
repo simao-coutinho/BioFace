@@ -45,10 +45,10 @@ class ServerConnection {
     
     func makeGetConnection(url: String, sessionId: String, completion: @escaping BioFaceResponse) {
         guard let headers = getHeaders() else { return }
+        var mHeaders = headers
+        mHeaders["Content-Type"] = "application/x-www-form-urlencoded"
         
-        let parameters = "?session_id=\(sessionId)"
-        
-        AF.request(self.url + url + parameters, method: .get, parameters: ["session_id": sessionId], headers: headers).responseString { response in
+        AF.request(self.url + url, method: .get, parameters: ["session_id": sessionId], headers: mHeaders).responseString { response in
             completion(.succeeded, Response(success: true, message: response.value), nil)
         }
     }
