@@ -60,7 +60,10 @@ class ServerConnection {
         request.httpMethod = "GET"
         request.httpBody = postData
 
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+        let config = URLSessionConfiguration.default
+        let session = URLSession(configuration: config)
+
+        let task = session.dataTask(with: request) { data, response, error in
           guard let data = data else {
             print(String(describing: error))
             return
