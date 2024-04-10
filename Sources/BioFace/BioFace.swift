@@ -36,58 +36,51 @@ extension BioFace : ImageResultListener {
         switch from {
         case .makeRegistration:
             let serverConnection = ServerConnection()
-            serverConnection.makeImageUpload(with: with) { status, response, error in
-                self.vc?.setProgress(progress: 1, total: 4)
-                print("Collect Response: \(response)")
-                switch status {
-                case .succeeded:
-                    serverConnection.makeGetConnection(url: "compliance") { status, response, error in
-                        self.vc?.setProgress(progress: 2, total: 4)
-                        print("compliance Response: \(response)")
-                        switch status {
-                        case .succeeded:
-                            serverConnection.makeGetConnection(url: "liveness") { status, response, error in
-                                self.vc?.setProgress(progress: 3, total: 4)
-                                print("liveness Response: \(response)")
-                                switch status {
-                                case .succeeded:
-                                    serverConnection.makeGetConnection(url: "extract") { status, response, error in
-                                        self.vc?.setProgress(progress: 1, total: 4)
-                                        print("extract Response: \(response)")
-                                        switch status {
-                                            case .succeeded:
-                                            self.vc?.dismiss(animated: true)
-                                                completion(.succeeded, nil, nil)
-                                            case .canceled:
-                                                completion(.canceled, nil, error)
-                                            case .failed:
-                                                completion(.failed, nil, error)
-                                        }
-                                    }
-                                case .canceled:
-                                    completion(.canceled, nil, error)
-                                case .failed:
-                                    completion(.failed, nil, error)
-                                }
+                
+                serverConnection.makeImageUpload(with: with) { uploadStatus, _, uploadError in
+                    guard uploadStatus == .succeeded else {
+                        completion(uploadStatus, nil, uploadError)
+                        return
+                    }
+                    self.vc?.setProgress(progress: 1, total: 4)
+                    
+                    self.fetchFromServer(with: "compliance", progress: 2) { complianceStatus, _, complianceError in
+                        guard complianceStatus == .succeeded else {
+                            completion(complianceStatus, nil, complianceError)
+                            return
+                        }
+                        
+                        self.fetchFromServer(with: "liveness", progress: 3) { livenessStatus, _, livenessError in
+                            guard livenessStatus == .succeeded else {
+                                completion(livenessStatus, nil, livenessError)
+                                return
                             }
                             
-                        case .canceled:
-                            completion(.canceled, nil, error)
-                        case .failed:
-                            completion(.failed, nil, error)
+                            self.fetchFromServer(with: "extract", progress: 4) { extractStatus, _, extractError in
+                                guard extractStatus == .succeeded else {
+                                    completion(extractStatus, nil, extractError)
+                                    return
+                                }
+                                
+                                self.vc?.dismiss(animated: true)
+                                completion(.succeeded, nil, nil)
+                            }
                         }
                     }
-                case .canceled:
-                    completion(.canceled, nil, error)
-                case .failed:
-                    completion(.failed, nil, error)
                 }
-                completion(.succeeded, nil, nil)
-            }
         case .addCard:
             completion(.succeeded, nil, nil)
         case .verifyUser:
             completion(.succeeded, nil, nil)
+        }
+    }
+    
+    private func fetchFromServer(with url: String, progress: Float, completion: @escaping (BioFaceStatus, Any?, NSError?) -> Void) {
+        let serverConnection = ServerConnection()
+        serverConnection.makeGetConnection(url: url) { status, response, error in
+            self.vc?.setProgress(progress: progress, total: 4)
+            print("\(url) Response: \(String(describing: response))")
+            completion(status, response, error)
         }
     }
 }
