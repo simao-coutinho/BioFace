@@ -10,7 +10,7 @@ import UIKit
 
 public enum ServiceType: Int {
     case makeRegistration
-    case addCart
+    case addCard
     case verifyUser
 }
 

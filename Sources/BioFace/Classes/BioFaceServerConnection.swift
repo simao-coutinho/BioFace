@@ -49,6 +49,7 @@ class ServerConnection {
         guard let headers = getHeaders() else { return }
         
         AF.request(self.url + url, method: .get, parameters: ["sesionId":BioFace.sessionId ?? ""], encoding: URLEncoding.httpBody, headers: headers).responseString { response in
+            print("RESPONSE:", response)
             completion(.succeeded, Response(success: true, message: response.value), nil)
         }
     }

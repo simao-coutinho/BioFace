@@ -84,7 +84,7 @@ extension BioFace : ImageResultListener {
                 }
                 completion(.succeeded, nil, nil)
             }
-        case .addCart:
+        case .addCard:
             completion(.succeeded, nil, nil)
         case .verifyUser:
             completion(.succeeded, nil, nil)
