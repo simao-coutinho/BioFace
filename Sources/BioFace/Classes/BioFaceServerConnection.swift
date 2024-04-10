@@ -76,6 +76,7 @@ class ServerConnection {
         request.httpBody = try! JSONSerialization.data(withJSONObject: ["session_id": sessionId])
         
         AF.request(request).responseString { response in
+            print("URL: \(url) -> Response: \(response)")
             completion(.succeeded, Response(success: true, message: response.value), nil)
         }
     }
