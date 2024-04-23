@@ -28,6 +28,30 @@ public class BioFace {
         viewController.present(vc, animated: true, completion: nil)
         
     }
+    
+    public func addCard(viewController: UIViewController, completion: @escaping BioFaceResponse) {
+        guard BioFace.apiToken != nil else { return completion(.failed, nil, _error(for: .invalidApiTokenErrorCode)) }
+        
+        vc = BioFaceViewController.init()
+        
+        guard let vc = vc else { return completion(.failed, nil, _error(for:.invalidApiTokenErrorCode))}
+        
+        vc.setData(serviceType: .addCard, imageResultListener: self, completion: completion)
+        viewController.present(vc, animated: true, completion: nil)
+        
+    }
+    
+    public func verifyUser(viewController: UIViewController, completion: @escaping BioFaceResponse) {
+        guard BioFace.apiToken != nil else { return completion(.failed, nil, _error(for: .invalidApiTokenErrorCode)) }
+        
+        vc = BioFaceViewController.init()
+        
+        guard let vc = vc else { return completion(.failed, nil, _error(for:.invalidApiTokenErrorCode))}
+        
+        vc.setData(serviceType: .verifyUser, imageResultListener: self, completion: completion)
+        viewController.present(vc, animated: true, completion: nil)
+        
+    }
 }
 
 extension BioFace : ImageResultListener {
