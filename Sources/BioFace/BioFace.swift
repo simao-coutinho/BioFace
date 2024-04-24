@@ -87,22 +87,17 @@ extension BioFace : ImageResultListener {
                                 return
                             }
                             
-                            if let data = response?.data(using: .utf8) {
-                                do {
-                                    if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
-                                        if let dataExtr = json["data"] as? Data {
-                                            SecureData().saveToKeychain(data: dataExtr, forKey: "GENERAL_BIOMETRIC_DATA_EXTR1")
-                                            self.vc?.dismiss(animated: true)
-                                            completion(.succeeded, nil, nil)
-                                        } else {
-                                            self.vc?.dismiss(animated: true)
-                                            completion(.failed, nil, nil)
-                                        }
-                                    }
-                                } catch {
-                                    print("Error parsing JSON: \(error.localizedDescription)")
-                                }
+                            guard let template = response?.data else {
+                                completion(extractStatus, nil, extractError)
+                                return
                             }
+                            
+                            let dataExtr = Data(buffer: UnsafeBufferPointer(start: template, count: template.count))
+                            
+                            SecureData().saveToKeychain(data: dataExtr, forKey: "GENERAL_BIOMETRIC_DATA_EXTR1")
+                            
+                            self.vc?.dismiss(animated: true)
+                            completion(.succeeded, nil, nil)
                         }
                     }
                 }
@@ -147,29 +142,21 @@ extension BioFace : ImageResultListener {
                                         return
                                     }
                                     
-                                    if let data = response?.data(using: .utf8) {
-                                        do {
-                                            if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
-                                                if let dataExtr = json["data"] as? Data {
-                                                
-                                                    let template = SecureData().loadFromKeychain(forKey: "GENERAL_BIOMETRIC_DATA_EXTR")
-                                                    
-                                                    if template == dataExtr {
-                                                        self.vc?.dismiss(animated: true)
-                                                        completion(.succeeded, nil, nil)
-                                                    } else {
-                                                        self.vc?.dismiss(animated: true)
-                                                        completion(.failed, nil, nil)
-                                                    }
-                                                }
-                                            }
-                                        } catch {
-                                            print("Error parsing JSON: \(error.localizedDescription)")
-                                        }
+                                    guard let template = response?.data else {
+                                        completion(extractStatus, nil, extractError)
+                                        return
                                     }
+                                    
+                                    let dataExtr = Data(buffer: UnsafeBufferPointer(start: template, count: template.count))
+                                        let currentTemplate = SecureData().loadFromKeychain(forKey: "GENERAL_BIOMETRIC_DATA_EXTR")
                                         
-                                    self.vc?.dismiss(animated: true)
-                                    completion(.succeeded, nil, nil)
+                                        if currentTemplate == dataExtr {
+                                            self.vc?.dismiss(animated: true)
+                                            completion(.succeeded, nil, nil)
+                                        } else {
+                                            self.vc?.dismiss(animated: true)
+                                            completion(.failed, nil, nil)
+                                        }
                                 }
                             }
                         }
@@ -220,12 +207,12 @@ extension BioFace : ImageResultListener {
         }
     }
     
-    private func fetchFromServer(with url: String, sessionId: String, progress: Float, completion: @escaping (BioFaceStatus, String?, NSError?) -> Void) {
+    private func fetchFromServer(with url: String, sessionId: String, progress: Float, completion: @escaping (BioFaceStatus, ExtractResponse?, NSError?) -> Void) {
         let serverConnection = ServerConnection()
         serverConnection.makeGetConnection(url: url,sessionId: sessionId) { status, response, error in
             self.vc?.setProgress(progress: progress, total: 4)
             print("\(url) Response: \(String(describing: response))")
-            completion(status, response?.message, error)
+            completion(status, response?.data, error)
         }
     }
 }
