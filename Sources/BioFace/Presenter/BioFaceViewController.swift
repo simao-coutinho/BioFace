@@ -67,8 +67,38 @@ class BioFaceViewController: UIViewController {
     }
 
     @IBAction func onChangeCameraClicked(_ sender: Any) {
-        frontCameraCurrent = !frontCameraCurrent
-        configure()
+        frontCameraCurrent = !frontCameraCurrent // Toggle the current camera flag
+            
+            // Remove existing inputs from the session
+            for input in captureSession.inputs {
+                captureSession.removeInput(input)
+            }
+            
+            // Configure session with the new camera input
+            if frontCameraCurrent {
+                configureCameraInput(position: .front)
+            } else {
+                configureCameraInput(position: .back)
+            }
+            
+            // Restart the capture session
+            captureSession.startRunning()
+    }
+    
+    private func configureCameraInput(position: AVCaptureDevice.Position) {
+        let deviceDiscoverySession = AVCaptureDevice.DiscoverySession(deviceTypes: [.builtInWideAngleCamera], mediaType: AVMediaType.video, position: position)
+        
+        guard let camera = deviceDiscoverySession.devices.first else {
+            print("Camera not available.")
+            return
+        }
+        
+        do {
+            let captureDeviceInput = try AVCaptureDeviceInput(device: camera)
+            captureSession.addInput(captureDeviceInput)
+        } catch {
+            print(error.localizedDescription)
+        }
     }
     
     @IBAction func onBackButtonClicked(_ sender: Any) {
@@ -89,39 +119,13 @@ class BioFaceViewController: UIViewController {
     
     private func configure() {
         // Preset the session for taking photo in full resolution
-        captureSession.sessionPreset = AVCaptureSession.Preset.photo
+            captureSession.sessionPreset = AVCaptureSession.Preset.photo
             
-        if frontCameraCurrent {
-            // Get the front and back-facing camera for taking photos
-            let deviceDiscoverySession = AVCaptureDevice.DiscoverySession(deviceTypes: [.builtInWideAngleCamera], mediaType: AVMediaType.video, position: .front)
-                
-            guard let frontCamera = deviceDiscoverySession.devices.first else {
-                    print("Front camera not available.")
-                    return
-                }
+            // Configure session with initial camera
+            configureCameraInput(position: .front) // Or .back, depending on your initial preference
             
-            do {
-                let captureDeviceInput = try AVCaptureDeviceInput(device: frontCamera)
-                captureSession.addInput(captureDeviceInput)
-            } catch {
-                print(error.localizedDescription)
-            }
-        } else {
-            // Get the front and back-facing camera for taking photos
-            let deviceDiscoverySession = AVCaptureDevice.DiscoverySession(deviceTypes: [.builtInWideAngleCamera], mediaType: AVMediaType.video, position: .back)
-                
-            guard let backFacingCamera = deviceDiscoverySession.devices.first else {
-                    print("Front camera not available.")
-                    return
-                }
-            
-            do {
-                let captureDeviceInput = try AVCaptureDeviceInput(device: backFacingCamera)
-                captureSession.addInput(captureDeviceInput)
-            } catch {
-                print(error.localizedDescription)
-            }
-        }
+            // Configure the session with the output for capturing still images
+            stillImageOutput = AVCapturePhotoOutput()
         
         
         // Configure the session with the output for capturing still images
