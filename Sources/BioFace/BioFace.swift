@@ -10,6 +10,7 @@ public class BioFace {
     private var vc : BioFaceViewController? = nil
     
     private let url = "https://visteamlab.isr.uc.pt/facing/v2/api/"
+    private let secureDataKey = "GENERAL_BIOMETRIC_DATA_EXTR"
 
     public init() {}
     
@@ -94,7 +95,7 @@ extension BioFace : ImageResultListener {
                             
                             let dataExtr = Data(buffer: UnsafeBufferPointer(start: template, count: template.count))
                             
-                            SecureData().saveToKeychain(data: dataExtr, forKey: "GENERAL_BIOMETRIC_DATA_EXTR1")
+                            SecureData().saveToKeychain(data: dataExtr, forKey: self.secureDataKey)
                             
                             self.vc?.dismiss(animated: true)
                             completion(.succeeded, nil, nil)
@@ -141,7 +142,7 @@ extension BioFace : ImageResultListener {
                                     return
                                 }
                                 
-                                guard let currentTemplate = SecureData().loadFromKeychain(forKey: "GENERAL_BIOMETRIC_DATA_EXTR") else {
+                                guard let currentTemplate = SecureData().loadFromKeychain(forKey: self.secureDataKey) else {
                                     return completion(.failed, nil, _error(for: .invalidTemplateFromSecureKey))
                                 }
                                 
@@ -188,17 +189,15 @@ extension BioFace : ImageResultListener {
                             
                         self.fetchFromServer(with: "extract", sessionId: sessionId, progress: 4, totalProgress: 5) { extractStatus, response, extractError in
                             guard extractStatus == .succeeded else {
-                                completion(extractStatus, nil, extractError)
-                                return
+                                return completion(extractStatus, nil, extractError)
                             }
                             
 
                             guard let template = response?.data else {
-                                completion(extractStatus, nil, extractError)
-                                return
+                                return completion(extractStatus, nil, extractError)
                             }
                             
-                            guard let currentTemplate = SecureData().loadFromKeychain(forKey: "GENERAL_BIOMETRIC_DATA_EXTR") else {
+                            guard let currentTemplate = SecureData().loadFromKeychain(forKey: self.secureDataKey) else {
                                 return completion(.failed, nil, _error(for: .invalidTemplateFromSecureKey))
                             }
                             
