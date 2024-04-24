@@ -91,7 +91,7 @@ extension BioFace : ImageResultListener {
                                 do {
                                     if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
                                         if let dataExtr = json["data"] as? Data {
-                                            SecureData().saveToKeychain(data: dataExtr, forKey: "GENERAL_BIOMETRIC_DATA_EXTR")
+                                            SecureData().saveToKeychain(data: dataExtr, forKey: "GENERAL_BIOMETRIC_DATA_EXTR1")
                                             self.vc?.dismiss(animated: true)
                                             completion(.succeeded, nil, nil)
                                         } else {
