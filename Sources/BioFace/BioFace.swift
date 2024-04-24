@@ -143,7 +143,8 @@ extension BioFace : ImageResultListener {
                                 }
                                 
                                 guard let currentTemplate = SecureData().loadFromKeychain(forKey: self.secureDataKey) else {
-                                    return completion(.failed, nil, _error(for: .invalidTemplateFromSecureKey))
+                                    completion(.failed, nil, _error(for: .invalidTemplateFromSecureKey))
+                                    return
                                 }
                                 
                                 let dataExtr = Data(buffer: UnsafeBufferPointer(start: template, count: template.count))
@@ -189,16 +190,19 @@ extension BioFace : ImageResultListener {
                             
                         self.fetchFromServer(with: "extract", sessionId: sessionId, progress: 4, totalProgress: 5) { extractStatus, response, extractError in
                             guard extractStatus == .succeeded else {
-                                return completion(extractStatus, nil, extractError)
+                                completion(extractStatus, nil, extractError)
+                                return
                             }
                             
 
                             guard let template = response?.data else {
-                                return completion(extractStatus, nil, extractError)
+                                completion(extractStatus, nil, _error(for: .invalidTemplateFromServer))
+                                return
                             }
                             
                             guard let currentTemplate = SecureData().loadFromKeychain(forKey: self.secureDataKey) else {
-                                return completion(.failed, nil, _error(for: .invalidTemplateFromSecureKey))
+                                completion(.failed, nil, _error(for: .invalidTemplateFromSecureKey))
+                                return
                             }
                             
                             let dataExtr = Data(buffer: UnsafeBufferPointer(start: template, count: template.count))

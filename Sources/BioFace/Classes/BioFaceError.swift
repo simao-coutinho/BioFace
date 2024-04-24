@@ -17,6 +17,7 @@ private let errorDomain = "BioFaceHandlerErrorDomain"
     /// The session id given is invalid check if is added correctly
     case invalidSessionIdErrorCode
     case invalidTemplateFromSecureKey
+    case invalidTemplateFromServer
 }
 
 func _error(
@@ -38,6 +39,8 @@ func _error(
         break
     case .invalidTemplateFromSecureKey:
         userInfo[NSLocalizedDescriptionKey] = "The template stored in secure storage is invalid! Please register the user again"
+    case .invalidTemplateFromServer:
+        userInfo[NSLocalizedDescriptionKey] = "The template retrieve from the server is invalid! Please try again"
     }
     
     return NSError(
