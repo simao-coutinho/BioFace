@@ -13,8 +13,8 @@ public struct Response: Decodable {
 }
 
 public struct ExtractResponse: Decodable {
-    public private(set) var name: String
-    public private(set) var data: Array<Float>
-    public private(set) var verdict: Int
-    public private(set) var blocks: Array<ExtractResponse>
+    public private(set) var name: String?
+    public private(set) var data: Array<Float>?
+    public private(set) var verdict: Int?
+    public private(set) var blocks: Array<ExtractResponse>?
 }
