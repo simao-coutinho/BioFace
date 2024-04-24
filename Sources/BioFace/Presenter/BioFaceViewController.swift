@@ -10,6 +10,7 @@ import AVFoundation
 
 class BioFaceViewController: UIViewController {
     
+    @IBOutlet weak var frameUiImage: UIImageView!
     @IBOutlet fileprivate weak var captureButton: UIButton!
     @IBOutlet fileprivate weak var mainView: UIView!
     @IBOutlet fileprivate weak var btnCancel: UIButton!
@@ -141,6 +142,7 @@ class BioFaceViewController: UIViewController {
         cameraPreviewLayer?.frame = view.layer.frame
             
         // Bring the camera button to front
+        view.bringSubviewToFront(frameUiImage)
         view.bringSubviewToFront(buttonImageView)
         view.bringSubviewToFront(captureButton)
         view.bringSubviewToFront(btnCancel)

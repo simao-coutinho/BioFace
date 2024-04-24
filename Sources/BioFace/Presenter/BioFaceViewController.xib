@@ -18,6 +18,7 @@
                 <outlet property="btnChangeCamera" destination="SNe-mh-T8n" id="clf-Hc-k56"/>
                 <outlet property="buttonImageView" destination="37D-JS-D4f" id="rRs-9y-Dzi"/>
                 <outlet property="captureButton" destination="BIN-5U-Zv0" id="2s0-eQ-l33"/>
+                <outlet property="frameUiImage" destination="ICS-Rk-DpE" id="y8C-nK-7Di"/>
                 <outlet property="mainView" destination="sln-Jr-vYV" id="EEM-gk-XJj"/>
                 <outlet property="progressBar" destination="FdZ-NM-J9V" id="P9P-ID-gAp"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
@@ -32,6 +33,9 @@
                     <rect key="frame" x="0.0" y="59" width="393" height="759"/>
                     <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                 </view>
+                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" image="Frame" translatesAutoresizingMaskIntoConstraints="NO" id="ICS-Rk-DpE">
+                    <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                </imageView>
                 <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" image="camera.aperture" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="37D-JS-D4f">
                     <rect key="frame" x="164.66666666666666" y="747" width="64" height="62.666666666666629"/>
                     <color key="tintColor" name="primary"/>
@@ -73,8 +77,8 @@
                         <constraint firstAttribute="width" constant="34" id="U3E-aJ-Vg2"/>
                     </constraints>
                     <color key="tintColor" name="primary"/>
-                    <state key="normal" title="Button"/>
-                    <buttonConfiguration key="configuration" style="plain" image="camera.rotate.fill" catalog="system"/>
+                    <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                    <state key="normal" image="camera.rotate.fill" catalog="system"/>
                     <connections>
                         <action selector="onChangeCameraClicked:" destination="-1" eventType="touchUpInside" id="vFq-Cf-OKP"/>
                     </connections>
@@ -117,17 +121,21 @@
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
             <constraints>
                 <constraint firstItem="37D-JS-D4f" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="2vq-la-7p5"/>
+                <constraint firstItem="ICS-Rk-DpE" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="4wa-4w-4zJ"/>
                 <constraint firstItem="5jR-hf-YSl" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="16" id="99e-UZ-3j9"/>
                 <constraint firstItem="BIN-5U-Zv0" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="AaU-HX-Hkj"/>
                 <constraint firstItem="sln-Jr-vYV" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="HwL-9U-WuR"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="BIN-5U-Zv0" secondAttribute="bottom" constant="8" id="ImL-yn-oGI"/>
                 <constraint firstItem="ORW-NT-ZeE" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="Jja-Nl-Hgt"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="37D-JS-D4f" secondAttribute="bottom" constant="8" id="Kac-OC-Qtc"/>
+                <constraint firstAttribute="trailing" secondItem="ICS-Rk-DpE" secondAttribute="trailing" id="LDf-yb-EHX"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="sln-Jr-vYV" secondAttribute="bottom" id="LtB-UU-JwB"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="sln-Jr-vYV" secondAttribute="trailing" id="Q3s-Ip-1D2"/>
+                <constraint firstAttribute="bottom" secondItem="ICS-Rk-DpE" secondAttribute="bottom" id="TA0-3Q-cne"/>
                 <constraint firstAttribute="bottom" secondItem="ORW-NT-ZeE" secondAttribute="bottom" id="VVY-ne-i3h"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="SNe-mh-T8n" secondAttribute="trailing" constant="16" id="ZoJ-Es-ZQ2"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="5jR-hf-YSl" secondAttribute="bottom" constant="16" id="ghg-eR-pQq"/>
+                <constraint firstItem="ICS-Rk-DpE" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="heX-z6-NCG"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="SNe-mh-T8n" secondAttribute="bottom" constant="16" id="lql-U5-6Hc"/>
                 <constraint firstItem="ORW-NT-ZeE" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" id="qjx-2d-eQE"/>
                 <constraint firstItem="sln-Jr-vYV" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" id="tju-I2-t5H"/>
@@ -137,11 +145,12 @@
         </view>
     </objects>
     <resources>
+        <image name="Frame" width="1080" height="1920"/>
         <image name="arrowshape.backward.fill" catalog="system" width="128" height="104"/>
         <image name="camera.aperture" catalog="system" width="128" height="123"/>
         <image name="camera.rotate.fill" catalog="system" width="128" height="93"/>
         <namedColor name="primary">
-            <color red="0.59215686274509804" green="0.43529411764705883" blue="0.19607843137254902" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.59200000762939453" green="0.43500000238418579" blue="0.19599999487400055" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
