@@ -66,7 +66,7 @@
                         <action selector="takePictureClicked:" destination="-1" eventType="touchUpInside" id="Hpb-WK-OXI"/>
                     </connections>
                 </button>
-                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="SNe-mh-T8n" userLabel="CameraButton">
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="SNe-mh-T8n" userLabel="CameraButton">
                     <rect key="frame" x="343" y="768" width="34" height="34"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="34" id="2mf-Wf-4gG"/>

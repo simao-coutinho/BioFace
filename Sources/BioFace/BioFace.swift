@@ -81,14 +81,25 @@ extension BioFace : ImageResultListener {
                             return
                         }
                             
-                        self.fetchFromServer(with: "extract", sessionId: sessionId, progress: 4) { extractStatus, _, extractError in
+                        self.fetchFromServer(with: "extract", sessionId: sessionId, progress: 4) { extractStatus, response, extractError in
                             guard extractStatus == .succeeded else {
                                 completion(extractStatus, nil, extractError)
                                 return
                             }
-                                
-                            self.vc?.dismiss(animated: true)
-                            completion(.succeeded, nil, nil)
+                            
+                            if let data = response?.data(using: .utf8) {
+                                do {
+                                    if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
+                                        if let dataExtr = json["data"] as? Data {
+                                            SecureData().saveToKeychain(data: dataExtr, forKey: "GENERAL_BIOMETRIC_DATA_EXTR")
+                                            self.vc?.dismiss(animated: true)
+                                            completion(.succeeded, nil, nil)
+                                        }
+                                    }
+                                } catch {
+                                    print("Error parsing JSON: \(error.localizedDescription)")
+                                }
+                            }
                         }
                     }
                 }
@@ -185,12 +196,12 @@ extension BioFace : ImageResultListener {
         }
     }
     
-    private func fetchFromServer(with url: String, sessionId: String, progress: Float, completion: @escaping (BioFaceStatus, Any?, NSError?) -> Void) {
+    private func fetchFromServer(with url: String, sessionId: String, progress: Float, completion: @escaping (BioFaceStatus, String?, NSError?) -> Void) {
         let serverConnection = ServerConnection()
         serverConnection.makeGetConnection(url: url,sessionId: sessionId) { status, response, error in
             self.vc?.setProgress(progress: progress, total: 4)
             print("\(url) Response: \(String(describing: response))")
-            completion(status, response, error)
+            completion(status, response?.message, error)
         }
     }
 }
