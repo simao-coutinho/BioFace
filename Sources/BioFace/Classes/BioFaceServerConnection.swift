@@ -42,7 +42,16 @@ class ServerConnection {
                 multipartFormData.append(file, withName: "collection" , fileName: "collection.jpg", mimeType: "image/jpg")
         },
             to: url + "collect", method: .post , headers: headers).responseDecodable(of: Response.self) { response in
-                completion(.succeeded, response.value, nil)
+                
+                switch response.result {
+                    case .success(_):
+                        completion(.succeeded, response.value, nil)
+                    case .failure(_):
+                        completion(.succeeded, response.value, response.error as NSError?)
+                    }
+                
+                print("URL: Collect -> Response: \(response)")
+                
             }
     }
     
@@ -50,8 +59,15 @@ class ServerConnection {
         guard let headers = getHeaders() else { return }
         
         AF.request(self.url + url, method: .get, parameters: ["session_id": sessionId], encoding: URLEncoding.queryString, headers: headers).responseDecodable(of: ExtractResponse.self) { response in
+            
+            switch response.result {
+                case .success(_):
+                    completion(.succeeded, Response(success: true, data: response.value), nil)
+                case .failure(_):
+                    completion(.failed, Response(success: false, data: response.value), response.error as NSError?)
+                }
+            
             print("URL: \(url) -> Response: \(response)")
-            completion(.succeeded, Response(success: true, data: response.value), nil)
         }
     }
     
@@ -59,8 +75,16 @@ class ServerConnection {
         guard let headers = getHeaders() else { return }
         
         AF.request(self.url + url, method: .post, parameters: parameters, encoding: URLEncoding.queryString, headers: headers).responseDecodable(of: ExtractResponse.self) { response in
+            
+            switch response.result {
+                case .success(_):
+                    completion(.succeeded, Response(success: true, data: response.value), nil)
+                case .failure(_):
+                    completion(.failed, Response(success: false, data: response.value), response.error as NSError?)
+                }
+            
             print("URL: \(url) -> Response: \(response)")
-            completion(.succeeded, Response(success: true, data: response.value), nil)
+            
         }
     }
 }
