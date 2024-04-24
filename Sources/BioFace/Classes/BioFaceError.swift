@@ -16,6 +16,7 @@ private let errorDomain = "BioFaceHandlerErrorDomain"
     case invalidApiTokenErrorCode
     /// The session id given is invalid check if is added correctly
     case invalidSessionIdErrorCode
+    case invalidTemplateFromSecureKey
 }
 
 func _error(
@@ -35,6 +36,8 @@ func _error(
     case .invalidSessionIdErrorCode:
         userInfo[NSLocalizedDescriptionKey] = "The session id given is invalid check if is added correctly"
         break
+    case .invalidTemplateFromSecureKey:
+        userInfo[NSLocalizedDescriptionKey] = "The template stored in secure storage is invalid! Please register the user again"
     }
     
     return NSError(

@@ -54,4 +54,13 @@ class ServerConnection {
             completion(.succeeded, Response(success: true, data: response.value), nil)
         }
     }
+    
+    func makePostConnection(url: String, parameters: [String: Data], completion: @escaping BioFaceResponse) {
+        guard let headers = getHeaders() else { return }
+        
+        AF.request(self.url + url, method: .post, parameters: parameters, encoding: URLEncoding.queryString, headers: headers).responseDecodable(of: ExtractResponse.self) { response in
+            print("URL: \(url) -> Response: \(response)")
+            completion(.succeeded, Response(success: true, data: response.value), nil)
+        }
+    }
 }

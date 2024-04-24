@@ -120,15 +120,15 @@ class BioFaceViewController: UIViewController {
     
     private func configure() {
         // Preset the session for taking photo in full resolution
-            captureSession.sessionPreset = AVCaptureSession.Preset.photo
+        captureSession.sessionPreset = AVCaptureSession.Preset.photo
             
-            // Configure session with initial camera
-            configureCameraInput(position: .front) // Or .back, depending on your initial preference
+        // Configure session with initial camera
+        if frontCameraCurrent {
+            configureCameraInput(position: .front)
+        } else {
+            configureCameraInput(position: .back)
+        }
             
-            // Configure the session with the output for capturing still images
-            stillImageOutput = AVCapturePhotoOutput()
-        
-        
         // Configure the session with the output for capturing still images
         stillImageOutput = AVCapturePhotoOutput()
             
@@ -139,7 +139,7 @@ class BioFaceViewController: UIViewController {
         cameraPreviewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
         mainView.layer.addSublayer(cameraPreviewLayer!)
         cameraPreviewLayer?.videoGravity = AVLayerVideoGravity.resizeAspectFill
-        cameraPreviewLayer?.frame = view.layer.frame
+        cameraPreviewLayer?.frame = self.view.bounds
             
         // Bring the camera button to front
         view.bringSubviewToFront(frameUiImage)
