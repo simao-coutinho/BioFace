@@ -94,6 +94,9 @@ extension BioFace : ImageResultListener {
                                             SecureData().saveToKeychain(data: dataExtr, forKey: "GENERAL_BIOMETRIC_DATA_EXTR")
                                             self.vc?.dismiss(animated: true)
                                             completion(.succeeded, nil, nil)
+                                        } else {
+                                            self.vc?.dismiss(animated: true)
+                                            completion(.failed, nil, nil)
                                         }
                                     }
                                 } catch {
