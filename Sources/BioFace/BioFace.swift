@@ -138,10 +138,31 @@ extension BioFace : ImageResultListener {
                                     return
                                 }
                                     
-                                self.fetchFromServer(with: "compare", sessionId: sessionId, progress: 6) { extractStatus, _, extractError in
+                                self.fetchFromServer(with: "compare", sessionId: sessionId, progress: 6) { extractStatus, response, extractError in
                                     guard extractStatus == .succeeded else {
                                         completion(extractStatus, nil, extractError)
                                         return
+                                    }
+                                    
+                                    if let data = response?.data(using: .utf8) {
+                                        do {
+                                            if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
+                                                if let dataExtr = json["data"] as? Data {
+                                                
+                                                    let template = SecureData().loadFromKeychain(forKey: "GENERAL_BIOMETRIC_DATA_EXTR")
+                                                    
+                                                    if template == dataExtr {
+                                                        self.vc?.dismiss(animated: true)
+                                                        completion(.succeeded, nil, nil)
+                                                    } else {
+                                                        self.vc?.dismiss(animated: true)
+                                                        completion(.failed, nil, nil)
+                                                    }
+                                                }
+                                            }
+                                        } catch {
+                                            print("Error parsing JSON: \(error.localizedDescription)")
+                                        }
                                     }
                                         
                                     self.vc?.dismiss(animated: true)
@@ -180,7 +201,7 @@ extension BioFace : ImageResultListener {
                                 return
                             }
                                 
-                            self.fetchFromServer(with: "compare", sessionId: sessionId, progress: 5) { extractStatus, _, extractError in
+                            self.fetchFromServer(with: "compare", sessionId: sessionId, progress: 5) { extractStatus, response, extractError in
                                 guard extractStatus == .succeeded else {
                                     completion(extractStatus, nil, extractError)
                                     return
