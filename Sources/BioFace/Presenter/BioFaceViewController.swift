@@ -10,10 +10,12 @@ import AVFoundation
 
 class BioFaceViewController: UIViewController {
     
-    @IBOutlet fileprivate weak var buttonImageView: UIImageView!
     @IBOutlet fileprivate weak var captureButton: UIButton!
     @IBOutlet fileprivate weak var mainView: UIView!
     @IBOutlet fileprivate weak var btnCancel: UIButton!
+    @IBOutlet weak var btnChangeCamera: UIButton!
+    @IBOutlet weak var buttonImageView: UIImageView!
+    @IBOutlet weak var btnBack: UIButton!
     @IBOutlet weak var ProgressView: UIView!
     @IBOutlet weak var progressBar: UIProgressView!
     
@@ -27,6 +29,8 @@ class BioFaceViewController: UIViewController {
     var cameraPreviewLayer: AVCaptureVideoPreviewLayer?
         
     let captureSession = AVCaptureSession()
+    
+    var frontCameraCurrent = true
     
     private var imageResultListener: ImageResultListener?
     private var serviceType: ServiceType = .makeRegistration
@@ -62,6 +66,17 @@ class BioFaceViewController: UIViewController {
         configure()
     }
 
+    @IBAction func onChangeCameraClicked(_ sender: Any) {
+        frontCameraCurrent = !frontCameraCurrent
+        configure()
+    }
+    
+    @IBAction func onBackButtonClicked(_ sender: Any) {
+        guard let completion = self.completion else { return }
+        self.dismiss(animated: true)
+        return completion(.canceled, nil, nil)
+    }
+    
     @IBAction func takePictureClicked(_ sender: UIButton) {
         // Set photo settings
         let photoSettings = AVCapturePhotoSettings(format: [AVVideoCodecKey: AVVideoCodecType.jpeg])
@@ -76,20 +91,38 @@ class BioFaceViewController: UIViewController {
         // Preset the session for taking photo in full resolution
         captureSession.sessionPreset = AVCaptureSession.Preset.photo
             
-        // Get the front and back-facing camera for taking photos
-        let deviceDiscoverySession = AVCaptureDevice.DiscoverySession(deviceTypes: [.builtInWideAngleCamera], mediaType: AVMediaType.video, position: .front)
+        if frontCameraCurrent {
+            // Get the front and back-facing camera for taking photos
+            let deviceDiscoverySession = AVCaptureDevice.DiscoverySession(deviceTypes: [.builtInWideAngleCamera], mediaType: AVMediaType.video, position: .front)
+                
+            guard let frontCamera = deviceDiscoverySession.devices.first else {
+                    print("Front camera not available.")
+                    return
+                }
             
-        guard let frontCamera = deviceDiscoverySession.devices.first else {
-                print("Front camera not available.")
-                return
+            do {
+                let captureDeviceInput = try AVCaptureDeviceInput(device: frontCamera)
+                captureSession.addInput(captureDeviceInput)
+            } catch {
+                print(error.localizedDescription)
             }
-        
-        do {
-            let captureDeviceInput = try AVCaptureDeviceInput(device: frontCamera)
-            captureSession.addInput(captureDeviceInput)
-        } catch {
-            print(error.localizedDescription)
+        } else {
+            // Get the front and back-facing camera for taking photos
+            let deviceDiscoverySession = AVCaptureDevice.DiscoverySession(deviceTypes: [.builtInWideAngleCamera], mediaType: AVMediaType.video, position: .back)
+                
+            guard let backFacingCamera = deviceDiscoverySession.devices.first else {
+                    print("Front camera not available.")
+                    return
+                }
+            
+            do {
+                let captureDeviceInput = try AVCaptureDeviceInput(device: backFacingCamera)
+                captureSession.addInput(captureDeviceInput)
+            } catch {
+                print(error.localizedDescription)
+            }
         }
+        
         
         // Configure the session with the output for capturing still images
         stillImageOutput = AVCapturePhotoOutput()
@@ -107,6 +140,8 @@ class BioFaceViewController: UIViewController {
         view.bringSubviewToFront(buttonImageView)
         view.bringSubviewToFront(captureButton)
         view.bringSubviewToFront(btnCancel)
+        view.bringSubviewToFront(btnBack)
+        view.bringSubviewToFront(btnChangeCamera)
         view.bringSubviewToFront(ProgressView)
         captureSession.startRunning()
     }

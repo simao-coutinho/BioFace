@@ -4,6 +4,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22684"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -12,8 +13,10 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="BioFaceViewController" customModuleProvider="target">
             <connections>
                 <outlet property="ProgressView" destination="ORW-NT-ZeE" id="WZR-WI-hGK"/>
+                <outlet property="btnBack" destination="5jR-hf-YSl" id="s1k-wo-YaV"/>
                 <outlet property="btnCancel" destination="5jR-hf-YSl" id="Cfd-jo-qeL"/>
-                <outlet property="buttonImageView" destination="37D-JS-D4f" id="ctK-YU-5bC"/>
+                <outlet property="btnChangeCamera" destination="SNe-mh-T8n" id="clf-Hc-k56"/>
+                <outlet property="buttonImageView" destination="37D-JS-D4f" id="rRs-9y-Dzi"/>
                 <outlet property="captureButton" destination="BIN-5U-Zv0" id="2s0-eQ-l33"/>
                 <outlet property="mainView" destination="sln-Jr-vYV" id="EEM-gk-XJj"/>
                 <outlet property="progressBar" destination="FdZ-NM-J9V" id="P9P-ID-gAp"/>
@@ -27,29 +30,32 @@
             <subviews>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="sln-Jr-vYV" userLabel="MainView">
                     <rect key="frame" x="0.0" y="59" width="393" height="759"/>
-                    <subviews>
-                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5jR-hf-YSl">
-                            <rect key="frame" x="16" y="713" width="61" height="30"/>
-                            <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                            <state key="normal" title="Cancelar">
-                                <color key="titleColor" systemColor="systemBackgroundColor"/>
-                            </state>
-                        </button>
-                    </subviews>
                     <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                    <constraints>
-                        <constraint firstAttribute="bottom" secondItem="5jR-hf-YSl" secondAttribute="bottom" constant="16" id="hjm-HC-kCk"/>
-                        <constraint firstItem="5jR-hf-YSl" firstAttribute="leading" secondItem="sln-Jr-vYV" secondAttribute="leading" constant="16" id="mD5-pU-Dd9"/>
-                    </constraints>
                 </view>
-                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" image="rec" translatesAutoresizingMaskIntoConstraints="NO" id="37D-JS-D4f">
-                    <rect key="frame" x="164.66666666666666" y="746" width="64" height="64"/>
+                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" image="camera.aperture" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="37D-JS-D4f">
+                    <rect key="frame" x="164.66666666666666" y="747" width="64" height="62.666666666666629"/>
+                    <color key="tintColor" name="primary"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="64" id="02N-b3-fqJ"/>
                         <constraint firstAttribute="height" constant="64" id="waO-2c-IN0"/>
                     </constraints>
                 </imageView>
-                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="BIN-5U-Zv0">
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5jR-hf-YSl" userLabel="BackButton">
+                    <rect key="frame" x="16" y="768" width="34" height="34"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="34" id="gP4-1E-eQz"/>
+                        <constraint firstAttribute="width" constant="34" id="wPP-D7-Vc3"/>
+                    </constraints>
+                    <color key="tintColor" name="primary"/>
+                    <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                    <state key="normal" image="arrowshape.backward.fill" catalog="system">
+                        <color key="titleColor" systemColor="systemBackgroundColor"/>
+                    </state>
+                    <connections>
+                        <action selector="onBackButtonClicked:" destination="-1" eventType="touchUpInside" id="LMR-LA-gBW"/>
+                    </connections>
+                </button>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="BIN-5U-Zv0" userLabel="PictureButton">
                     <rect key="frame" x="164.66666666666666" y="746" width="64" height="64"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="64" id="5yl-Ht-5cN"/>
@@ -58,6 +64,19 @@
                     <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                     <connections>
                         <action selector="takePictureClicked:" destination="-1" eventType="touchUpInside" id="Hpb-WK-OXI"/>
+                    </connections>
+                </button>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="SNe-mh-T8n" userLabel="CameraButton">
+                    <rect key="frame" x="343" y="768" width="34" height="34"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="34" id="2mf-Wf-4gG"/>
+                        <constraint firstAttribute="width" constant="34" id="U3E-aJ-Vg2"/>
+                    </constraints>
+                    <color key="tintColor" name="primary"/>
+                    <state key="normal" title="Button"/>
+                    <buttonConfiguration key="configuration" style="plain" image="camera.rotate.fill" catalog="system"/>
+                    <connections>
+                        <action selector="onChangeCameraClicked:" destination="-1" eventType="touchUpInside" id="vFq-Cf-OKP"/>
                     </connections>
                 </button>
                 <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ORW-NT-ZeE">
@@ -98,6 +117,7 @@
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
             <constraints>
                 <constraint firstItem="37D-JS-D4f" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="2vq-la-7p5"/>
+                <constraint firstItem="5jR-hf-YSl" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="16" id="99e-UZ-3j9"/>
                 <constraint firstItem="BIN-5U-Zv0" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="AaU-HX-Hkj"/>
                 <constraint firstItem="sln-Jr-vYV" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="HwL-9U-WuR"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="BIN-5U-Zv0" secondAttribute="bottom" constant="8" id="ImL-yn-oGI"/>
@@ -106,6 +126,9 @@
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="sln-Jr-vYV" secondAttribute="bottom" id="LtB-UU-JwB"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="sln-Jr-vYV" secondAttribute="trailing" id="Q3s-Ip-1D2"/>
                 <constraint firstAttribute="bottom" secondItem="ORW-NT-ZeE" secondAttribute="bottom" id="VVY-ne-i3h"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="SNe-mh-T8n" secondAttribute="trailing" constant="16" id="ZoJ-Es-ZQ2"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="5jR-hf-YSl" secondAttribute="bottom" constant="16" id="ghg-eR-pQq"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="SNe-mh-T8n" secondAttribute="bottom" constant="16" id="lql-U5-6Hc"/>
                 <constraint firstItem="ORW-NT-ZeE" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" id="qjx-2d-eQE"/>
                 <constraint firstItem="sln-Jr-vYV" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" id="tju-I2-t5H"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="ORW-NT-ZeE" secondAttribute="trailing" id="vw3-jb-4cx"/>
@@ -114,7 +137,12 @@
         </view>
     </objects>
     <resources>
-        <image name="rec" width="128" height="128"/>
+        <image name="arrowshape.backward.fill" catalog="system" width="128" height="104"/>
+        <image name="camera.aperture" catalog="system" width="128" height="123"/>
+        <image name="camera.rotate.fill" catalog="system" width="128" height="93"/>
+        <namedColor name="primary">
+            <color red="0.59215686274509804" green="0.43529411764705883" blue="0.19607843137254902" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

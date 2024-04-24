@@ -33,6 +33,7 @@ public class BioFace {
         guard BioFace.apiToken != nil else { return completion(.failed, nil, _error(for: .invalidApiTokenErrorCode)) }
         
         vc = BioFaceViewController.init()
+        vc?.frontCameraCurrent = false
         
         guard let vc = vc else { return completion(.failed, nil, _error(for:.invalidApiTokenErrorCode))}
         
@@ -100,7 +101,7 @@ extension BioFace : ImageResultListener {
                     completion(uploadStatus, nil, uploadError)
                     return
                 }
-                self.vc?.setProgress(progress: 1, total: 4)
+                self.vc?.setProgress(progress: 1, total: 6)
                     
                 self.fetchFromServer(with: "dica", sessionId: sessionId, progress: 2) { complianceStatus, _, complianceError in
                     guard complianceStatus == .succeeded else {
@@ -120,13 +121,13 @@ extension BioFace : ImageResultListener {
                                 return
                             }
                             
-                            self.fetchFromServer(with: "extract", sessionId: sessionId, progress: 4) { extractStatus, _, extractError in
+                            self.fetchFromServer(with: "extract", sessionId: sessionId, progress: 5) { extractStatus, _, extractError in
                                 guard extractStatus == .succeeded else {
                                     completion(extractStatus, nil, extractError)
                                     return
                                 }
                                     
-                                self.fetchFromServer(with: "compare", sessionId: sessionId, progress: 4) { extractStatus, _, extractError in
+                                self.fetchFromServer(with: "compare", sessionId: sessionId, progress: 6) { extractStatus, _, extractError in
                                     guard extractStatus == .succeeded else {
                                         completion(extractStatus, nil, extractError)
                                         return
@@ -148,7 +149,7 @@ extension BioFace : ImageResultListener {
                     completion(uploadStatus, nil, uploadError)
                     return
                 }
-                self.vc?.setProgress(progress: 1, total: 4)
+                self.vc?.setProgress(progress: 1, total: 5)
                     
                 self.fetchFromServer(with: "compliance", sessionId: sessionId, progress: 2) { complianceStatus, _, complianceError in
                     guard complianceStatus == .succeeded else {
@@ -168,7 +169,7 @@ extension BioFace : ImageResultListener {
                                 return
                             }
                                 
-                            self.fetchFromServer(with: "compare", sessionId: sessionId, progress: 4) { extractStatus, _, extractError in
+                            self.fetchFromServer(with: "compare", sessionId: sessionId, progress: 5) { extractStatus, _, extractError in
                                 guard extractStatus == .succeeded else {
                                     completion(extractStatus, nil, extractError)
                                     return
