@@ -33,7 +33,7 @@
                     <rect key="frame" x="0.0" y="0.0" width="430" height="932"/>
                     <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                 </view>
-                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" image="Frame" translatesAutoresizingMaskIntoConstraints="NO" id="ICS-Rk-DpE">
+                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" image="Frame" translatesAutoresizingMaskIntoConstraints="NO" id="ICS-Rk-DpE">
                     <rect key="frame" x="0.0" y="0.0" width="430" height="932"/>
                 </imageView>
                 <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" image="camera.aperture" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="37D-JS-D4f">
