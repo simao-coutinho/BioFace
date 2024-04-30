@@ -138,7 +138,7 @@ class BioFaceViewController: UIViewController {
         // Provide a camera preview
         cameraPreviewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
         mainView.layer.addSublayer(cameraPreviewLayer!)
-        cameraPreviewLayer?.videoGravity = AVLayerVideoGravity.resizeAspectFill
+        //cameraPreviewLayer?.videoGravity = AVLayerVideoGravity.resizeAspectFill
         cameraPreviewLayer?.frame = view.layer.frame
             
         // Bring the camera button to front
