@@ -16,7 +16,8 @@ public class BioFace {
     
     public func makeRegistration(_ sessionId: String, viewController: UIViewController, completion: @escaping BioFaceResponse) {
         BioFace.sessionId = sessionId
-        guard BioFace.apiToken != nil else { return completion(.failed, nil, _error(for: .invalidApiTokenErrorCode)) }	
+        guard BioFace.apiToken != nil else {
+            return completion(.failed, nil, _error(for: .invalidApiTokenErrorCode)) }
         guard sessionId.data(using: .utf8, allowLossyConversion: false) != nil else {
             return completion(.failed, nil, _error(for: .invalidSessionIdErrorCode))
         }
@@ -65,6 +66,7 @@ extension BioFace : ImageResultListener {
             let serverConnection = ServerConnection()
             serverConnection.makeImageUpload(with: with, sessionId: sessionId) { uploadStatus, _, uploadError in
                 guard uploadStatus == .succeeded else {
+                    self.vc?.dismiss(animated: true)
                     completion(uploadStatus, nil, uploadError)
                     return
                 }
@@ -72,23 +74,27 @@ extension BioFace : ImageResultListener {
                     
                 self.fetchFromServer(with: "compliance", sessionId: sessionId, progress: 2, totalProgress: 4) { complianceStatus, _, complianceError in
                     guard complianceStatus == .succeeded else {
+                        self.vc?.dismiss(animated: true)
                         completion(complianceStatus, nil, complianceError)
                         return
                     }
                         
                     self.fetchFromServer(with: "liveness", sessionId: sessionId, progress: 3, totalProgress: 4) { livenessStatus, _, livenessError in
                         guard livenessStatus == .succeeded else {
+                            self.vc?.dismiss(animated: true)
                             completion(livenessStatus, nil, livenessError)
                             return
                         }
                             
                         self.fetchFromServer(with: "extract", sessionId: sessionId, progress: 4, totalProgress: 4) { extractStatus, response, extractError in
                             guard extractStatus == .succeeded else {
+                                self.vc?.dismiss(animated: true)
                                 completion(extractStatus, nil, extractError)
                                 return
                             }
                             
                             guard let template = response?.data else {
+                                self.vc?.dismiss(animated: true)
                                 completion(extractStatus, nil, extractError)
                                 return
                             }
@@ -108,6 +114,7 @@ extension BioFace : ImageResultListener {
             let serverConnection = ServerConnection()
             serverConnection.makeImageUpload(with: with, sessionId: sessionId) { uploadStatus, _, uploadError in
                 guard uploadStatus == .succeeded else {
+                    self.vc?.dismiss(animated: true)
                     completion(uploadStatus, nil, uploadError)
                     return
                 }
@@ -115,34 +122,40 @@ extension BioFace : ImageResultListener {
                     
                 self.fetchFromServer(with: "dica", sessionId: sessionId, progress: 2, totalProgress: 6) { complianceStatus, _, complianceError in
                     guard complianceStatus == .succeeded else {
+                        self.vc?.dismiss(animated: true)
                         completion(complianceStatus, nil, complianceError)
                         return
                     }
                         
                     self.fetchFromServer(with: "cdta", sessionId: sessionId, progress: 3, totalProgress: 6) { livenessStatus, _, livenessError in
                         guard livenessStatus == .succeeded else {
+                            self.vc?.dismiss(animated: true)
                             completion(livenessStatus, nil, livenessError)
                             return
                         }
                             
                         self.fetchFromServer(with: "smad", sessionId: sessionId, progress: 4, totalProgress: 6) { extractStatus, _, extractError in
                             guard extractStatus == .succeeded else {
+                                self.vc?.dismiss(animated: true)
                                 completion(extractStatus, nil, extractError)
                                 return
                             }
                             
                             self.fetchFromServer(with: "extract", sessionId: sessionId, progress: 5, totalProgress: 6) { extractStatus, response, extractError in
                                 guard extractStatus == .succeeded else {
+                                    self.vc?.dismiss(animated: true)
                                     completion(extractStatus, nil, extractError)
                                     return
                                 }
                                 
                                 guard let template = response?.data else {
+                                    self.vc?.dismiss(animated: true)
                                     completion(extractStatus, nil, extractError)
                                     return
                                 }
                                 
                                 guard let currentTemplate = SecureData().loadFromKeychain(forKey: self.secureDataKey) else {
+                                    self.vc?.dismiss(animated: true)
                                     completion(.failed, nil, _error(for: .invalidTemplateFromSecureKey))
                                     return
                                 }
@@ -171,6 +184,7 @@ extension BioFace : ImageResultListener {
             let serverConnection = ServerConnection()
             serverConnection.makeImageUpload(with: with, sessionId: sessionId) { uploadStatus, _, uploadError in
                 guard uploadStatus == .succeeded else {
+                    self.vc?.dismiss(animated: true)
                     completion(uploadStatus, nil, uploadError)
                     return
                 }
@@ -178,29 +192,34 @@ extension BioFace : ImageResultListener {
                     
                 self.fetchFromServer(with: "compliance", sessionId: sessionId, progress: 2, totalProgress: 5) { complianceStatus, _, complianceError in
                     guard complianceStatus == .succeeded else {
+                        self.vc?.dismiss(animated: true)
                         completion(complianceStatus, nil, complianceError)
                         return
                     }
                         
                     self.fetchFromServer(with: "liveness", sessionId: sessionId, progress: 3, totalProgress: 5) { livenessStatus, _, livenessError in
                         guard livenessStatus == .succeeded else {
+                            self.vc?.dismiss(animated: true)
                             completion(livenessStatus, nil, livenessError)
                             return
                         }
                             
                         self.fetchFromServer(with: "extract", sessionId: sessionId, progress: 4, totalProgress: 5) { extractStatus, response, extractError in
                             guard extractStatus == .succeeded else {
+                                self.vc?.dismiss(animated: true)
                                 completion(extractStatus, nil, extractError)
                                 return
                             }
                             
 
                             guard let template = response?.data else {
+                                self.vc?.dismiss(animated: true)
                                 completion(extractStatus, nil, _error(for: .invalidTemplateFromServer))
                                 return
                             }
                             
                             guard let currentTemplate = SecureData().loadFromKeychain(forKey: self.secureDataKey) else {
+                                self.vc?.dismiss(animated: true)
                                 completion(.failed, nil, _error(for: .invalidTemplateFromSecureKey))
                                 return
                             }

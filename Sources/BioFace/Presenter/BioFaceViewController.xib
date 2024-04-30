@@ -30,7 +30,7 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="sln-Jr-vYV" userLabel="MainView">
-                    <rect key="frame" x="0.0" y="59" width="393" height="759"/>
+                    <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                     <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                 </view>
                 <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" image="Frame" translatesAutoresizingMaskIntoConstraints="NO" id="ICS-Rk-DpE">
@@ -83,22 +83,22 @@
                         <action selector="onChangeCameraClicked:" destination="-1" eventType="touchUpInside" id="vFq-Cf-OKP"/>
                     </connections>
                 </button>
-                <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ORW-NT-ZeE">
-                    <rect key="frame" x="0.0" y="59" width="393" height="793"/>
+                <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ORW-NT-ZeE" userLabel="ProgressView">
+                    <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                     <subviews>
                         <view alpha="0.80000000000000004" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ZOF-eA-FCH">
-                            <rect key="frame" x="0.0" y="0.0" width="393" height="793"/>
+                            <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         </view>
                         <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="FdZ-NM-J9V">
-                            <rect key="frame" x="96.666666666666686" y="394.66666666666669" width="200" height="4"/>
+                            <rect key="frame" x="96.666666666666686" y="424" width="200" height="4"/>
                             <constraints>
                                 <constraint firstAttribute="width" constant="200" id="505-3w-BK0"/>
                                 <constraint firstAttribute="height" constant="4" id="Ppv-dv-Enk"/>
                             </constraints>
                         </progressView>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Progresso" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ziD-Ab-xMc">
-                            <rect key="frame" x="157.66666666666666" y="357.66666666666669" width="78" height="21"/>
+                            <rect key="frame" x="157.66666666666666" y="387" width="78" height="21"/>
                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                             <nil key="textColor"/>
                             <nil key="highlightedColor"/>
@@ -124,22 +124,22 @@
                 <constraint firstItem="ICS-Rk-DpE" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="4wa-4w-4zJ"/>
                 <constraint firstItem="5jR-hf-YSl" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="16" id="99e-UZ-3j9"/>
                 <constraint firstItem="BIN-5U-Zv0" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="AaU-HX-Hkj"/>
-                <constraint firstItem="sln-Jr-vYV" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="HwL-9U-WuR"/>
+                <constraint firstItem="sln-Jr-vYV" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="HwL-9U-WuR"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="BIN-5U-Zv0" secondAttribute="bottom" constant="8" id="ImL-yn-oGI"/>
-                <constraint firstItem="ORW-NT-ZeE" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="Jja-Nl-Hgt"/>
+                <constraint firstItem="ORW-NT-ZeE" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="Jja-Nl-Hgt"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="37D-JS-D4f" secondAttribute="bottom" constant="8" id="Kac-OC-Qtc"/>
                 <constraint firstAttribute="trailing" secondItem="ICS-Rk-DpE" secondAttribute="trailing" id="LDf-yb-EHX"/>
-                <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="sln-Jr-vYV" secondAttribute="bottom" id="LtB-UU-JwB"/>
-                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="sln-Jr-vYV" secondAttribute="trailing" id="Q3s-Ip-1D2"/>
+                <constraint firstAttribute="bottom" secondItem="sln-Jr-vYV" secondAttribute="bottom" id="LtB-UU-JwB"/>
+                <constraint firstAttribute="trailing" secondItem="sln-Jr-vYV" secondAttribute="trailing" id="Q3s-Ip-1D2"/>
                 <constraint firstAttribute="bottom" secondItem="ICS-Rk-DpE" secondAttribute="bottom" id="TA0-3Q-cne"/>
                 <constraint firstAttribute="bottom" secondItem="ORW-NT-ZeE" secondAttribute="bottom" id="VVY-ne-i3h"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="SNe-mh-T8n" secondAttribute="trailing" constant="16" id="ZoJ-Es-ZQ2"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="5jR-hf-YSl" secondAttribute="bottom" constant="16" id="ghg-eR-pQq"/>
                 <constraint firstItem="ICS-Rk-DpE" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="heX-z6-NCG"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="SNe-mh-T8n" secondAttribute="bottom" constant="16" id="lql-U5-6Hc"/>
-                <constraint firstItem="ORW-NT-ZeE" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" id="qjx-2d-eQE"/>
-                <constraint firstItem="sln-Jr-vYV" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" id="tju-I2-t5H"/>
-                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="ORW-NT-ZeE" secondAttribute="trailing" id="vw3-jb-4cx"/>
+                <constraint firstItem="ORW-NT-ZeE" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="qjx-2d-eQE"/>
+                <constraint firstItem="sln-Jr-vYV" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="tju-I2-t5H"/>
+                <constraint firstAttribute="trailing" secondItem="ORW-NT-ZeE" secondAttribute="trailing" id="vw3-jb-4cx"/>
             </constraints>
             <point key="canvasLocation" x="12" y="-11"/>
         </view>
