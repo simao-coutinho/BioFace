@@ -8,10 +8,10 @@
 import Foundation
 
 public typealias FacingResponse = (
-    BioFaceStatus, Response?, NSError?
+    FacingStatus, Response?, NSError?
 ) -> Void
 
-@objc public enum BioFaceStatus: Int {
+@objc public enum FacingStatus: Int {
     /// The action succeeded.
     case succeeded
     /// The action was cancelled by the cardholder/user.

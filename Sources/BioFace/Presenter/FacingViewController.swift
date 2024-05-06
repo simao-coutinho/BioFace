@@ -1,6 +1,6 @@
 //
-//  BioFaceViewController.swift
-//  
+//  FacingViewController.swift
+//
 //
 //  Created by Simao Coutinho on 20/03/2024.
 //
@@ -38,7 +38,7 @@ class FacingViewController: UIViewController {
     private var completion: FacingResponse?
     
     init() {
-            super.init(nibName: "BioFaceViewController", bundle: Bundle.module)
+            super.init(nibName: "FacingViewController", bundle: Bundle.module)
         }
         
         required init?(coder: NSCoder) {

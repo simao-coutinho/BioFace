@@ -245,7 +245,7 @@ extension Facing : ImageResultListener {
         }
     }
     
-    private func fetchFromServer(with url: String, sessionId: String, progress: Float, totalProgress: Float, completion: @escaping (BioFaceStatus, ExtractResponse?, NSError?) -> Void) {
+    private func fetchFromServer(with url: String, sessionId: String, progress: Float, totalProgress: Float, completion: @escaping (FacingStatus, ExtractResponse?, NSError?) -> Void) {
         let serverConnection = ServerConnection()
         serverConnection.makeGetConnection(url: url,sessionId: sessionId) { status, response, error in
             self.vc?.setProgress(progress: progress, total: totalProgress)

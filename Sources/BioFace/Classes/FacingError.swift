@@ -7,7 +7,7 @@
 
 import Foundation
 
-private let errorDomain = "BioFaceHandlerErrorDomain"
+private let errorDomain = "FacingHandlerErrorDomain"
 
 @objc public enum FacingError: Int {
     /// Endpoint TimeOut
