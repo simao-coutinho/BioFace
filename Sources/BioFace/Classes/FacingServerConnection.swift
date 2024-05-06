@@ -84,12 +84,12 @@ class ServerConnection {
             let dataTemplateB = try JSONSerialization.data(withJSONObject: templateB, options: [])
 
             
-            AF.upload(
+            /*AF.upload(
                 multipartFormData: { multipartFormData in
                     multipartFormData.append(dataTemplateA, withName: "templateA")
                     multipartFormData.append(dataTemplateB, withName: "templateB")
                 },
-                to: url + "compare", method: .post , headers: headers).responseString { response in
+                to: url + "compare", method: .post, encoding: JSONEncoding.default, headers: headers).responseString { response in
                     
                     switch response.result {
                     case .success(_):
@@ -101,25 +101,24 @@ class ServerConnection {
                     }
                     
                     print("URL: Compare -> Response: \(response)")
+            }*/
+            
+            AF.request(self.url + "compare", method: .post, parameters: ["templateA": templateA, "templateB": templateB], encoding: JSONEncoding.default, headers: headers).responseString { response in
+                
+                switch response.result {
+                case .success(_):
+                    print("success: \(response)")
+                    completion(.succeeded, Response(success: true, data: nil), nil)
+                case .failure(_):
+                    print("failure: \(response)")
+                    completion(.failed, Response(success: false, data: nil), response.error as NSError?)
+                }
+                
+                print("URL: Compare -> Response: \(response)")
             }
         } catch {
             
         }
-        
-        
-        /*AF.request(self.url + "compare", method: .post, parameters: ["templateA": templateA, "templateB": templateB], headers: headers).responseString { response in
-            
-            switch response.result {
-            case .success(_):
-                print("success: \(response)")
-                completion(.succeeded, Response(success: true, data: nil), nil)
-            case .failure(_):
-                print("failure: \(response)")
-                completion(.failed, Response(success: false, data: nil), response.error as NSError?)
-            }
-            
-            print("URL: Compare -> Response: \(response)")
-    }*/
     }
     
     private func convertArrayToFile(template: [Float])-> Data? {
