@@ -10,7 +10,7 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
-        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="BioFaceViewController" customModuleProvider="target">
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="FacingViewController" customModuleProvider="target">
             <connections>
                 <outlet property="ProgressView" destination="ORW-NT-ZeE" id="WZR-WI-hGK"/>
                 <outlet property="btnBack" destination="5jR-hf-YSl" id="s1k-wo-YaV"/>

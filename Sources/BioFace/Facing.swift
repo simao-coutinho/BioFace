@@ -2,27 +2,27 @@
 import Foundation
 import UIKit
 
-public class BioFace {
+public class Facing {
     public static var apiToken: String?
     public static var sessionId: String?
-    public static let sharedHandler: BioFace = BioFace()
+    public static let sharedHandler: Facing = Facing()
     
-    private var vc : BioFaceViewController? = nil
+    private var vc : FacingViewController? = nil
     
     private let url = "https://visteamlab.isr.uc.pt/facing/v2/api/"
     private let secureDataKey = "GENERAL_BIOMETRIC_DATA_EXTR"
 
     public init() {}
     
-    public func makeRegistration(_ sessionId: String, viewController: UIViewController, completion: @escaping BioFaceResponse) {
-        BioFace.sessionId = sessionId
-        guard BioFace.apiToken != nil else {
+    public func makeRegistration(_ sessionId: String, viewController: UIViewController, completion: @escaping FacingResponse) {
+        Facing.sessionId = sessionId
+        guard Facing.apiToken != nil else {
             return completion(.failed, nil, _error(for: .invalidApiTokenErrorCode)) }
         guard sessionId.data(using: .utf8, allowLossyConversion: false) != nil else {
             return completion(.failed, nil, _error(for: .invalidSessionIdErrorCode))
         }
         
-        vc = BioFaceViewController.init()
+        vc = FacingViewController.init()
         
         guard let vc = vc else { return completion(.failed, nil, _error(for:.invalidApiTokenErrorCode))}
         
@@ -31,10 +31,10 @@ public class BioFace {
         
     }
     
-    public func addCard(viewController: UIViewController, completion: @escaping BioFaceResponse) {
-        guard BioFace.apiToken != nil else { return completion(.failed, nil, _error(for: .invalidApiTokenErrorCode)) }
+    public func addCard(viewController: UIViewController, completion: @escaping FacingResponse) {
+        guard Facing.apiToken != nil else { return completion(.failed, nil, _error(for: .invalidApiTokenErrorCode)) }
         
-        vc = BioFaceViewController.init()
+        vc = FacingViewController.init()
         vc?.frontCameraCurrent = false
         
         guard let vc = vc else { return completion(.failed, nil, _error(for:.invalidApiTokenErrorCode))}
@@ -44,10 +44,10 @@ public class BioFace {
         
     }
     
-    public func verifyUser(viewController: UIViewController, completion: @escaping BioFaceResponse) {
-        guard BioFace.apiToken != nil else { return completion(.failed, nil, _error(for: .invalidApiTokenErrorCode)) }
+    public func verifyUser(viewController: UIViewController, completion: @escaping FacingResponse) {
+        guard Facing.apiToken != nil else { return completion(.failed, nil, _error(for: .invalidApiTokenErrorCode)) }
         
-        vc = BioFaceViewController.init()
+        vc = FacingViewController.init()
         
         guard let vc = vc else { return completion(.failed, nil, _error(for:.invalidApiTokenErrorCode))}
         
@@ -57,12 +57,12 @@ public class BioFace {
     }
 }
 
-extension BioFace : ImageResultListener {
-    func onImageResult(from: ServiceType, with: UIImage, completion: @escaping BioFaceResponse) {
+extension Facing : ImageResultListener {
+    func onImageResult(from: ServiceType, with: UIImage, completion: @escaping FacingResponse) {
         vc?.setProgress(progress: 0, total: 4)
         switch from {
         case .makeRegistration:
-            guard let sessionId = BioFace.sessionId else { return }
+            guard let sessionId = Facing.sessionId else { return }
             let serverConnection = ServerConnection()
             serverConnection.makeImageUpload(with: with, sessionId: sessionId) { uploadStatus, _, uploadError in
                 guard uploadStatus == .succeeded else {

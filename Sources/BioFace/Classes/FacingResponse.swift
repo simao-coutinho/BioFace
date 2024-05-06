@@ -7,7 +7,7 @@
 
 import Foundation
 
-public typealias BioFaceResponse = (
+public typealias FacingResponse = (
     BioFaceStatus, Response?, NSError?
 ) -> Void
 

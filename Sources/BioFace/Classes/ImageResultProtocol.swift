@@ -15,5 +15,5 @@ public enum ServiceType: Int {
 }
 
 protocol ImageResultListener {
-    func onImageResult(from: ServiceType, with: UIImage, completion: @escaping BioFaceResponse)
+    func onImageResult(from: ServiceType, with: UIImage, completion: @escaping FacingResponse)
 }

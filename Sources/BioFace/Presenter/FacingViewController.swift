@@ -8,7 +8,7 @@
 import UIKit
 import AVFoundation
 
-class BioFaceViewController: UIViewController {
+class FacingViewController: UIViewController {
     
     @IBOutlet weak var frameUiImage: UIImageView!
     @IBOutlet fileprivate weak var captureButton: UIButton!
@@ -35,7 +35,7 @@ class BioFaceViewController: UIViewController {
     
     private var imageResultListener: ImageResultListener?
     private var serviceType: ServiceType = .makeRegistration
-    private var completion: BioFaceResponse?
+    private var completion: FacingResponse?
     
     init() {
             super.init(nibName: "BioFaceViewController", bundle: Bundle.module)
@@ -45,7 +45,7 @@ class BioFaceViewController: UIViewController {
             super.init(coder: coder)
         }
     
-    public func setData(serviceType: ServiceType, imageResultListener: ImageResultListener, completion: @escaping BioFaceResponse) {
+    public func setData(serviceType: ServiceType, imageResultListener: ImageResultListener, completion: @escaping FacingResponse) {
         self.serviceType = serviceType
         self.completion = completion
         self.imageResultListener = imageResultListener
@@ -153,7 +153,7 @@ class BioFaceViewController: UIViewController {
     }
 }
 
-extension BioFaceViewController: AVCapturePhotoCaptureDelegate {
+extension FacingViewController: AVCapturePhotoCaptureDelegate {
     func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
         guard error == nil else {
             return

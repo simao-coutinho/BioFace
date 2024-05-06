@@ -14,7 +14,7 @@ class ServerConnection {
     private let url = "https://visteamlab.isr.uc.pt/facing/v2/api/"
     
     private func getHeaders() -> HTTPHeaders? {
-        guard let apiToken = BioFace.apiToken else { return nil}
+        guard let apiToken = Facing.apiToken else { return nil}
         
         let headers: HTTPHeaders = [
             "authorization": "Bearer " + apiToken,
@@ -24,8 +24,8 @@ class ServerConnection {
         return headers
     }
     
-    func makeImageUpload(with image: UIImage,sessionId: String, completion: @escaping BioFaceResponse) {
-        guard let apiToken = BioFace.apiToken else { return }
+    func makeImageUpload(with image: UIImage,sessionId: String, completion: @escaping FacingResponse) {
+        guard let apiToken = Facing.apiToken else { return }
         let headers: HTTPHeaders = [
             "authorization": "Bearer " + apiToken,
         ]
@@ -55,7 +55,7 @@ class ServerConnection {
             }
     }
     
-    func makeGetConnection(url: String, sessionId: String, completion: @escaping BioFaceResponse) {
+    func makeGetConnection(url: String, sessionId: String, completion: @escaping FacingResponse) {
         guard let headers = getHeaders() else { return }
         
         AF.request(self.url + url, method: .get, parameters: ["session_id": sessionId], encoding: URLEncoding.queryString, headers: headers).responseDecodable(of: ExtractResponse.self) { response in
@@ -71,7 +71,7 @@ class ServerConnection {
         }
     }
     
-    func makePostConnection(url: String, parameters: [String: Data], completion: @escaping BioFaceResponse) {
+    func makePostConnection(url: String, parameters: [String: Data], completion: @escaping FacingResponse) {
         guard let headers = getHeaders() else { return }
         
         AF.request(self.url + url, method: .post, parameters: parameters, encoding: URLEncoding.queryString, headers: headers).responseDecodable(of: ExtractResponse.self) { response in

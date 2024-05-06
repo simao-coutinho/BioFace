@@ -9,7 +9,7 @@ import Foundation
 
 private let errorDomain = "BioFaceHandlerErrorDomain"
 
-@objc public enum BioFaceError: Int {
+@objc public enum FacingError: Int {
     /// Endpoint TimeOut
     case timeOutErrorCode
     /// The api token given is invalid check if is added on AppDelegate
@@ -21,7 +21,7 @@ private let errorDomain = "BioFaceHandlerErrorDomain"
 }
 
 func _error(
-    for errorCode: BioFaceError,
+    for errorCode: FacingError,
     apiErrorCode: String? = nil,
     userInfo additionalUserInfo: [AnyHashable: Any]? = nil
 ) -> NSError {
