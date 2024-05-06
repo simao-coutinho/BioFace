@@ -74,31 +74,38 @@ class ServerConnection {
     func makeCompareVerification(templateA: [Float], templateB: [Float], completion: @escaping FacingResponse) {
         guard let headers = getHeaders() else { return }
         
-        //let dataTemplateA = convertArrayToFile(template: templateA) ?? Data()
-        let dataTemplateA = Data(buffer: UnsafeBufferPointer(start: templateA, count: templateA.count))
-        
-        //let dataTemplateB = convertArrayToFile(template: templateB) ?? Data()
-        let dataTemplateB = Data(buffer: UnsafeBufferPointer(start: templateB, count: templateB.count))
+        do {
+            //let dataTemplateA = convertArrayToFile(template: templateA) ?? Data()
+            //let dataTemplateA = Data(buffer: UnsafeBufferPointer(start: templateA, count: templateA.count))
+            let dataTemplateA = try JSONSerialization.data(withJSONObject: templateA, options: [])
+            
+            //let dataTemplateB = convertArrayToFile(template: templateB) ?? Data()
+            //let dataTemplateB = Data(buffer: UnsafeBufferPointer(start: templateB, count: templateB.count))
+            let dataTemplateB = try JSONSerialization.data(withJSONObject: templateB, options: [])
 
-        
-        AF.upload(
-            multipartFormData: { multipartFormData in
-                multipartFormData.append(dataTemplateA, withName: "templateA")
-                multipartFormData.append(dataTemplateB, withName: "templateB")
-            },
-            to: url + "compare", method: .post , headers: headers).responseString { response in
-                
-                switch response.result {
-                case .success(_):
-                    print("success: \(response)")
-                    completion(.succeeded, Response(success: true, data: nil), nil)
-                case .failure(_):
-                    print("failure: \(response)")
-                    completion(.failed, Response(success: false, data: nil), response.error as NSError?)
-                }
-                
-                print("URL: Compare -> Response: \(response)")
+            
+            AF.upload(
+                multipartFormData: { multipartFormData in
+                    multipartFormData.append(dataTemplateA, withName: "templateA")
+                    multipartFormData.append(dataTemplateB, withName: "templateB")
+                },
+                to: url + "compare", method: .post , headers: headers).responseString { response in
+                    
+                    switch response.result {
+                    case .success(_):
+                        print("success: \(response)")
+                        completion(.succeeded, Response(success: true, data: nil), nil)
+                    case .failure(_):
+                        print("failure: \(response)")
+                        completion(.failed, Response(success: false, data: nil), response.error as NSError?)
+                    }
+                    
+                    print("URL: Compare -> Response: \(response)")
+            }
+        } catch {
+            
         }
+        
         
         /*AF.request(self.url + "compare", method: .post, parameters: ["templateA": templateA, "templateB": templateB], headers: headers).responseString { response in
             
