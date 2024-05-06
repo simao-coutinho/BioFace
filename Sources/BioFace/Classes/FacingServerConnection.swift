@@ -103,7 +103,7 @@ class ServerConnection {
                     print("URL: Compare -> Response: \(response)")
             }*/
             
-            AF.request(self.url + "compare", method: .post, parameters: ["templateA": templateA, "templateB": templateB], encoding: JSONEncoding.default, headers: headers).responseString { response in
+            AF.request(self.url + "compare", method: .post, parameters: ["templateA": templateA, "templateB": templateB], encoding: URLEncoding.httpBody, headers: headers).responseString { response in
                 
                 switch response.result {
                 case .success(_):
