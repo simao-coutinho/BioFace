@@ -89,10 +89,10 @@ class ServerConnection {
                 switch response.result {
                 case .success(_):
                     print("success: \(response)")
-                    //completion(.succeeded, Response(success: true, data: response.value), nil)
+                    completion(.succeeded, Response(success: true, data: nil), nil)
                 case .failure(_):
                     print("failure: \(response)")
-                    //completion(.failed, Response(success: false, data: response.value), response.error as NSError?)
+                    completion(.failed, Response(success: false, data: nil), response.error as NSError?)
                 }
                 
                 print("URL: Compare -> Response: \(response)")
