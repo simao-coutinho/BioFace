@@ -82,7 +82,6 @@ class ServerConnection {
             //let dataTemplateB = convertArrayToFile(template: templateB) ?? Data()
             //let dataTemplateB = Data(buffer: UnsafeBufferPointer(start: templateB, count: templateB.count))
             let dataTemplateB = try JSONSerialization.data(withJSONObject: templateB, options: [])
-
             
             AF.upload(
                 multipartFormData: { multipartFormData in
