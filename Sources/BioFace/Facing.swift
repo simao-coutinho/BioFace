@@ -14,10 +14,11 @@ public class Facing {
     public init() {}
     
     public func makeRegistration(viewController: UIViewController, completion: @escaping FacingResponse) {
-        var sessionId = UserDefaults.value(forKey: "SESSION_ID") as? String
+        let defaults = UserDefaults.standard
+        var sessionId = defaults.string(forKey: "SESSION_ID")
         if sessionId == nil {
             sessionId = UUID().uuidString
-            UserDefaults.setValue(sessionId, forKey: "SESSION_ID")
+            defaults.set(sessionId, forKey: "SESSION_ID")
         }
         
         guard let sessionId = sessionId else {
@@ -70,7 +71,8 @@ extension Facing : ImageResultListener {
         vc?.setProgress(progress: 0, total: 4)
         switch from {
         case .makeRegistration:
-            guard let sessionId = UserDefaults.value(forKey: "SESSION_ID") as? String else { return }
+            let defaults = UserDefaults.standard
+            guard let sessionId = defaults.string(forKey: "SESSION_ID") else { return }
             let serverConnection = ServerConnection()
             serverConnection.makeImageUpload(with: with, sessionId: sessionId) { uploadStatus, _, uploadError in
                 guard uploadStatus == .succeeded else {
