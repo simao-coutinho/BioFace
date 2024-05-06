@@ -237,7 +237,7 @@ extension Facing : ImageResultListener {
                                 "templateB" : currentTemplate
                             ]
                             
-                            serverConnection.makeCompareVerification(templateA: "compare",templateB: parameters) { status, response, error in
+                            serverConnection.makeCompareVerification(templateA: template,templateB: currentTemplate) { status, response, error in
                                 self.vc?.setProgress(progress: 6, total: 6)
                                 print("Compare Response: \(String(describing: response))")
                                 self.vc?.dismiss(animated: true)
