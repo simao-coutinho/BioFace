@@ -80,8 +80,8 @@ class ServerConnection {
         
         AF.upload(
             multipartFormData: { multipartFormData in
-                multipartFormData.append(dataTemplateA, withName: "templateA" , fileName: "templateA", mimeType: "text/plain")
-                multipartFormData.append(dataTemplateB, withName: "templateB" , fileName: "templateB", mimeType: "text/plain")
+                multipartFormData.append(dataTemplateA, withName: "templateA")
+                multipartFormData.append(dataTemplateB, withName: "templateB")
             },
             to: url + "compare", method: .post , headers: headers).responseString { response in
                 
