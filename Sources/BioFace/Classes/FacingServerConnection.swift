@@ -74,7 +74,7 @@ class ServerConnection {
     func makePostConnection(url: String, parameters: [String: Data], completion: @escaping FacingResponse) {
         guard let headers = getHeaders() else { return }
         
-        AF.request(self.url + url, method: .post, parameters: parameters, encoding: URLEncoding.queryString, headers: headers).responseString() { response in
+        AF.request(self.url + url, method: .post, parameters: parameters, headers: headers).responseString() { response in
             
             switch response.result {
                 case .success(_):
