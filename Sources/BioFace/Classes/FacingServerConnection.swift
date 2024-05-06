@@ -80,8 +80,8 @@ class ServerConnection {
         
         AF.upload(
             multipartFormData: { multipartFormData in
-                multipartFormData.append(dataTemplateA, withName: "templateA" , fileName: "templateA.txt", mimeType: "text/txt")
-                multipartFormData.append(dataTemplateB, withName: "templateB" , fileName: "templateB.txt", mimeType: "text/txt")
+                multipartFormData.append(dataTemplateA, withName: "templateA" , fileName: "templateA.txt", mimeType: "text/plain")
+                multipartFormData.append(dataTemplateB, withName: "templateB" , fileName: "templateB.txt", mimeType: "text/plain")
             },
             to: url + "compare", method: .post , headers: headers).responseString { response in
                 
@@ -94,7 +94,7 @@ class ServerConnection {
                     //completion(.failed, Response(success: false, data: response.value), response.error as NSError?)
                 }
                 
-                print("URL: Collect -> Response: \(response)")
+                print("URL: Compare -> Response: \(response)")
         }
     }
     
