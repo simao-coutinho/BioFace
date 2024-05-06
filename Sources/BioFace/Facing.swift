@@ -112,6 +112,9 @@ extension Facing : ImageResultListener {
                             SecureData().saveFloatArrayToKeychain(floatArray: template, forKey: self.secureDataKey)
                             
                             self.vc?.dismiss(animated: true)
+                            
+                            print("---------------------------------------------------------")
+                            print("Vector: \(SecureData().retrieveFloatArrayFromKeychain(forKey: self.secureDataKey))")
                             completion(.succeeded, nil, nil)
                         }
                     }
