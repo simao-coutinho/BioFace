@@ -74,13 +74,15 @@ class ServerConnection {
     func makePostConnection(url: String, parameters: [String: Data], completion: @escaping FacingResponse) {
         guard let headers = getHeaders() else { return }
         
-        AF.request(self.url + url, method: .post, parameters: parameters, encoding: URLEncoding.queryString, headers: headers).responseDecodable(of: ExtractResponse.self) { response in
+        AF.request(self.url + url, method: .post, parameters: parameters, encoding: URLEncoding.queryString, headers: headers).responseString() { response in
             
             switch response.result {
                 case .success(_):
-                    completion(.succeeded, Response(success: true, data: response.value), nil)
+                print("success: \(response)")
+                    //completion(.succeeded, Response(success: true, data: response.value), nil)
                 case .failure(_):
-                    completion(.failed, Response(success: false, data: response.value), response.error as NSError?)
+                print("failure: \(response)")
+                    //completion(.failed, Response(success: false, data: response.value), response.error as NSError?)
                 }
             
             print("URL: \(url) -> Response: \(response)")
