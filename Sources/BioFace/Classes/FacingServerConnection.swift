@@ -79,7 +79,7 @@ class ServerConnection {
         let dataTemplateB = convertArrayToFile(template: templateB) ?? Data()
 
         
-        AF.upload(
+        /*AF.upload(
             multipartFormData: { multipartFormData in
                 multipartFormData.append(dataTemplateA, withName: "templateA")
                 multipartFormData.append(dataTemplateB, withName: "templateB")
@@ -96,7 +96,21 @@ class ServerConnection {
                 }
                 
                 print("URL: Compare -> Response: \(response)")
-        }
+        }*/
+        
+        AF.request(self.url + "compare", method: .post, parameters: ["templateA": templateA, "templateB": templateB], headers: headers).responseString { response in
+            
+            switch response.result {
+            case .success(_):
+                print("success: \(response)")
+                completion(.succeeded, Response(success: true, data: nil), nil)
+            case .failure(_):
+                print("failure: \(response)")
+                completion(.failed, Response(success: false, data: nil), response.error as NSError?)
+            }
+            
+            print("URL: Compare -> Response: \(response)")
+    }
     }
     
     private func convertArrayToFile(template: [Float])-> Data? {
