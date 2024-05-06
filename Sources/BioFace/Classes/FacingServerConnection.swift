@@ -74,14 +74,14 @@ class ServerConnection {
     func makeCompareVerification(templateA: [Float], templateB: [Float], completion: @escaping FacingResponse) {
         guard let headers = getHeaders() else { return }
         
-        let dataTemplateA = Data(buffer: UnsafeBufferPointer(start: templateA, count: templateA.count))
+        let dataTemplateA = convertArrayToFile(template: templateA) ?? Data()
         
-        let dataTemplateB = Data(buffer: UnsafeBufferPointer(start: templateB, count: templateB.count))
+        let dataTemplateB = convertArrayToFile(template: templateB) ?? Data()
         
         AF.upload(
             multipartFormData: { multipartFormData in
-                multipartFormData.append(try! JSONEncoder().encode(templateA), withName: "templateA")
-                multipartFormData.append(try! JSONEncoder().encode(templateB), withName: "templateB")
+                multipartFormData.append(dataTemplateA, withName: "templateA" , fileName: "templateA.txt", mimeType: "text/txt")
+                multipartFormData.append(dataTemplateB, withName: "templateB" , fileName: "templateB.txt", mimeType: "text/txt")
             },
             to: url + "compare", method: .post , headers: headers).responseString { response in
                 
@@ -96,5 +96,12 @@ class ServerConnection {
                 
                 print("URL: Collect -> Response: \(response)")
         }
+    }
+    
+    private func convertArrayToFile(template: [Float])-> Data? {
+        let floatString = template.map { String($0) }.joined(separator: "\n")
+
+        // Convert string to data
+        return floatString.data(using: .utf8)
     }
 }
