@@ -4,7 +4,6 @@ import UIKit
 
 public class Facing {
     public static var apiToken: String?
-    public static var sessionId: String?
     public static let sharedHandler: Facing = Facing()
     
     private var vc : FacingViewController? = nil
@@ -14,8 +13,17 @@ public class Facing {
 
     public init() {}
     
-    public func makeRegistration(_ sessionId: String, viewController: UIViewController, completion: @escaping FacingResponse) {
-        Facing.sessionId = sessionId
+    public func makeRegistration(viewController: UIViewController, completion: @escaping FacingResponse) {
+        var sessionId = UserDefaults.value(forKey: "SESSION_ID") as? String
+        if sessionId == nil {
+            sessionId = UUID().uuidString
+            UserDefaults.setValue(sessionId, forKey: "SESSION_ID")
+        }
+        
+        guard let sessionId = sessionId else {
+            return completion(.failed, nil, _error(for: .invalidSessionIdErrorCode))
+        }
+        
         guard Facing.apiToken != nil else {
             return completion(.failed, nil, _error(for: .invalidApiTokenErrorCode)) }
         guard sessionId.data(using: .utf8, allowLossyConversion: false) != nil else {
@@ -62,7 +70,7 @@ extension Facing : ImageResultListener {
         vc?.setProgress(progress: 0, total: 4)
         switch from {
         case .makeRegistration:
-            guard let sessionId = Facing.sessionId else { return }
+            guard let sessionId = UserDefaults.value(forKey: "SESSION_ID") as? String else { return }
             let serverConnection = ServerConnection()
             serverConnection.makeImageUpload(with: with, sessionId: sessionId) { uploadStatus, _, uploadError in
                 guard uploadStatus == .succeeded else {
