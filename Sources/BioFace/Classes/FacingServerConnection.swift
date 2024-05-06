@@ -84,12 +84,12 @@ class ServerConnection {
             let dataTemplateB = try JSONSerialization.data(withJSONObject: templateB, options: [])
 
             
-            /*AF.upload(
+            AF.upload(
                 multipartFormData: { multipartFormData in
                     multipartFormData.append(dataTemplateA, withName: "templateA")
                     multipartFormData.append(dataTemplateB, withName: "templateB")
                 },
-                to: url + "compare", method: .post, encoding: JSONEncoding.default, headers: headers).responseString { response in
+                to: url + "compare", method: .post, headers: headers).responseString { response in
                     
                     switch response.result {
                     case .success(_):
@@ -101,9 +101,9 @@ class ServerConnection {
                     }
                     
                     print("URL: Compare -> Response: \(response)")
-            }*/
+            }
             
-            AF.request(self.url + "compare", method: .post, parameters: ["templateA": templateA, "templateB": templateB], encoding: URLEncoding.httpBody, headers: headers).responseString { response in
+            /*AF.request(self.url + "compare", method: .post, parameters: ["templateA": templateA, "templateB": templateB], encoding: URLEncoding.httpBody, headers: headers).responseString { response in
                 
                 switch response.result {
                 case .success(_):
@@ -115,7 +115,7 @@ class ServerConnection {
                 }
                 
                 print("URL: Compare -> Response: \(response)")
-            }
+            }*/
         } catch {
             
         }
