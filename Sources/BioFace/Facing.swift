@@ -112,9 +112,6 @@ extension Facing : ImageResultListener {
                             SecureData().saveFloatArrayToKeychain(floatArray: template, forKey: self.secureDataKey)
                             
                             self.vc?.dismiss(animated: true)
-                            
-                            print("---------------------------------------------------------")
-                            print("Vector: \(SecureData().retrieveFloatArrayFromKeychain(forKey: self.secureDataKey))")
                             completion(.succeeded, nil, nil)
                         }
                     }
@@ -240,7 +237,7 @@ extension Facing : ImageResultListener {
                                 "templateB" : currentTemplate
                             ]
                             
-                            serverConnection.makePostConnection(url: "compare",parameters: parameters) { status, response, error in
+                            serverConnection.makeCompareVerification(templateA: "compare",templateB: parameters) { status, response, error in
                                 self.vc?.setProgress(progress: 6, total: 6)
                                 print("Compare Response: \(String(describing: response))")
                                 self.vc?.dismiss(animated: true)

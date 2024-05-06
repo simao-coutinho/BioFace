@@ -71,22 +71,30 @@ class ServerConnection {
         }
     }
     
-    func makePostConnection(url: String, parameters: [String: [Float]], completion: @escaping FacingResponse) {
+    func makeCompareVerification(templateA: [Float], templateB: [Float], completion: @escaping FacingResponse) {
         guard let headers = getHeaders() else { return }
         
-        AF.request(self.url + url, method: .post, parameters: parameters, headers: headers).responseString() { response in
-            
-            switch response.result {
+        let dataTemplateA = Data(buffer: UnsafeBufferPointer(start: templateA, count: templateA.count))
+        
+        let dataTemplateB = Data(buffer: UnsafeBufferPointer(start: templateB, count: templateB.count))
+        
+        AF.upload(
+            multipartFormData: { multipartFormData in
+                multipartFormData.append(dataTemplateA, withName: "templateA")
+                multipartFormData.append(dataTemplateB, withName: "templateB")
+            },
+            to: url + "compare", method: .post , headers: headers).responseString { response in
+                
+                switch response.result {
                 case .success(_):
-                print("success: \(response)")
+                    print("success: \(response)")
                     //completion(.succeeded, Response(success: true, data: response.value), nil)
                 case .failure(_):
-                print("failure: \(response)")
+                    print("failure: \(response)")
                     //completion(.failed, Response(success: false, data: response.value), response.error as NSError?)
                 }
-            
-            print("URL: \(url) -> Response: \(response)")
-            
+                
+                print("URL: Collect -> Response: \(response)")
         }
     }
 }
