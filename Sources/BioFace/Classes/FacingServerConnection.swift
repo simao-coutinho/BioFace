@@ -74,12 +74,14 @@ class ServerConnection {
     func makeCompareVerification(templateA: [Float], templateB: [Float], completion: @escaping FacingResponse) {
         guard let headers = getHeaders() else { return }
         
-        let dataTemplateA = convertArrayToFile(template: templateA) ?? Data()
+        //let dataTemplateA = convertArrayToFile(template: templateA) ?? Data()
+        let dataTemplateA = Data(buffer: UnsafeBufferPointer(start: templateA, count: templateA.count))
         
-        let dataTemplateB = convertArrayToFile(template: templateB) ?? Data()
+        //let dataTemplateB = convertArrayToFile(template: templateB) ?? Data()
+        let dataTemplateB = Data(buffer: UnsafeBufferPointer(start: templateB, count: templateB.count))
 
         
-        /*AF.upload(
+        AF.upload(
             multipartFormData: { multipartFormData in
                 multipartFormData.append(dataTemplateA, withName: "templateA")
                 multipartFormData.append(dataTemplateB, withName: "templateB")
@@ -96,9 +98,9 @@ class ServerConnection {
                 }
                 
                 print("URL: Compare -> Response: \(response)")
-        }*/
+        }
         
-        AF.request(self.url + "compare", method: .post, parameters: ["templateA": templateA, "templateB": templateB], headers: headers).responseString { response in
+        /*AF.request(self.url + "compare", method: .post, parameters: ["templateA": templateA, "templateB": templateB], headers: headers).responseString { response in
             
             switch response.result {
             case .success(_):
@@ -110,7 +112,7 @@ class ServerConnection {
             }
             
             print("URL: Compare -> Response: \(response)")
-    }
+    }*/
     }
     
     private func convertArrayToFile(template: [Float])-> Data? {
