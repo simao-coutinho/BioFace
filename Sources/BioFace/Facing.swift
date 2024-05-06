@@ -109,9 +109,7 @@ extension Facing : ImageResultListener {
                                 return
                             }
                             
-                            let dataExtr = Data(buffer: UnsafeBufferPointer(start: template, count: template.count))
-                            
-                            SecureData().saveToKeychain(data: dataExtr, forKey: self.secureDataKey)
+                            SecureData().saveFloatArrayToKeychain(floatArray: template, forKey: self.secureDataKey)
                             
                             self.vc?.dismiss(animated: true)
                             completion(.succeeded, nil, nil)
@@ -177,13 +175,13 @@ extension Facing : ImageResultListener {
                                     "templateB" : currentTemplate
                                 ]
                                 
-                                serverConnection.makePostConnection(url: "compare",parameters: parameters) { status, response, error in
+                                /*serverConnection.makePostConnection(url: "compare",parameters: parameters) { status, response, error in
                                     self.vc?.setProgress(progress: 6, total: 6)
                                     print("Compare Response: \(String(describing: response))")
                                     self.vc?.dismiss(animated: true)
                                     completion(.succeeded, nil, nil)
                             
-                                }
+                                }*/
                             }
                         }
                     }
@@ -228,16 +226,14 @@ extension Facing : ImageResultListener {
                                 return
                             }
                             
-                            guard let currentTemplate = SecureData().loadFromKeychain(forKey: self.secureDataKey) else {
+                            guard let currentTemplate = SecureData().retrieveFloatArrayFromKeychain(forKey: self.secureDataKey) else {
                                 self.vc?.dismiss(animated: true)
                                 completion(.failed, nil, _error(for: .invalidTemplateFromSecureKey))
                                 return
                             }
                             
-                            let dataExtr = Data(buffer: UnsafeBufferPointer(start: template, count: template.count))
-                            
-                            let parameters: [String: Data] = [
-                                "templateA" : dataExtr,
+                            let parameters: [String: [Float]] = [
+                                "templateA" : template,
                                 "templateB" : currentTemplate
                             ]
                             
