@@ -24,25 +24,12 @@ public class Facing {
     
     public init() {}
     
-    public func makeRegistration(viewController: UIViewController, completion: @escaping FacingResponse) {
-        let defaults = UserDefaults.standard
-        var sessionId = defaults.string(forKey: "SESSION_ID")
-        if sessionId == nil {
-            sessionId = UUID().uuidString
-            defaults.set(sessionId, forKey: "SESSION_ID")
-        }
-        
-        guard let sessionId = sessionId else {
-            return completion(.failed, nil, _error(for: .invalidSessionIdErrorCode))
-        }
-        
+    public func makeRegistration(viewController: UIViewController, livenessOptions: [Int] = LivenessOptions().getDefaults(), completion: @escaping FacingResponse) {
         guard Facing.apiToken != nil else {
             return completion(.failed, nil, _error(for: .invalidApiTokenErrorCode)) }
-        guard sessionId.data(using: .utf8, allowLossyConversion: false) != nil else {
-            return completion(.failed, nil, _error(for: .invalidSessionIdErrorCode))
-        }
         
         vc = FacingViewController.init()
+        self.livenessOptions = livenessOptions
         
         guard let vc = vc else { return completion(.failed, nil, _error(for:.invalidApiTokenErrorCode))}
         
@@ -142,8 +129,7 @@ extension Facing : ImageResultListener {
     func onImageResult(from: ServiceType, with: UIImage, completion: @escaping FacingResponse) {
         switch from {
         case .makeRegistration:
-            let defaults = UserDefaults.standard
-            guard let sessionId = defaults.string(forKey: "SESSION_ID") else { return }
+            let sessionId = UUID().uuidString
             let parameters = ["session_id": sessionId]
             
             
