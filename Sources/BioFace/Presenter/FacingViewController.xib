@@ -3,8 +3,7 @@
     <device id="retina6_72" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22684"/>
-        <capability name="Named colors" minToolsVersion="9.0"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22685"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -38,7 +37,7 @@
                 </imageView>
                 <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" image="camera.aperture" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="37D-JS-D4f">
                     <rect key="frame" x="183" y="827" width="64" height="62.666666666666629"/>
-                    <color key="tintColor" name="primary"/>
+                    <color key="tintColor" red="0.59215686274509804" green="0.43529411764705883" blue="0.19607843137254902" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="64" id="02N-b3-fqJ"/>
                         <constraint firstAttribute="height" constant="64" id="waO-2c-IN0"/>
@@ -50,7 +49,7 @@
                         <constraint firstAttribute="height" constant="34" id="gP4-1E-eQz"/>
                         <constraint firstAttribute="width" constant="34" id="wPP-D7-Vc3"/>
                     </constraints>
-                    <color key="tintColor" name="primary"/>
+                    <color key="tintColor" red="0.59215686274509804" green="0.43529411764705883" blue="0.19607843137254902" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                     <state key="normal" image="arrowshape.backward.fill" catalog="system">
                         <color key="titleColor" systemColor="systemBackgroundColor"/>
@@ -76,7 +75,7 @@
                         <constraint firstAttribute="height" constant="34" id="2mf-Wf-4gG"/>
                         <constraint firstAttribute="width" constant="34" id="U3E-aJ-Vg2"/>
                     </constraints>
-                    <color key="tintColor" name="primary"/>
+                    <color key="tintColor" red="0.59215686274509804" green="0.43529411764705883" blue="0.19607843137254902" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                     <state key="normal" image="camera.rotate.fill" catalog="system"/>
                     <connections>
@@ -149,9 +148,6 @@
         <image name="arrowshape.backward.fill" catalog="system" width="128" height="104"/>
         <image name="camera.aperture" catalog="system" width="128" height="123"/>
         <image name="camera.rotate.fill" catalog="system" width="128" height="93"/>
-        <namedColor name="primary">
-            <color red="0.59200000762939453" green="0.43500000238418579" blue="0.19599999487400055" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-        </namedColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

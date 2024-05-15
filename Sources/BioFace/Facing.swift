@@ -6,11 +6,22 @@ public class Facing {
     public static var apiToken: String?
     public static let sharedHandler: Facing = Facing()
     
+    public var ENDPOINT_COMPLIANCE = true
+    public var ENDPOINT_LIVENESS = true
+    public var ENDPOINT_DICA = true
+    public var ENDPOINT_CDTA = true
+    public var ENDPOINT_SMAD = true
+    
+    
     private var vc : FacingViewController? = nil
     
     private let url = "https://visteamlab.isr.uc.pt/facing/v2/api/"
     private let secureDataKey = "GENERAL_BIOMETRIC_DATA_EXTR"
-
+    
+    private var livenessOptions : [Int] = []
+    
+    private var newTemplate : [Float] = []
+    
     public init() {}
     
     public func makeRegistration(viewController: UIViewController, completion: @escaping FacingResponse) {
@@ -53,10 +64,11 @@ public class Facing {
         
     }
     
-    public func verifyUser(viewController: UIViewController, completion: @escaping FacingResponse) {
+    public func verifyUser(viewController: UIViewController, livenessOptions: [Int] = LivenessOptions().getDefaults(), completion: @escaping FacingResponse) {
         guard Facing.apiToken != nil else { return completion(.failed, nil, _error(for: .invalidApiTokenErrorCode)) }
         
         vc = FacingViewController.init()
+        self.livenessOptions = livenessOptions
         
         guard let vc = vc else { return completion(.failed, nil, _error(for:.invalidApiTokenErrorCode))}
         
@@ -67,193 +79,203 @@ public class Facing {
 }
 
 extension Facing : ImageResultListener {
-    func onImageResult(from: ServiceType, with: UIImage, completion: @escaping FacingResponse) {
-        vc?.setProgress(progress: 0, total: 4)
-        switch from {
-        case .makeRegistration:
-            let defaults = UserDefaults.standard
-            guard let sessionId = defaults.string(forKey: "SESSION_ID") else { return }
-            let serverConnection = ServerConnection()
-            serverConnection.makeImageUpload(with: with, sessionId: sessionId) { uploadStatus, _, uploadError in
-                guard uploadStatus == .succeeded else {
+    private func makeCallToServerFor(_ endpoints: [FacingEndpoint], counter: Int, completion: @escaping FacingResponse) {
+        vc?.setProgress(progress: Float(counter), total: Float(endpoints.count))
+        
+        let currentEndpoint = endpoints[counter]
+        
+        switch currentEndpoint.endpoint {
+        case FacingEndpoint.EXTRACT :
+            self.fetchFromServer(with: currentEndpoint.endpoint, parameters: currentEndpoint.parameters, progress: Float(counter), totalProgress: Float(endpoints.count)) { extractStatus, response, extractError in
+                guard extractStatus == .succeeded else {
                     self.vc?.dismiss(animated: true)
-                    completion(uploadStatus, nil, uploadError)
+                    completion(extractStatus, nil, extractError)
                     return
                 }
-                self.vc?.setProgress(progress: 1, total: 4)
+                
+                guard let template = response?.data else {
+                    self.vc?.dismiss(animated: true)
+                    completion(extractStatus, nil, extractError)
+                    return
+                }
+                
+                if (counter + 1) < endpoints.count {
+                    self.newTemplate = template
+                    self.makeCallToServerFor(endpoints, counter: counter + 1, completion: completion)
+                } else {
+                    SecureData().saveFloatArrayToKeychain(floatArray: template, forKey: self.secureDataKey)
                     
-                self.fetchFromServer(with: "compliance", sessionId: sessionId, progress: 2, totalProgress: 4) { complianceStatus, _, complianceError in
-                    guard complianceStatus == .succeeded else {
-                        self.vc?.dismiss(animated: true)
-                        completion(complianceStatus, nil, complianceError)
-                        return
-                    }
-                        
-                    self.fetchFromServer(with: "liveness", sessionId: sessionId, progress: 3, totalProgress: 4) { livenessStatus, _, livenessError in
-                        guard livenessStatus == .succeeded else {
-                            self.vc?.dismiss(animated: true)
-                            completion(livenessStatus, nil, livenessError)
-                            return
-                        }
-                            
-                        self.fetchFromServer(with: "extract", sessionId: sessionId, progress: 4, totalProgress: 4) { extractStatus, response, extractError in
-                            guard extractStatus == .succeeded else {
-                                self.vc?.dismiss(animated: true)
-                                completion(extractStatus, nil, extractError)
-                                return
-                            }
-                            
-                            guard let template = response?.data else {
-                                self.vc?.dismiss(animated: true)
-                                completion(extractStatus, nil, extractError)
-                                return
-                            }
-                            
-                            SecureData().saveFloatArrayToKeychain(floatArray: template, forKey: self.secureDataKey)
-                            
-                            self.vc?.dismiss(animated: true)
-                            completion(.succeeded, nil, nil)
-                        }
-                    }
+                    self.vc?.dismiss(animated: true)
+                    completion(.succeeded, nil, nil)
                 }
             }
-        case .addCard:
-            let sessionId = UUID().uuidString
-            let serverConnection = ServerConnection()
-            serverConnection.makeImageUpload(with: with, sessionId: sessionId) { uploadStatus, _, uploadError in
-                guard uploadStatus == .succeeded else {
-                    self.vc?.dismiss(animated: true)
-                    completion(uploadStatus, nil, uploadError)
-                    return
-                }
-                self.vc?.setProgress(progress: 1, total: 6)
-                    
-                self.fetchFromServer(with: "dica", sessionId: sessionId, progress: 2, totalProgress: 6) { complianceStatus, _, complianceError in
-                    guard complianceStatus == .succeeded else {
-                        self.vc?.dismiss(animated: true)
-                        completion(complianceStatus, nil, complianceError)
-                        return
-                    }
-                        
-                    self.fetchFromServer(with: "cdta", sessionId: sessionId, progress: 3, totalProgress: 6) { livenessStatus, _, livenessError in
-                        guard livenessStatus == .succeeded else {
-                            self.vc?.dismiss(animated: true)
-                            completion(livenessStatus, nil, livenessError)
-                            return
-                        }
-                            
-                        self.fetchFromServer(with: "smad", sessionId: sessionId, progress: 4, totalProgress: 6) { extractStatus, _, extractError in
-                            guard extractStatus == .succeeded else {
-                                self.vc?.dismiss(animated: true)
-                                completion(extractStatus, nil, extractError)
-                                return
-                            }
-                            
-                            self.fetchFromServer(with: "extract", sessionId: sessionId, progress: 5, totalProgress: 6) { extractStatus, response, extractError in
-                                guard extractStatus == .succeeded else {
-                                    self.vc?.dismiss(animated: true)
-                                    completion(extractStatus, nil, extractError)
-                                    return
-                                }
-                                
-                                guard let template = response?.data else {
-                                    self.vc?.dismiss(animated: true)
-                                    completion(extractStatus, nil, extractError)
-                                    return
-                                }
-                                
-                                guard let currentTemplate = SecureData().loadFromKeychain(forKey: self.secureDataKey) else {
-                                    self.vc?.dismiss(animated: true)
-                                    completion(.failed, nil, _error(for: .invalidTemplateFromSecureKey))
-                                    return
-                                }
-                                
-                                let dataExtr = Data(buffer: UnsafeBufferPointer(start: template, count: template.count))
-                                
-                                let parameters: [String: Data] = [
-                                    "templateA" : dataExtr,
-                                    "templateB" : currentTemplate
-                                ]
-                                
-                                /*serverConnection.makePostConnection(url: "compare",parameters: parameters) { status, response, error in
-                                    self.vc?.setProgress(progress: 6, total: 6)
-                                    print("Compare Response: \(String(describing: response))")
-                                    self.vc?.dismiss(animated: true)
-                                    completion(.succeeded, nil, nil)
-                            
-                                }*/
-                            }
-                        }
-                    }
-                }
+        case FacingEndpoint.COMPARE:
+            guard let currentTemplate = SecureData().retrieveFloatArrayFromKeychain(forKey: self.secureDataKey) else {
+                self.vc?.dismiss(animated: true)
+                completion(.failed, nil, _error(for: .invalidTemplateFromSecureKey))
+                return
             }
-        case .verifyUser:
-            let sessionId = UUID().uuidString
+            
             let serverConnection = ServerConnection()
-            serverConnection.makeImageUpload(with: with, sessionId: sessionId) { uploadStatus, _, uploadError in
-                guard uploadStatus == .succeeded else {
+            serverConnection.makeCompareVerification(templateA: self.newTemplate,templateB: currentTemplate) { status, response, error in
+                self.vc?.setProgress(progress: Float(counter), total: Float(endpoints.count))
+                print("Compare Response: \(String(describing: response))")
+                self.vc?.dismiss(animated: true)
+                completion(status, response, error)
+            }
+        default :
+            self.fetchFromServer(with: currentEndpoint.endpoint, parameters: currentEndpoint.parameters, progress: Float(counter), totalProgress: Float(endpoints.count)) { complianceStatus, _, complianceError in
+                guard complianceStatus == .succeeded else {
                     self.vc?.dismiss(animated: true)
-                    completion(uploadStatus, nil, uploadError)
+                    completion(complianceStatus, nil, complianceError)
                     return
                 }
-                self.vc?.setProgress(progress: 1, total: 5)
-                    
-                self.fetchFromServer(with: "compliance", sessionId: sessionId, progress: 2, totalProgress: 5) { complianceStatus, _, complianceError in
-                    guard complianceStatus == .succeeded else {
-                        self.vc?.dismiss(animated: true)
-                        completion(complianceStatus, nil, complianceError)
-                        return
-                    }
-                        
-                    self.fetchFromServer(with: "liveness", sessionId: sessionId, progress: 3, totalProgress: 5) { livenessStatus, _, livenessError in
-                        guard livenessStatus == .succeeded else {
-                            self.vc?.dismiss(animated: true)
-                            completion(livenessStatus, nil, livenessError)
-                            return
-                        }
-                            
-                        self.fetchFromServer(with: "extract", sessionId: sessionId, progress: 4, totalProgress: 5) { extractStatus, response, extractError in
-                            guard extractStatus == .succeeded else {
-                                self.vc?.dismiss(animated: true)
-                                completion(extractStatus, nil, extractError)
-                                return
-                            }
-                            
-
-                            guard let template = response?.data else {
-                                self.vc?.dismiss(animated: true)
-                                completion(extractStatus, nil, _error(for: .invalidTemplateFromServer))
-                                return
-                            }
-                            
-                            guard let currentTemplate = SecureData().retrieveFloatArrayFromKeychain(forKey: self.secureDataKey) else {
-                                self.vc?.dismiss(animated: true)
-                                completion(.failed, nil, _error(for: .invalidTemplateFromSecureKey))
-                                return
-                            }
-                            
-                            let parameters: [String: [Float]] = [
-                                "templateA" : template,
-                                "templateB" : currentTemplate
-                            ]
-                            
-                            serverConnection.makeCompareVerification(templateA: template,templateB: currentTemplate) { status, response, error in
-                                self.vc?.setProgress(progress: 6, total: 6)
-                                print("Compare Response: \(String(describing: response))")
-                                self.vc?.dismiss(animated: true)
-                                completion(.succeeded, nil, nil)
-                        
-                            }
-                        }
-                    }
+                
+                if (counter + 1) < endpoints.count {
+                    self.makeCallToServerFor(endpoints, counter: counter + 1, completion: completion)
                 }
             }
         }
     }
     
-    private func fetchFromServer(with url: String, sessionId: String, progress: Float, totalProgress: Float, completion: @escaping (FacingStatus, ExtractResponse?, NSError?) -> Void) {
+    
+    func onImageResult(from: ServiceType, with: UIImage, completion: @escaping FacingResponse) {
+        switch from {
+        case .makeRegistration:
+            let defaults = UserDefaults.standard
+            guard let sessionId = defaults.string(forKey: "SESSION_ID") else { return }
+            let parameters = ["session_id": sessionId]
+            
+            
+            var endpoints : [FacingEndpoint] = [
+                FacingEndpoint(endpoint: FacingEndpoint.UPLOAD_IMAGE, parameters: parameters)
+            ]
+            
+            if ENDPOINT_COMPLIANCE {
+                endpoints.append(
+                    FacingEndpoint(endpoint: FacingEndpoint.COMPLIANCE, parameters: parameters)
+                )
+            }
+            if ENDPOINT_LIVENESS {
+                let parametersWithOptions: [String : Any] = [
+                    "session_id": sessionId,
+                    "requirements": self.livenessOptions
+                ]
+                
+                endpoints.append(
+                    FacingEndpoint(endpoint: FacingEndpoint.LIVENESS, parameters: parametersWithOptions)
+                )
+            }
+            
+            endpoints.append(
+                FacingEndpoint(endpoint: FacingEndpoint.EXTRACT, parameters: parameters)
+            )
+            
+            let serverConnection = ServerConnection()
+            serverConnection.makeImageUpload(with: with, sessionId: sessionId) { uploadStatus, _, uploadError in
+                guard uploadStatus == .succeeded else {
+                    self.vc?.dismiss(animated: true)
+                    completion(uploadStatus, nil, uploadError)
+                    return
+                }
+                
+                self.makeCallToServerFor(endpoints, counter: 1, completion: completion)
+            }
+        case .addCard:
+            let sessionId = UUID().uuidString
+            let parameters = ["session_id": sessionId]
+            
+            var endpoints : [FacingEndpoint] = [
+                FacingEndpoint(endpoint: FacingEndpoint.UPLOAD_IMAGE, parameters: parameters)
+            ]
+            
+            if ENDPOINT_DICA {
+                endpoints.append(
+                    FacingEndpoint(endpoint: FacingEndpoint.DICA, parameters: parameters)
+                )
+            }
+            
+            if ENDPOINT_CDTA {
+                endpoints.append(
+                    FacingEndpoint(endpoint: FacingEndpoint.CDTA, parameters: parameters)
+                )
+            }
+            
+            if ENDPOINT_SMAD {
+                endpoints.append(
+                    FacingEndpoint(endpoint: FacingEndpoint.SMAD, parameters: parameters)
+                )
+            }
+            
+            endpoints.append(
+                FacingEndpoint(endpoint: FacingEndpoint.EXTRACT, parameters: parameters)
+            )
+            
+            let serverConnection = ServerConnection()
+            serverConnection.makeImageUpload(with: with, sessionId: sessionId) { uploadStatus, _, uploadError in
+                guard uploadStatus == .succeeded else {
+                    self.vc?.dismiss(animated: true)
+                    completion(uploadStatus, nil, uploadError)
+                    return
+                }
+                self.makeCallToServerFor(endpoints, counter: 1, completion: completion)
+            }
+        case .verifyUser:
+            var counter : Float = 3
+            if ENDPOINT_COMPLIANCE {
+                counter += 1
+            }
+            
+            if ENDPOINT_LIVENESS {
+                counter += 1
+            }
+            
+            let sessionId = UUID().uuidString
+            let parameters = ["session_id": sessionId]
+            
+            var endpoints : [FacingEndpoint] = [
+                FacingEndpoint(endpoint: FacingEndpoint.UPLOAD_IMAGE, parameters: parameters)
+            ]
+            
+            if ENDPOINT_COMPLIANCE {
+                endpoints.append(
+                    FacingEndpoint(endpoint: FacingEndpoint.COMPLIANCE, parameters: parameters)
+                )
+            }
+            if ENDPOINT_LIVENESS {
+                let parametersWithOptions: [String : Any] = [
+                    "session_id": sessionId,
+                    "requirements": self.livenessOptions
+                ]
+                
+                endpoints.append(
+                    FacingEndpoint(endpoint: FacingEndpoint.LIVENESS, parameters: parametersWithOptions)
+                )
+            }
+            
+            endpoints.append(
+                FacingEndpoint(endpoint: FacingEndpoint.EXTRACT, parameters: parameters)
+            )
+            endpoints.append(
+                FacingEndpoint(endpoint: FacingEndpoint.COMPARE, parameters: parameters)
+            )
+            
+            let serverConnection = ServerConnection()
+            serverConnection.makeImageUpload(with: with, sessionId: sessionId) { uploadStatus, _, uploadError in
+                guard uploadStatus == .succeeded else {
+                    self.vc?.dismiss(animated: true)
+                    completion(uploadStatus, nil, uploadError)
+                    return
+                }
+                self.makeCallToServerFor(endpoints, counter: 1, completion: completion)
+            }
+        }
+    }
+    
+    private func fetchFromServer(with url: String, parameters: [String : Any], progress: Float, totalProgress: Float, completion: @escaping (FacingStatus, ExtractResponse?, NSError?) -> Void) {
         let serverConnection = ServerConnection()
-        serverConnection.makeGetConnection(url: url,sessionId: sessionId) { status, response, error in
+        
+        serverConnection.makeGetConnection(url: url,parameters: parameters) { status, response, error in
             self.vc?.setProgress(progress: progress, total: totalProgress)
             print("\(url) Response: \(String(describing: response))")
             completion(status, response?.data, error)
