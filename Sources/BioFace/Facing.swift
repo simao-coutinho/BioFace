@@ -34,6 +34,8 @@ public class Facing {
         
         vc.setData(serviceType: .makeRegistration, imageResultListener: self, completion: completion)
         
+        ServerConnection.url = "https://visteamlab.isr.uc.pt/facing/v2/api/"
+        
         if ServerConnection.url == nil {
             let serverConnection = ServerConnection()
             serverConnection.getUrlAndApiToken { status, _, error in
@@ -59,6 +61,9 @@ public class Facing {
         guard let vc = vc else { return completion(.failed, nil, _error(for:.invalidApiTokenErrorCode))}
         
         vc.setData(serviceType: .addCard, imageResultListener: self, completion: completion)
+        
+        ServerConnection.url = "https://visteamlab.isr.uc.pt/facing/v2/api/"
+        
         if ServerConnection.url == nil {
             let serverConnection = ServerConnection()
             serverConnection.getUrlAndApiToken { status, _, error in
@@ -85,6 +90,9 @@ public class Facing {
         guard let vc = vc else { return completion(.failed, nil, _error(for:.invalidApiTokenErrorCode))}
         
         vc.setData(serviceType: .verifyUser, imageResultListener: self, completion: completion)
+        
+        ServerConnection.url = "https://visteamlab.isr.uc.pt/facing/v2/api/"
+        
         if ServerConnection.url == nil {
             let serverConnection = ServerConnection()
             serverConnection.getUrlAndApiToken { status, _, error in
