@@ -59,6 +59,10 @@ class FacingViewController: UIViewController {
             progressBar.progress = progress / total
         }
     }
+    
+    public func hideProgress() {
+        ProgressView.isHidden = true
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()

@@ -85,7 +85,6 @@ class ServerConnection {
         guard let headers = getHeaders() else { return }
         
         AF.request("\(ServerConnection.url ?? "")\(url)", method: .get, parameters: parameters, encoding: URLEncoding.queryString, headers: headers).responseDecodable(of: ExtractResponse.self) { response in
-            
             switch response.result {
                 case .success(_):
                     completion(.succeeded, Response(success: true, data: response.value), nil)

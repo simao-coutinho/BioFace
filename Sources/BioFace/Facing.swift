@@ -20,6 +20,7 @@ public class Facing {
     private var icaoOptions : [Int] = []
     
     private var newTemplate : [Float] = []
+    private let serverConnection = ServerConnection()
     
     public init() {}
     
@@ -37,7 +38,6 @@ public class Facing {
         ServerConnection.url = "https://visteamlab.isr.uc.pt/facing/v2/api/"
         
         if ServerConnection.url == nil {
-            let serverConnection = ServerConnection()
             serverConnection.getUrlAndApiToken { status, _, error in
                 switch status {
                 case .succeeded:
@@ -65,7 +65,6 @@ public class Facing {
         ServerConnection.url = "https://visteamlab.isr.uc.pt/facing/v2/api/"
         
         if ServerConnection.url == nil {
-            let serverConnection = ServerConnection()
             serverConnection.getUrlAndApiToken { status, _, error in
                 switch status {
                 case .succeeded:
@@ -94,7 +93,6 @@ public class Facing {
         ServerConnection.url = "https://visteamlab.isr.uc.pt/facing/v2/api/"
         
         if ServerConnection.url == nil {
-            let serverConnection = ServerConnection()
             serverConnection.getUrlAndApiToken { status, _, error in
                 switch status {
                 case .succeeded:
@@ -119,16 +117,23 @@ extension Facing : ImageResultListener {
         
         switch currentEndpoint.endpoint {
         case FacingEndpoint.EXTRACT :
-            self.fetchFromServer(with: currentEndpoint.endpoint, parameters: currentEndpoint.parameters, progress: Float(counter), totalProgress: Float(endpoints.count)) { extractStatus, response, extractError in
-                guard extractStatus == .succeeded else {
+            serverConnection.makeGetConnection(url: currentEndpoint.endpoint,parameters: currentEndpoint.parameters) { status, response, error in
+                self.vc?.setProgress(progress: Float(counter), total: Float(endpoints.count))
+                guard status == .succeeded else {
                     self.vc?.dismiss(animated: true)
-                    completion(extractStatus, nil, extractError)
+                    completion(.failed, nil, error)
                     return
                 }
                 
-                guard let template = response?.data else {
+                guard let template = response?.data?.data else {
                     self.vc?.dismiss(animated: true)
-                    completion(extractStatus, nil, extractError)
+                    completion(.failed, nil, error)
+                    return
+                }
+                
+                if response?.data?.verdict == 0 {
+                    self.vc?.dismiss(animated: true)
+                    completion(.failed, nil, nil)
                     return
                 }
                 
@@ -149,19 +154,48 @@ extension Facing : ImageResultListener {
                 return
             }
             
-            let serverConnection = ServerConnection()
             serverConnection.makeCompareVerification(templateA: self.newTemplate,templateB: currentTemplate) { status, response, error in
                 self.vc?.setProgress(progress: Float(counter), total: Float(endpoints.count))
                 print("Compare Response: \(String(describing: response))")
                 self.vc?.dismiss(animated: true)
+                
+                if response?.data?.verdict == 0 {
+                    completion(.failed, nil, nil)
+                    return
+                }
+                
                 completion(status, response, error)
             }
         default :
-            self.fetchFromServer(with: currentEndpoint.endpoint, parameters: currentEndpoint.parameters, progress: Float(counter), totalProgress: Float(endpoints.count)) { complianceStatus, _, complianceError in
-                guard complianceStatus == .succeeded else {
+            serverConnection.makeGetConnection(url: currentEndpoint.endpoint,parameters: currentEndpoint.parameters) { status, response, error in
+                self.vc?.setProgress(progress: Float(counter), total: Float(endpoints.count))
+                guard status == .succeeded else {
                     self.vc?.dismiss(animated: true)
-                    completion(complianceStatus, nil, complianceError)
+                    completion(.failed, nil, error)
                     return
+                }
+                
+                if response?.data?.verdict == 0 {
+                    if currentEndpoint.endpoint == FacingEndpoint.COMPLIANCE, let blocks = response?.data?.blocks {
+                        for block in blocks {
+                            if block.verdict == 0 {
+                                let alert = UIAlertController(title: "", message: IcaoOptions().getMessage(icaoOption: block.name ?? ""), preferredStyle: .alert)
+                                self.vc?.present(alert, animated: true, completion: nil)
+                                
+                                let when = DispatchTime.now() + 3
+                                DispatchQueue.main.asyncAfter(deadline: when){
+                                    alert.dismiss(animated: true, completion: nil)
+                                }
+                                
+                                self.vc?.hideProgress()
+                                return
+                            }
+                        }
+                    } else {
+                        self.vc?.dismiss(animated: true)
+                        completion(.failed, nil, nil)
+                        return
+                    }
                 }
                 
                 if (counter + 1) < endpoints.count {
@@ -207,7 +241,6 @@ extension Facing : ImageResultListener {
             
             vc?.setProgress(progress: 0, total: Float(endpoints.count))
             
-            let serverConnection = ServerConnection()
             serverConnection.makeImageUpload(with: with, sessionId: sessionId) { uploadStatus, _, uploadError in
                 guard uploadStatus == .succeeded else {
                     self.vc?.dismiss(animated: true)
@@ -249,7 +282,6 @@ extension Facing : ImageResultListener {
             
             vc?.setProgress(progress: 0, total: Float(endpoints.count))
             
-            let serverConnection = ServerConnection()
             serverConnection.makeImageUpload(with: with, sessionId: sessionId) { uploadStatus, _, uploadError in
                 guard uploadStatus == .succeeded else {
                     self.vc?.dismiss(animated: true)
@@ -301,7 +333,6 @@ extension Facing : ImageResultListener {
             
             vc?.setProgress(progress: 0, total: Float(endpoints.count))
             
-            let serverConnection = ServerConnection()
             serverConnection.makeImageUpload(with: with, sessionId: sessionId) { uploadStatus, _, uploadError in
                 guard uploadStatus == .succeeded else {
                     self.vc?.dismiss(animated: true)
@@ -310,16 +341,6 @@ extension Facing : ImageResultListener {
                 }
                 self.makeCallToServerFor(endpoints, counter: 1, completion: completion)
             }
-        }
-    }
-    
-    private func fetchFromServer(with url: String, parameters: [String : Any], progress: Float, totalProgress: Float, completion: @escaping (FacingStatus, ExtractResponse?, NSError?) -> Void) {
-        let serverConnection = ServerConnection()
-        
-        serverConnection.makeGetConnection(url: url,parameters: parameters) { status, response, error in
-            self.vc?.setProgress(progress: progress, total: totalProgress)
-            print("\(url) Response: \(String(describing: response))")
-            completion(status, response?.data, error)
         }
     }
 }
