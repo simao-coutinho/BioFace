@@ -157,6 +157,8 @@ extension Facing : ImageResultListener {
                 FacingEndpoint(endpoint: FacingEndpoint.EXTRACT, parameters: parameters)
             )
             
+            vc?.setProgress(progress: 0, total: Float(endpoints.count))
+            
             let serverConnection = ServerConnection()
             serverConnection.makeImageUpload(with: with, sessionId: sessionId) { uploadStatus, _, uploadError in
                 guard uploadStatus == .succeeded else {
@@ -196,6 +198,8 @@ extension Facing : ImageResultListener {
             endpoints.append(
                 FacingEndpoint(endpoint: FacingEndpoint.EXTRACT, parameters: parameters)
             )
+            
+            vc?.setProgress(progress: 0, total: Float(endpoints.count))
             
             let serverConnection = ServerConnection()
             serverConnection.makeImageUpload(with: with, sessionId: sessionId) { uploadStatus, _, uploadError in
@@ -245,6 +249,8 @@ extension Facing : ImageResultListener {
             endpoints.append(
                 FacingEndpoint(endpoint: FacingEndpoint.COMPARE, parameters: parameters)
             )
+            
+            vc?.setProgress(progress: 0, total: Float(endpoints.count))
             
             let serverConnection = ServerConnection()
             serverConnection.makeImageUpload(with: with, sessionId: sessionId) { uploadStatus, _, uploadError in
