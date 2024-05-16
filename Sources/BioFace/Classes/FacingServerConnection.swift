@@ -93,7 +93,7 @@ class ServerConnection {
                     completion(.failed, Response(success: false, data: response.value), response.error as NSError?)
                 }
             
-            print("URL: \(url) -> Response: \(response)")
+            print("URL: \(ServerConnection.url ?? "")\(url) -> Response: \(response)")
         }
     }
     
