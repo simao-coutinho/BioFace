@@ -257,6 +257,8 @@ extension Facing : ImageResultListener {
             let sessionId = UUID().uuidString
             let parameters = ["session_id": sessionId]
             
+            print("SESSION_ID: \(sessionId)")
+            
             var endpoints : [FacingEndpoint] = [
                 FacingEndpoint(endpoint: FacingEndpoint.UPLOAD_IMAGE, parameters: parameters)
             ]
@@ -305,6 +307,8 @@ extension Facing : ImageResultListener {
             
             let sessionId = UUID().uuidString
             let parameters = ["session_id": sessionId]
+            
+            print("SESSION_ID: \(sessionId)")
             
             var endpoints : [FacingEndpoint] = [
                 FacingEndpoint(endpoint: FacingEndpoint.UPLOAD_IMAGE, parameters: parameters)
