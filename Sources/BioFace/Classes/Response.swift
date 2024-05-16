@@ -15,7 +15,7 @@ public struct Response: Decodable {
 public struct ExtractResponse: Decodable {
     public private(set) var name: String?
     public private(set) var data: Array<Float>?
-    public private(set) var verdict: Int = 0
+    public private(set) var verdict: Int? = 0
     public private(set) var blocks: Array<ExtractResponse>?
 }
 
