@@ -15,7 +15,6 @@ public class Facing {
     
     private var vc : FacingViewController? = nil
     
-    private let url = "https://visteamlab.isr.uc.pt/facing/v2/api/"
     private let secureDataKey = "GENERAL_BIOMETRIC_DATA_EXTR"
     
     private var livenessOptions : [Int] = []
@@ -34,8 +33,20 @@ public class Facing {
         guard let vc = vc else { return completion(.failed, nil, _error(for:.invalidApiTokenErrorCode))}
         
         vc.setData(serviceType: .makeRegistration, imageResultListener: self, completion: completion)
-        viewController.present(vc, animated: true, completion: nil)
         
+        if ServerConnection.url == nil {
+            let serverConnection = ServerConnection()
+            serverConnection.getUrlAndApiToken { status, _, error in
+                switch status {
+                case .succeeded:
+                    viewController.present(vc, animated: true, completion: nil)
+                default:
+                    completion(.failed, nil, error)
+                }
+            }
+        } else {
+            viewController.present(vc, animated: true, completion: nil)
+        }
     }
     
     public func addCard(viewController: UIViewController, completion: @escaping FacingResponse) {
@@ -47,7 +58,19 @@ public class Facing {
         guard let vc = vc else { return completion(.failed, nil, _error(for:.invalidApiTokenErrorCode))}
         
         vc.setData(serviceType: .addCard, imageResultListener: self, completion: completion)
-        viewController.present(vc, animated: true, completion: nil)
+        if ServerConnection.url == nil {
+            let serverConnection = ServerConnection()
+            serverConnection.getUrlAndApiToken { status, _, error in
+                switch status {
+                case .succeeded:
+                    viewController.present(vc, animated: true, completion: nil)
+                default:
+                    completion(.failed, nil, error)
+                }
+            }
+        } else {
+            viewController.present(vc, animated: true, completion: nil)
+        }
         
     }
     
@@ -60,8 +83,19 @@ public class Facing {
         guard let vc = vc else { return completion(.failed, nil, _error(for:.invalidApiTokenErrorCode))}
         
         vc.setData(serviceType: .verifyUser, imageResultListener: self, completion: completion)
-        viewController.present(vc, animated: true, completion: nil)
-        
+        if ServerConnection.url == nil {
+            let serverConnection = ServerConnection()
+            serverConnection.getUrlAndApiToken { status, _, error in
+                switch status {
+                case .succeeded:
+                    viewController.present(vc, animated: true, completion: nil)
+                default:
+                    completion(.failed, nil, error)
+                }
+            }
+        } else {
+            viewController.present(vc, animated: true, completion: nil)
+        }
     }
 }
 

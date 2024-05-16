@@ -11,13 +11,12 @@ import UIKit
 
 class ServerConnection {
     
-    private let url = "https://visteamlab.isr.uc.pt/facing/v2/api/"
+    public static var url : String?
+    private static var apiToken: String?
     
     private func getHeaders() -> HTTPHeaders? {
-        guard let apiToken = Facing.apiToken else { return nil}
-        
         let headers: HTTPHeaders = [
-            "authorization": "Bearer " + apiToken,
+            "authorization": "Bearer \(ServerConnection.apiToken ?? "")",
             "Content-Type": "application/x-www-form-urlencoded"
         ]
         
@@ -41,7 +40,7 @@ class ServerConnection {
                 multipartFormData.append(sessionIdData, withName: "session_id")
                 multipartFormData.append(file, withName: "collection" , fileName: "collection.jpg", mimeType: "image/jpg")
         },
-            to: url + "collect", method: .post , headers: headers).responseDecodable(of: Response.self) { response in
+            to: "\(ServerConnection.url ?? "")collect", method: .post , headers: headers).responseDecodable(of: Response.self) { response in
                 
                 switch response.result {
                     case .success(_):
@@ -55,10 +54,37 @@ class ServerConnection {
             }
     }
     
+    func getUrlAndApiToken(completion: @escaping FacingResponse) {
+        let url = "https://dev.bioface.devcprojects.com/api/authenticate"
+        
+        let parameters = [
+            "token" : Facing.apiToken,
+            "bundle" : Bundle.main.bundleIdentifier,
+            "platform" : "ios"
+        ]
+        
+        AF.request(url, method: .get, parameters: parameters).responseDecodable(of: AuthenticationResponse.self) { response in
+            switch response.result {
+            case .success(_):
+                if response.response?.url != nil {
+                    ServerConnection.url = response.value?.url
+                    ServerConnection.apiToken = response.value?.api_token
+                    completion(.succeeded, nil, nil)
+                } else {
+                    completion(.failed, nil, response.error as NSError?)
+                }
+                    
+                case .failure(_):
+                    completion(.failed, nil, response.error as NSError?)
+                }
+            print("URL: \(url) -> Response: \(response)")
+        }
+    }
+    
     func makeGetConnection(url: String, parameters: [String : Any], completion: @escaping FacingResponse) {
         guard let headers = getHeaders() else { return }
         
-        AF.request(self.url + url, method: .get, parameters: parameters, encoding: URLEncoding.queryString, headers: headers).responseDecodable(of: ExtractResponse.self) { response in
+        AF.request("\(ServerConnection.url ?? "")\(url)", method: .get, parameters: parameters, encoding: URLEncoding.queryString, headers: headers).responseDecodable(of: ExtractResponse.self) { response in
             
             switch response.result {
                 case .success(_):
@@ -75,12 +101,7 @@ class ServerConnection {
         guard let headers = getHeaders() else { return }
         
         do {
-            //let dataTemplateA = convertArrayToFile(template: templateA) ?? Data()
-            //let dataTemplateA = Data(buffer: UnsafeBufferPointer(start: templateA, count: templateA.count))
             let dataTemplateA = try JSONSerialization.data(withJSONObject: templateA, options: [])
-            
-            //let dataTemplateB = convertArrayToFile(template: templateB) ?? Data()
-            //let dataTemplateB = Data(buffer: UnsafeBufferPointer(start: templateB, count: templateB.count))
             let dataTemplateB = try JSONSerialization.data(withJSONObject: templateB, options: [])
             
             AF.upload(
@@ -88,7 +109,7 @@ class ServerConnection {
                     multipartFormData.append(dataTemplateA, withName: "templateA")
                     multipartFormData.append(dataTemplateB, withName: "templateB")
                 },
-                to: url + "compare", method: .post, headers: headers).responseString { response in
+                to: "\(ServerConnection.url ?? "")compare", method: .post, headers: headers).responseString { response in
                     
                     switch response.result {
                     case .success(_):
@@ -101,20 +122,6 @@ class ServerConnection {
                     
                     print("URL: Compare -> Response: \(response)")
             }
-            
-            /*AF.request(self.url + "compare", method: .post, parameters: ["templateA": templateA, "templateB": templateB], encoding: URLEncoding.httpBody, headers: headers).responseString { response in
-                
-                switch response.result {
-                case .success(_):
-                    print("success: \(response)")
-                    completion(.succeeded, Response(success: true, data: nil), nil)
-                case .failure(_):
-                    print("failure: \(response)")
-                    completion(.failed, Response(success: false, data: nil), response.error as NSError?)
-                }
-                
-                print("URL: Compare -> Response: \(response)")
-            }*/
         } catch {
             
         }

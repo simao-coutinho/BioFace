@@ -18,3 +18,8 @@ public struct ExtractResponse: Decodable {
     public private(set) var verdict: Int?
     public private(set) var blocks: Array<ExtractResponse>?
 }
+
+public struct AuthenticationResponse: Decodable {
+    public private(set) var api_token: String?
+    public private(set) var url: String?
+}
