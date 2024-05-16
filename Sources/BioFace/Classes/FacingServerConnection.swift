@@ -84,7 +84,7 @@ class ServerConnection {
     func makeGetConnection(url: String, parameters: [String : Any], completion: @escaping FacingResponse) {
         guard let headers = getHeaders() else { return }
         
-        AF.request("\(ServerConnection.url ?? "")\(url)", method: .get, parameters: parameters, encoding: URLEncoding.queryString, headers: headers).responseDecodable(of: ExtractResponse.self) { response in
+        AF.request("\(ServerConnection.url ?? "")\(url)", method: .get, parameters: parameters, headers: headers).responseDecodable(of: ExtractResponse.self) { response in
             switch response.result {
                 case .success(_):
                     completion(.succeeded, Response(success: true, data: response.value), nil)
