@@ -181,8 +181,6 @@ extension Facing : ImageResultListener {
                 }
                 
                 if response?.data?.verdict == 0 {
-                    print("parameters: \(currentEndpoint.parameters)")
-                    
                     if currentEndpoint.endpoint == FacingEndpoint.COMPLIANCE, let blocks = response?.data?.blocks {
                         for block in blocks {
                             if block.verdict == 0 {

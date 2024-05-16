@@ -93,6 +93,7 @@ class ServerConnection {
                 }
             
             print("URL: \(ServerConnection.url ?? "")\(url) -> Response: \(response)")
+            print("Teste: \(response.response?.url)")
         }
     }
     
