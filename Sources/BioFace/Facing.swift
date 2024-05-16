@@ -17,18 +17,18 @@ public class Facing {
     
     private let secureDataKey = "GENERAL_BIOMETRIC_DATA_EXTR"
     
-    private var livenessOptions : [Int] = []
+    private var icaoOptions : [Int] = []
     
     private var newTemplate : [Float] = []
     
     public init() {}
     
-    public func makeRegistration(viewController: UIViewController, livenessOptions: [Int] = LivenessOptions().getDefaults(), completion: @escaping FacingResponse) {
+    public func makeRegistration(viewController: UIViewController, icaoOptions: [Int] = IcaoOptions().getDefaults(), completion: @escaping FacingResponse) {
         guard Facing.apiToken != nil else {
             return completion(.failed, nil, _error(for: .invalidApiTokenErrorCode)) }
         
         vc = FacingViewController.init()
-        self.livenessOptions = livenessOptions
+        self.icaoOptions = icaoOptions
         
         guard let vc = vc else { return completion(.failed, nil, _error(for:.invalidApiTokenErrorCode))}
         
@@ -81,11 +81,11 @@ public class Facing {
         
     }
     
-    public func verifyUser(viewController: UIViewController, livenessOptions: [Int] = LivenessOptions().getDefaults(), completion: @escaping FacingResponse) {
+    public func verifyUser(viewController: UIViewController, icaoOptions: [Int] = IcaoOptions().getDefaults(), completion: @escaping FacingResponse) {
         guard Facing.apiToken != nil else { return completion(.failed, nil, _error(for: .invalidApiTokenErrorCode)) }
         
         vc = FacingViewController.init()
-        self.livenessOptions = livenessOptions
+        self.icaoOptions = icaoOptions
         
         guard let vc = vc else { return completion(.failed, nil, _error(for:.invalidApiTokenErrorCode))}
         
@@ -111,6 +111,7 @@ public class Facing {
 }
 
 extension Facing : ImageResultListener {
+    
     private func makeCallToServerFor(_ endpoints: [FacingEndpoint], counter: Int, completion: @escaping FacingResponse) {
         vc?.setProgress(progress: Float(counter), total: Float(endpoints.count))
         
@@ -185,18 +186,18 @@ extension Facing : ImageResultListener {
             ]
             
             if ENDPOINT_COMPLIANCE {
-                endpoints.append(
-                    FacingEndpoint(endpoint: FacingEndpoint.COMPLIANCE, parameters: parameters)
-                )
-            }
-            if ENDPOINT_LIVENESS {
                 let parametersWithOptions: [String : Any] = [
                     "session_id": sessionId,
-                    "requirements": self.livenessOptions
+                    "requirements": self.icaoOptions
                 ]
                 
                 endpoints.append(
-                    FacingEndpoint(endpoint: FacingEndpoint.LIVENESS, parameters: parametersWithOptions)
+                    FacingEndpoint(endpoint: FacingEndpoint.COMPLIANCE, parameters: parametersWithOptions)
+                )
+            }
+            if ENDPOINT_LIVENESS {
+                endpoints.append(
+                    FacingEndpoint(endpoint: FacingEndpoint.LIVENESS, parameters: parameters)
                 )
             }
             
@@ -275,18 +276,19 @@ extension Facing : ImageResultListener {
             ]
             
             if ENDPOINT_COMPLIANCE {
-                endpoints.append(
-                    FacingEndpoint(endpoint: FacingEndpoint.COMPLIANCE, parameters: parameters)
-                )
-            }
-            if ENDPOINT_LIVENESS {
                 let parametersWithOptions: [String : Any] = [
                     "session_id": sessionId,
-                    "requirements": self.livenessOptions
+                    "requirements": self.icaoOptions
                 ]
                 
                 endpoints.append(
-                    FacingEndpoint(endpoint: FacingEndpoint.LIVENESS, parameters: parametersWithOptions)
+                    FacingEndpoint(endpoint: FacingEndpoint.COMPLIANCE, parameters: parametersWithOptions)
+                )
+            }
+            if ENDPOINT_LIVENESS {
+                
+                endpoints.append(
+                    FacingEndpoint(endpoint: FacingEndpoint.LIVENESS, parameters: parameters)
                 )
             }
             

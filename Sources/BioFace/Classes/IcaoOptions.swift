@@ -7,7 +7,7 @@
 
 import Foundation
 
-public class LivenessOptions {
+public class IcaoOptions {
     
     public init() {}
     
