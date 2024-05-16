@@ -88,6 +88,8 @@ public class Facing {
         vc = FacingViewController.init()
         self.icaoOptions = icaoOptions
         
+        print("ICAO_OPTIONS: \(icaoOptions)")
+        
         guard let vc = vc else { return completion(.failed, nil, _error(for:.invalidApiTokenErrorCode))}
         
         vc.setData(serviceType: .verifyUser, imageResultListener: self, completion: completion)
@@ -179,6 +181,8 @@ extension Facing : ImageResultListener {
                 }
                 
                 if response?.data?.verdict == 0 {
+                    print("parameters: \(currentEndpoint.parameters)")
+                    
                     if currentEndpoint.endpoint == FacingEndpoint.COMPLIANCE, let blocks = response?.data?.blocks {
                         for block in blocks {
                             if block.verdict == 0 {
