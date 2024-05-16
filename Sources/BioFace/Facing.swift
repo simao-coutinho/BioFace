@@ -88,8 +88,6 @@ public class Facing {
         vc = FacingViewController.init()
         self.icaoOptions = icaoOptions
         
-        print("ICAO_OPTIONS: \(icaoOptions)")
-        
         guard let vc = vc else { return completion(.failed, nil, _error(for:.invalidApiTokenErrorCode))}
         
         vc.setData(serviceType: .verifyUser, imageResultListener: self, completion: completion)
@@ -227,7 +225,7 @@ extension Facing : ImageResultListener {
             if ENDPOINT_COMPLIANCE {
                 let parametersWithOptions: [String : Any] = [
                     "session_id": sessionId,
-                    "requirements": self.icaoOptions
+                    "requirements": "[\(self.icaoOptions.map { option in String(option) }.joined(separator: ","))]"
                 ]
                 
                 endpoints.append(
@@ -319,7 +317,7 @@ extension Facing : ImageResultListener {
             if ENDPOINT_COMPLIANCE {
                 let parametersWithOptions: [String : Any] = [
                     "session_id": sessionId,
-                    "requirements": self.icaoOptions
+                    "requirements": "[\(self.icaoOptions.map { option in String(option) }.joined(separator: ","))]"
                 ]
                 
                 endpoints.append(
