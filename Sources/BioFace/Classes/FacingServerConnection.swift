@@ -12,7 +12,7 @@ import UIKit
 class ServerConnection {
     
     public static var url : String?
-    private static var apiToken: String?
+    public static var apiToken: String?
     
     private func getHeaders() -> HTTPHeaders? {
         let headers: HTTPHeaders = [

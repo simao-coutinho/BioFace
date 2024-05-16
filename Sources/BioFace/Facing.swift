@@ -39,6 +39,7 @@ public class Facing {
             serverConnection.getUrlAndApiToken { status, _, error in
                 switch status {
                 case .succeeded:
+                    ServerConnection.apiToken = Facing.apiToken
                     viewController.present(vc, animated: true, completion: nil)
                 default:
                     completion(.failed, nil, error)
@@ -63,6 +64,7 @@ public class Facing {
             serverConnection.getUrlAndApiToken { status, _, error in
                 switch status {
                 case .succeeded:
+                    ServerConnection.apiToken = Facing.apiToken
                     viewController.present(vc, animated: true, completion: nil)
                 default:
                     completion(.failed, nil, error)
@@ -88,6 +90,7 @@ public class Facing {
             serverConnection.getUrlAndApiToken { status, _, error in
                 switch status {
                 case .succeeded:
+                    ServerConnection.apiToken = Facing.apiToken
                     viewController.present(vc, animated: true, completion: nil)
                 default:
                     completion(.failed, nil, error)
