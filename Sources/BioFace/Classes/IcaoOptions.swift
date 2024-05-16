@@ -13,7 +13,7 @@ public class IcaoOptions {
     
     private var options : [Int] = []
     
-    public enum option: Int {
+    public enum Option: Int {
         case ICAO_EYES_OPENED = 1
         case ICAO_NEUTRAL_EXPRESSION = 2
         case ICAO_MOUTH_CLOSED = 3
@@ -42,8 +42,8 @@ public class IcaoOptions {
     }
     
     
-    public func addOption(option: Int) {
-        options.append(option)
+    public func addOption(option: Option) {
+        options.append(option.rawValue)
     }
     
     public func getOptions() -> [Int] {
