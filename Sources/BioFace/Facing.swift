@@ -321,7 +321,6 @@ extension Facing : ImageResultListener {
                 )
             }
             if ENDPOINT_LIVENESS {
-                
                 endpoints.append(
                     FacingEndpoint(endpoint: FacingEndpoint.LIVENESS, parameters: parameters)
                 )

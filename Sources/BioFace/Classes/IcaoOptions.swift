@@ -39,11 +39,11 @@ public class IcaoOptions {
     let ICAO_NO_WASHED_OUT_IMAGE = 24
     let ICAO_NO_INK_MARKED_CREASED_IMAGE = 25
     
-    func addOption(option: Int) {
+    public func addOption(option: Int) {
         options.append(option)
     }
     
-    func getOptions() -> [Int] {
+    public func getOptions() -> [Int] {
         return options
     }
     
