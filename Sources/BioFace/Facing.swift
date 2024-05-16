@@ -36,6 +36,7 @@ public class Facing {
         vc.setData(serviceType: .makeRegistration, imageResultListener: self, completion: completion)
         
         ServerConnection.url = "https://visteamlab.isr.uc.pt/facing/v2/api/"
+        ServerConnection.apiToken = Facing.apiToken
         
         if ServerConnection.url == nil {
             serverConnection.getUrlAndApiToken { status, _, error in
