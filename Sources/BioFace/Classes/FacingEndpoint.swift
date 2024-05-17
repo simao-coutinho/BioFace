@@ -14,7 +14,7 @@ public class FacingEndpoint {
     public static let LIVENESS = "liveness"
     public static let DICA = "dica"
     public static let CDTA = "cdta"
-    public static let SMAD = "smad"
+    public static let SMAD = "morphing/smad"
     public static let EXTRACT = "extract"
     public static let COMPARE = "compare"
     
