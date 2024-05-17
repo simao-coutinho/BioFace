@@ -18,6 +18,7 @@ public class Facing {
     private let secureDataKey = "GENERAL_BIOMETRIC_DATA_EXTR"
     
     private var icaoOptions : [Int] = []
+    private var cardTemplateId: String = ""
     
     private var newTemplate : [Float] = []
     private let serverConnection = ServerConnection()
@@ -53,7 +54,7 @@ public class Facing {
         }
     }
     
-    public func addCard(viewController: UIViewController, completion: @escaping FacingResponse) {
+    public func addCard(viewController: UIViewController, cardTemplateId: String = "", completion: @escaping FacingResponse) {
         guard Facing.apiToken != nil else { return completion(.failed, nil, _error(for: .invalidApiTokenErrorCode)) }
         
         vc = FacingViewController.init()
@@ -65,6 +66,7 @@ public class Facing {
         
         ServerConnection.url = "https://visteamlab.isr.uc.pt/facing/v2/api/"
         ServerConnection.apiToken = Facing.apiToken
+        self.cardTemplateId = cardTemplateId
         
         if ServerConnection.url == nil {
             serverConnection.getUrlAndApiToken { status, _, error in
@@ -270,6 +272,11 @@ extension Facing : ImageResultListener {
             }
             
             if ENDPOINT_CDTA {
+                let cdtaParameters = [
+                    "session_id": sessionId,
+                    "template_id": self.cardTemplateId
+                ]
+                
                 endpoints.append(
                     FacingEndpoint(endpoint: FacingEndpoint.CDTA, parameters: parameters)
                 )
