@@ -278,7 +278,7 @@ extension Facing : ImageResultListener {
                 ]
                 
                 endpoints.append(
-                    FacingEndpoint(endpoint: FacingEndpoint.CDTA, parameters: parameters)
+                    FacingEndpoint(endpoint: FacingEndpoint.CDTA, parameters: cdtaParameters)
                 )
             }
             
