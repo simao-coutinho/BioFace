@@ -116,7 +116,7 @@ public class Facing {
 extension Facing : ImageResultListener {
     
     private func checkVerdictFor(_ response: Response?) -> Bool {
-        return response?.data?.verdict != nil && response?.data?.verdict != 0
+        return response?.data?.verdict == 1
     }
     
     
