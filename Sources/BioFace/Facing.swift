@@ -141,7 +141,7 @@ extension Facing : ImageResultListener {
                     return
                 }
                 
-                if self.checkVerdictFor(response) {
+                if !self.checkVerdictFor(response) {
                     self.vc?.dismiss(animated: true)
                     completion(.failed, nil, nil)
                     return
@@ -169,7 +169,7 @@ extension Facing : ImageResultListener {
                 print("Compare Response: \(String(describing: response))")
                 self.vc?.dismiss(animated: true)
                 
-                if self.checkVerdictFor(response) {
+                if !self.checkVerdictFor(response) {
                     completion(.failed, nil, nil)
                     return
                 }
@@ -185,7 +185,7 @@ extension Facing : ImageResultListener {
                     return
                 }
                 
-                if self.checkVerdictFor(response) {
+                if !self.checkVerdictFor(response) {
                     if currentEndpoint.endpoint == FacingEndpoint.COMPLIANCE, let blocks = response?.data?.blocks {
                         for block in blocks {
                             if block.verdict == 0 {
