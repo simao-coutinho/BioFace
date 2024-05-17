@@ -115,6 +115,11 @@ public class Facing {
 
 extension Facing : ImageResultListener {
     
+    private func checkVerdictFor(_ response: Response?) -> Bool {
+        return response?.data?.verdict != nil && response?.data?.verdict != 0
+    }
+    
+    
     private func makeCallToServerFor(_ endpoints: [FacingEndpoint], counter: Int, completion: @escaping FacingResponse) {
         vc?.setProgress(progress: Float(counter), total: Float(endpoints.count))
         
@@ -136,7 +141,7 @@ extension Facing : ImageResultListener {
                     return
                 }
                 
-                if response?.data?.verdict == 0 {
+                if self.checkVerdictFor(response) {
                     self.vc?.dismiss(animated: true)
                     completion(.failed, nil, nil)
                     return
@@ -164,7 +169,7 @@ extension Facing : ImageResultListener {
                 print("Compare Response: \(String(describing: response))")
                 self.vc?.dismiss(animated: true)
                 
-                if response?.data?.verdict == 0 {
+                if self.checkVerdictFor(response) {
                     completion(.failed, nil, nil)
                     return
                 }
@@ -180,7 +185,7 @@ extension Facing : ImageResultListener {
                     return
                 }
                 
-                if response?.data?.verdict == 0 {
+                if self.checkVerdictFor(response) {
                     if currentEndpoint.endpoint == FacingEndpoint.COMPLIANCE, let blocks = response?.data?.blocks {
                         for block in blocks {
                             if block.verdict == 0 {
