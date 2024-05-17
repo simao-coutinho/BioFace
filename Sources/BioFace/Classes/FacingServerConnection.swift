@@ -109,12 +109,12 @@ class ServerConnection {
                     multipartFormData.append(dataTemplateA, withName: "templateA")
                     multipartFormData.append(dataTemplateB, withName: "templateB")
                 },
-                to: "\(ServerConnection.url ?? "")compare", method: .post, headers: headers).responseString { response in
+                to: "\(ServerConnection.url ?? "")compare", method: .post, headers: headers).responseDecodable(of: ExtractResponse.self) { response in
                     
                     switch response.result {
                     case .success(_):
                         print("success: \(response)")
-                        completion(.succeeded, Response(success: true, data: nil), nil)
+                        completion(.succeeded, Response(success: true, data: response.value), nil)
                     case .failure(_):
                         print("failure: \(response)")
                         completion(.failed, Response(success: false, data: nil), response.error as NSError?)
