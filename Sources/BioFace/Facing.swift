@@ -57,6 +57,13 @@ public class Facing {
     public func addCard(viewController: UIViewController, cardTemplateId: String = "", completion: @escaping FacingResponse) {
         guard Facing.apiToken != nil else { return completion(.failed, nil, _error(for: .invalidApiTokenErrorCode)) }
         
+        let currentTemplate = SecureData().retrieveFloatArrayFromKeychain(forKey: self.secureDataKey)
+        
+        if (currentTemplate == nil || currentTemplate == []) {
+            completion(.failed, nil, _error(for: .invalidTemplateFromSecureKey))
+            return
+        }
+        
         vc = FacingViewController.init()
         vc?.frontCameraCurrent = false
         
@@ -87,6 +94,13 @@ public class Facing {
     public func verifyUser(viewController: UIViewController, icaoOptions: [Int] = IcaoOptions().getDefaults(), completion: @escaping FacingResponse) {
         guard Facing.apiToken != nil else { return completion(.failed, nil, _error(for: .invalidApiTokenErrorCode)) }
         
+        let currentTemplate = SecureData().retrieveFloatArrayFromKeychain(forKey: self.secureDataKey)
+        
+        if (currentTemplate == nil || currentTemplate == []) {
+            completion(.failed, nil, _error(for: .invalidTemplateFromSecureKey))
+            return
+        }
+        
         vc = FacingViewController.init()
         self.icaoOptions = icaoOptions
         
@@ -110,6 +124,12 @@ public class Facing {
         } else {
             viewController.present(vc, animated: true, completion: nil)
         }
+    }
+    
+    public func invalidateUser(completion: @escaping FacingResponse) {
+        SecureData().saveFloatArrayToKeychain(floatArray: [], forKey: self.secureDataKey)
+        completion(.succeeded, nil, nil)
+        
     }
 }
 
@@ -295,6 +315,10 @@ extension Facing : ImageResultListener {
             
             endpoints.append(
                 FacingEndpoint(endpoint: FacingEndpoint.EXTRACT, parameters: parameters)
+            )
+            
+            endpoints.append(
+                FacingEndpoint(endpoint: FacingEndpoint.COMPARE, parameters: parameters)
             )
             
             vc?.setProgress(progress: 0, total: Float(endpoints.count))
