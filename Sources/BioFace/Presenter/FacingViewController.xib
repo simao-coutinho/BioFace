@@ -70,8 +70,8 @@
                         <action selector="takePictureClicked:" destination="-1" eventType="touchUpInside" id="Hpb-WK-OXI"/>
                     </connections>
                 </button>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Nova foto em 30 segundos" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Y0U-d5-wB8">
-                    <rect key="frame" x="110" y="771" width="210" height="21"/>
+                <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Nova foto em 30 segundos" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Y0U-d5-wB8">
+                    <rect key="frame" x="110" y="797" width="210" height="21"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="210" id="NsF-JX-mM1"/>
                     </constraints>
@@ -144,7 +144,7 @@
                 <constraint firstAttribute="bottom" secondItem="ORW-NT-ZeE" secondAttribute="bottom" id="VVY-ne-i3h"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="SNe-mh-T8n" secondAttribute="trailing" constant="16" id="ZoJ-Es-ZQ2"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="5jR-hf-YSl" secondAttribute="bottom" constant="16" id="ghg-eR-pQq"/>
-                <constraint firstItem="37D-JS-D4f" firstAttribute="top" secondItem="Y0U-d5-wB8" secondAttribute="bottom" constant="34" id="h9T-T0-hIC"/>
+                <constraint firstItem="37D-JS-D4f" firstAttribute="top" secondItem="Y0U-d5-wB8" secondAttribute="bottom" constant="8" id="h9T-T0-hIC"/>
                 <constraint firstItem="ICS-Rk-DpE" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="heX-z6-NCG"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="SNe-mh-T8n" secondAttribute="bottom" constant="16" id="lql-U5-6Hc"/>
                 <constraint firstItem="Y0U-d5-wB8" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="qXm-nw-wGr"/>

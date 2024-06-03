@@ -76,6 +76,7 @@ class FacingViewController: UIViewController {
     @objc func updateCounter() {
         //example functionality
         if timerCountdown > 0 {
+            timerLabel.isHidden = false
             timerLabel.text = "Nova foto em \(timerCountdown) segundos"
             
             timerCountdown -= 1
@@ -149,6 +150,7 @@ class FacingViewController: UIViewController {
     
     private func takePicture() {
         timer?.invalidate()
+        timerLabel.isHidden = true
         
         // Set photo settings
         let photoSettings = AVCapturePhotoSettings(format: [AVVideoCodecKey: AVVideoCodecType.jpeg])
