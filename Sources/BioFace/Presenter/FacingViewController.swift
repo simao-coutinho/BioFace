@@ -153,6 +153,7 @@ class FacingViewController: UIViewController {
         timerLabel.isHidden = true
         timerCountdown = 10
         
+        
         // Set photo settings
         let photoSettings = AVCapturePhotoSettings(format: [AVVideoCodecKey: AVVideoCodecType.jpeg])
         // Configure photo settings
