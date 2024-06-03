@@ -151,6 +151,7 @@ class FacingViewController: UIViewController {
     private func takePicture() {
         timer?.invalidate()
         timerLabel.isHidden = true
+        timerCountdown = 10
         
         // Set photo settings
         let photoSettings = AVCapturePhotoSettings(format: [AVVideoCodecKey: AVVideoCodecType.jpeg])
