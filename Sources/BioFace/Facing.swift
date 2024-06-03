@@ -25,7 +25,7 @@ public class Facing {
     
     public init() {}
     
-    public func makeRegistration(viewController: UIViewController, icaoOptions: [Int] = IcaoOptions().getDefaults(), completion: @escaping FacingResponse) {
+    public func makeRegistration(viewController: UIViewController, icaoOptions: [Int] = IcaoOptions().getRegistrationDefaults(), completion: @escaping FacingResponse) {
         guard Facing.apiToken != nil else {
             return completion(.failed, nil, _error(for: .invalidApiTokenErrorCode)) }
         
@@ -91,7 +91,7 @@ public class Facing {
         
     }
     
-    public func verifyUser(viewController: UIViewController, icaoOptions: [Int] = IcaoOptions().getDefaults(), completion: @escaping FacingResponse) {
+    public func verifyUser(viewController: UIViewController, icaoOptions: [Int] = IcaoOptions().getVerificationDefaults(), completion: @escaping FacingResponse) {
         guard Facing.apiToken != nil else { return completion(.failed, nil, _error(for: .invalidApiTokenErrorCode)) }
         
         let currentTemplate = SecureData().retrieveFloatArrayFromKeychain(forKey: self.secureDataKey)

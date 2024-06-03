@@ -50,8 +50,12 @@ public class IcaoOptions {
         return options
     }
     
-    public func getDefaults() -> [Int] {
-        return [10, 21, 23, 24, 16, 17, 18, 20, 22, 15, 11, 12, 13, 14, 1, 6, 7, 19, 3, 2, 8, 9, 5, 4]
+    public func getRegistrationDefaults() -> [Int] {
+        return [10, 21, 18, 11, 1, 6, 19, 3, 2, 5, 4]
+    }
+    
+    public func getVerificationDefaults() -> [Int] {
+        return [10, 11, 1, 6, 5]
     }
     
     public func getMessage(icaoOption: String) -> String {

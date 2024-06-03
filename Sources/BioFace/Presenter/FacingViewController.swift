@@ -62,6 +62,7 @@ class FacingViewController: UIViewController {
     
     public func hideProgress() {
         ProgressView.isHidden = true
+        enableCameraPreview()
     }
 
     override func viewDidLoad() {
@@ -74,20 +75,31 @@ class FacingViewController: UIViewController {
     @IBAction func onChangeCameraClicked(_ sender: Any) {
         frontCameraCurrent = !frontCameraCurrent // Toggle the current camera flag
             
-            // Remove existing inputs from the session
-            for input in captureSession.inputs {
-                captureSession.removeInput(input)
-            }
-            
-            // Configure session with the new camera input
-            if frontCameraCurrent {
-                configureCameraInput(position: .front)
-            } else {
-                configureCameraInput(position: .back)
-            }
-            
-            // Restart the capture session
-            captureSession.startRunning()
+        enableCameraPreview()
+    }
+    
+    private func disableCameraPreview() {
+        for input in captureSession.inputs {
+            captureSession.removeInput(input)
+        }
+        captureSession.stopRunning()
+    }
+    
+    private func enableCameraPreview() {
+        // Remove existing inputs from the session
+        for input in captureSession.inputs {
+            captureSession.removeInput(input)
+        }
+        
+        // Configure session with the new camera input
+        if frontCameraCurrent {
+            configureCameraInput(position: .front)
+        } else {
+            configureCameraInput(position: .back)
+        }
+        
+        // Restart the capture session
+        captureSession.startRunning()
     }
     
     private func configureCameraInput(position: AVCaptureDevice.Position) {
@@ -173,6 +185,9 @@ extension FacingViewController: AVCapturePhotoCaptureDelegate {
         guard let completion = self.completion else { return }
         
         stillImage = image
+        
+        disableCameraPreview()
+        
         imageResultListener?.onImageResult(from: serviceType, with: image, completion: completion)
     }
 }
