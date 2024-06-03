@@ -218,6 +218,7 @@ extension Facing : ImageResultListener {
                                 }
                                 
                                 self.vc?.hideProgress()
+                                self.vc?.startTimer()
                                 return
                             }
                         }

@@ -20,6 +20,7 @@ class FacingViewController: UIViewController {
     @IBOutlet weak var ProgressView: UIView!
     @IBOutlet weak var progressBar: UIProgressView!
     
+    @IBOutlet weak var timerLabel: UILabel!
     var frontFacingCamera: AVCaptureDevice?
     var backFacingCamera: AVCaptureDevice?
     let captureDevice = AVCaptureDevice.default(for: .video)
@@ -36,6 +37,9 @@ class FacingViewController: UIViewController {
     private var imageResultListener: ImageResultListener?
     private var serviceType: ServiceType = .makeRegistration
     private var completion: FacingResponse?
+    
+    private var timer: Timer?
+    private var timerCountdown = 10
     
     init() {
             super.init(nibName: "FacingViewController", bundle: Bundle.module)
@@ -63,6 +67,21 @@ class FacingViewController: UIViewController {
     public func hideProgress() {
         ProgressView.isHidden = true
         enableCameraPreview()
+    }
+    
+    public func startTimer() {
+        timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(updateCounter), userInfo: nil, repeats: true)
+    }
+    
+    @objc func updateCounter() {
+        //example functionality
+        if timerCountdown > 0 {
+            timerLabel.text = "Nova foto em \(timerCountdown) segundos"
+            
+            timerCountdown -= 1
+        } else {
+            takePicture()
+        }
     }
 
     override func viewDidLoad() {
@@ -125,6 +144,12 @@ class FacingViewController: UIViewController {
     }
     
     @IBAction func takePictureClicked(_ sender: UIButton) {
+        takePicture()
+    }
+    
+    private func takePicture() {
+        timer?.invalidate()
+        
         // Set photo settings
         let photoSettings = AVCapturePhotoSettings(format: [AVVideoCodecKey: AVVideoCodecType.jpeg])
         // Configure photo settings
