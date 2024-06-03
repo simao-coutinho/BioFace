@@ -85,6 +85,7 @@ public class IcaoOptions {
             case "ICAO_NO_PIXELATED_IMAGE": "Imagem com qualidade fraca"
             case "ICAO_NO_WASHED_OUT_IMAGE": "Imagem com qualidade fraca"
             case "ICAO_NO_INK_MARKED_CREASED_IMAGE": "Imagem com qualidade fraca"
+            case "ICAO_FACE_NOT_DETECTED": "Não foi encontrada uma face"
             default: "ICAO Não Reconhecido"
         }
     }
