@@ -24,7 +24,15 @@ class ServerConnection {
     }
     
     func makeImageUpload(with image: UIImage,sessionId: String, completion: @escaping FacingResponse) {
-        guard let apiToken = Facing.apiToken else { return }
+        if ServerConnection.apiToken == nil {
+            getUrlAndApiToken { status, response, error in
+                self.makeImageUpload(with: image,sessionId: sessionId, completion: completion)
+                return
+            }
+        }
+        
+        
+        guard let apiToken = ServerConnection.apiToken else { return }
         let headers: HTTPHeaders = [
             "authorization": "Bearer " + apiToken,
         ]
@@ -93,7 +101,6 @@ class ServerConnection {
                 }
             
             print("URL: \(ServerConnection.url ?? "")\(url) -> Response: \(response)")
-            print("Teste: \(response.response?.url)")
         }
     }
     
