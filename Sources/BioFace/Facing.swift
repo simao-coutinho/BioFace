@@ -36,21 +36,7 @@ public class Facing {
         
         vc.setData(serviceType: .makeRegistration, imageResultListener: self, completion: completion)
         
-        //ServerConnection.url = "https://visteamlab.isr.uc.pt/facing/v2/api/"
-        //ServerConnection.apiToken = Facing.apiToken
-        
-        if ServerConnection.url == nil {
-            serverConnection.getUrlAndApiToken { status, _, error in
-                switch status {
-                case .succeeded:
-                    viewController.present(vc, animated: true, completion: nil)
-                default:
-                    completion(.failed, nil, error)
-                }
-            }
-        } else {
-            viewController.present(vc, animated: true, completion: nil)
-        }
+        viewController.present(vc, animated: true, completion: nil)
     }
     
     public func addCard(viewController: UIViewController, cardTemplateId: String = "", completion: @escaping FacingResponse) {
@@ -70,23 +56,7 @@ public class Facing {
         
         vc.setData(serviceType: .addCard, imageResultListener: self, completion: completion)
         
-        //ServerConnection.url = "https://visteamlab.isr.uc.pt/facing/v2/api/"
-        //ServerConnection.apiToken = Facing.apiToken
-        self.cardTemplateId = cardTemplateId
-        
-        if ServerConnection.url == nil {
-            serverConnection.getUrlAndApiToken { status, _, error in
-                switch status {
-                case .succeeded:
-                    viewController.present(vc, animated: true, completion: nil)
-                default:
-                    completion(.failed, nil, error)
-                }
-            }
-        } else {
-            viewController.present(vc, animated: true, completion: nil)
-        }
-        
+        viewController.present(vc, animated: true, completion: nil)
     }
     
     public func verifyUser(viewController: UIViewController, icaoOptions: [Int] = IcaoOptions().getVerificationDefaults(), completion: @escaping FacingResponse) {
@@ -106,21 +76,7 @@ public class Facing {
         
         vc.setData(serviceType: .verifyUser, imageResultListener: self, completion: completion)
         
-        //ServerConnection.url = "https://visteamlab.isr.uc.pt/facing/v2/api/"
-        //ServerConnection.apiToken = Facing.apiToken
-        
-        if ServerConnection.url == nil {
-            serverConnection.getUrlAndApiToken { status, _, error in
-                switch status {
-                case .succeeded:
-                    viewController.present(vc, animated: true, completion: nil)
-                default:
-                    completion(.failed, nil, error)
-                }
-            }
-        } else {
-            viewController.present(vc, animated: true, completion: nil)
-        }
+        viewController.present(vc, animated: true, completion: nil)
     }
     
     public func invalidateUser(completion: @escaping FacingResponse) {
