@@ -36,14 +36,13 @@ public class Facing {
         
         vc.setData(serviceType: .makeRegistration, imageResultListener: self, completion: completion)
         
-        ServerConnection.url = "https://visteamlab.isr.uc.pt/facing/v2/api/"
-        ServerConnection.apiToken = Facing.apiToken
+        //ServerConnection.url = "https://visteamlab.isr.uc.pt/facing/v2/api/"
+        //ServerConnection.apiToken = Facing.apiToken
         
         if ServerConnection.url == nil {
             serverConnection.getUrlAndApiToken { status, _, error in
                 switch status {
                 case .succeeded:
-                    ServerConnection.apiToken = Facing.apiToken
                     viewController.present(vc, animated: true, completion: nil)
                 default:
                     completion(.failed, nil, error)
@@ -71,15 +70,14 @@ public class Facing {
         
         vc.setData(serviceType: .addCard, imageResultListener: self, completion: completion)
         
-        ServerConnection.url = "https://visteamlab.isr.uc.pt/facing/v2/api/"
-        ServerConnection.apiToken = Facing.apiToken
+        //ServerConnection.url = "https://visteamlab.isr.uc.pt/facing/v2/api/"
+        //ServerConnection.apiToken = Facing.apiToken
         self.cardTemplateId = cardTemplateId
         
         if ServerConnection.url == nil {
             serverConnection.getUrlAndApiToken { status, _, error in
                 switch status {
                 case .succeeded:
-                    ServerConnection.apiToken = Facing.apiToken
                     viewController.present(vc, animated: true, completion: nil)
                 default:
                     completion(.failed, nil, error)
@@ -108,14 +106,13 @@ public class Facing {
         
         vc.setData(serviceType: .verifyUser, imageResultListener: self, completion: completion)
         
-        ServerConnection.url = "https://visteamlab.isr.uc.pt/facing/v2/api/"
-        ServerConnection.apiToken = Facing.apiToken
+        //ServerConnection.url = "https://visteamlab.isr.uc.pt/facing/v2/api/"
+        //ServerConnection.apiToken = Facing.apiToken
         
         if ServerConnection.url == nil {
             serverConnection.getUrlAndApiToken { status, _, error in
                 switch status {
                 case .succeeded:
-                    ServerConnection.apiToken = Facing.apiToken
                     viewController.present(vc, animated: true, completion: nil)
                 default:
                     completion(.failed, nil, error)
