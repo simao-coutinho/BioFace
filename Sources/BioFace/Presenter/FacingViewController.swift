@@ -39,7 +39,7 @@ class FacingViewController: UIViewController {
     private var completion: FacingResponse?
     
     private var timer: Timer?
-    private var timerCountdown = 10
+    private var timerCountdown = 3
     
     init() {
             super.init(nibName: "FacingViewController", bundle: Bundle.module)
@@ -151,7 +151,7 @@ class FacingViewController: UIViewController {
     private func takePicture() {
         timer?.invalidate()
         timerLabel.isHidden = true
-        timerCountdown = 10
+        timerCountdown = 3
         
         
         // Set photo settings
