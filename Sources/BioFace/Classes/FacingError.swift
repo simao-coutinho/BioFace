@@ -18,6 +18,7 @@ private let errorDomain = "FacingHandlerErrorDomain"
     case invalidSessionIdErrorCode
     case invalidTemplateFromSecureKey
     case invalidTemplateFromServer
+    case veredictNotValid
 }
 
 func _error(
@@ -41,6 +42,8 @@ func _error(
         userInfo[NSLocalizedDescriptionKey] = "The template stored in secure storage is invalid! Please register the user again"
     case .invalidTemplateFromServer:
         userInfo[NSLocalizedDescriptionKey] = "The template retrieve from the server is invalid! Please try again"
+    case .veredictNotValid:
+        userInfo[NSLocalizedDescriptionKey] = apiErrorCode
     }
     
     return NSError(

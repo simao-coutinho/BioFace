@@ -158,8 +158,8 @@ extension Facing : ImageResultListener {
                     return
                 }
                 
-                if !self.checkVerdictFor(response) {
-                    if currentEndpoint.endpoint == FacingEndpoint.COMPLIANCE, let blocks = response?.data?.blocks {
+                if !self.checkVerdictFor(response), let blocks = response?.data?.blocks {
+                    if currentEndpoint.endpoint == FacingEndpoint.COMPLIANCE {
                         for block in blocks {
                             if block.verdict == 0 {
                                 self.vc?.alertLabel.text = IcaoOptions().getMessage(icaoOption: block.name ?? "")
@@ -176,6 +176,15 @@ extension Facing : ImageResultListener {
                             }
                         }
                     } else {
+                        for block in blocks {
+                            if block.verdict == 0 {
+                                let error = IcaoOptions().getMessage(icaoOption: block.name ?? "")
+                                
+                                self.vc?.dismiss(animated: true)
+                                completion(.failed, nil, _error(for: .veredictNotValid, apiErrorCode: error))
+                                return
+                            }
+                        }
                         self.vc?.dismiss(animated: true)
                         completion(.failed, nil, nil)
                         return
