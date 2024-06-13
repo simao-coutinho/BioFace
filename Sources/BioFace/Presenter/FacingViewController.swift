@@ -20,7 +20,9 @@ class FacingViewController: UIViewController {
     @IBOutlet weak var ProgressView: UIView!
     @IBOutlet weak var progressBar: UIProgressView!
     
-    @IBOutlet weak var timerLabel: UILabel!
+    @IBOutlet weak var alertLabel: UILabel!
+    @IBOutlet weak var alertView: UIView!
+    @IBOutlet weak var titleLabel: UILabel!
     var frontFacingCamera: AVCaptureDevice?
     var backFacingCamera: AVCaptureDevice?
     let captureDevice = AVCaptureDevice.default(for: .video)
@@ -39,7 +41,7 @@ class FacingViewController: UIViewController {
     private var completion: FacingResponse?
     
     private var timer: Timer?
-    private var timerCountdown = 3
+    private var timerCountdown = 5
     
     init() {
             super.init(nibName: "FacingViewController", bundle: Bundle.module)
@@ -76,9 +78,6 @@ class FacingViewController: UIViewController {
     @objc func updateCounter() {
         //example functionality
         if timerCountdown > 0 {
-            timerLabel.isHidden = false
-            timerLabel.text = "Nova foto em \(timerCountdown) segundos"
-            
             timerCountdown -= 1
         } else {
             takePicture()
@@ -150,8 +149,7 @@ class FacingViewController: UIViewController {
     
     private func takePicture() {
         timer?.invalidate()
-        timerLabel.isHidden = true
-        timerCountdown = 3
+        timerCountdown = 5
         
         
         // Set photo settings
