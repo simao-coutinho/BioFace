@@ -154,6 +154,7 @@ class FacingViewController: UIViewController {
     @IBAction func onBackButtonClicked(_ sender: Any) {
         guard let completion = self.completion else { return }
         self.dismiss(animated: true)
+        timer?.invalidate()
         return completion(.canceled, nil, nil)
     }
     
