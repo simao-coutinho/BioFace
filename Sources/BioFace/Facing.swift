@@ -162,12 +162,12 @@ extension Facing : ImageResultListener {
                     if currentEndpoint.endpoint == FacingEndpoint.COMPLIANCE, let blocks = response?.data?.blocks {
                         for block in blocks {
                             if block.verdict == 0 {
-                                let alert = UIAlertController(title: "", message: IcaoOptions().getMessage(icaoOption: block.name ?? ""), preferredStyle: .alert)
-                                self.vc?.present(alert, animated: true, completion: nil)
+                                self.vc?.alertLabel.text = IcaoOptions().getMessage(icaoOption: block.name ?? "")
+                                self.vc?.alertView.isHidden = false
                                 
                                 let when = DispatchTime.now() + 3
                                 DispatchQueue.main.asyncAfter(deadline: when){
-                                    alert.dismiss(animated: true, completion: nil)
+                                    self.vc?.alertView.isHidden = true
                                 }
                                 
                                 self.vc?.hideProgress()

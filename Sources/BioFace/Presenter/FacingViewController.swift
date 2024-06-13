@@ -10,6 +10,7 @@ import AVFoundation
 
 class FacingViewController: UIViewController {
     
+    @IBOutlet weak var frameRoundedImage: UIImageView!
     @IBOutlet weak var frameUiImage: UIImageView!
     @IBOutlet fileprivate weak var captureButton: UIButton!
     @IBOutlet fileprivate weak var mainView: UIView!
@@ -20,6 +21,7 @@ class FacingViewController: UIViewController {
     @IBOutlet weak var ProgressView: UIView!
     @IBOutlet weak var progressBar: UIProgressView!
     
+    @IBOutlet weak var titlePortraitLabel: RotatableView!
     @IBOutlet weak var alertLabel: UILabel!
     @IBOutlet weak var alertView: UIView!
     @IBOutlet weak var titleLabel: UILabel!
@@ -86,6 +88,18 @@ class FacingViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        switch serviceType {
+        case .makeRegistration:
+            titleLabel.text = "Captura de Face para Registo"
+        case .addCard:
+            frameUiImage.isHidden = false
+            frameRoundedImage.isHidden = true
+            titleLabel.isHidden = true
+            titlePortraitLabel.isHidden = false
+        case .verifyUser:
+            titleLabel.text = "Autenticação Facial"
+        }
 
         // Do any additional setup after loading the view.
         configure()

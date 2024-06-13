@@ -19,10 +19,12 @@
                 <outlet property="btnChangeCamera" destination="SNe-mh-T8n" id="clf-Hc-k56"/>
                 <outlet property="buttonImageView" destination="37D-JS-D4f" id="rRs-9y-Dzi"/>
                 <outlet property="captureButton" destination="BIN-5U-Zv0" id="2s0-eQ-l33"/>
+                <outlet property="frameRoundedImage" destination="aGd-oo-L6L" id="GEr-6G-DzX"/>
                 <outlet property="frameUiImage" destination="ICS-Rk-DpE" id="y8C-nK-7Di"/>
                 <outlet property="mainView" destination="sln-Jr-vYV" id="EEM-gk-XJj"/>
                 <outlet property="progressBar" destination="FdZ-NM-J9V" id="P9P-ID-gAp"/>
                 <outlet property="titleLabel" destination="Shc-Cc-vs7" id="rTe-vL-Ymc"/>
+                <outlet property="titlePortraitLabel" destination="oHM-Rk-qUx" id="RJD-kq-63o"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
@@ -37,8 +39,8 @@
                 </view>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Shc-Cc-vs7">
                     <rect key="frame" x="16" y="75" width="398" height="21"/>
-                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                    <nil key="textColor"/>
+                    <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                    <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <nil key="highlightedColor"/>
                 </label>
                 <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="aHt-mh-8lk">
@@ -59,8 +61,12 @@
                         <constraint firstItem="OOZ-7J-JmK" firstAttribute="top" secondItem="aHt-mh-8lk" secondAttribute="top" constant="16" id="WI5-Gw-cGQ"/>
                     </constraints>
                 </view>
-                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" image="Frame" translatesAutoresizingMaskIntoConstraints="NO" id="ICS-Rk-DpE">
+                <imageView hidden="YES" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" image="Frame" translatesAutoresizingMaskIntoConstraints="NO" id="ICS-Rk-DpE">
                     <rect key="frame" x="0.0" y="0.0" width="430" height="932"/>
+                </imageView>
+                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" fixedFrame="YES" image="frame_oval" translatesAutoresizingMaskIntoConstraints="NO" id="aGd-oo-L6L" userLabel="RoundedFrame">
+                    <rect key="frame" x="0.0" y="0.0" width="430" height="932"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                 </imageView>
                 <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" image="camera.aperture" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="37D-JS-D4f">
                     <rect key="frame" x="183" y="827" width="64" height="62.666666666666629"/>
@@ -70,10 +76,10 @@
                         <constraint firstAttribute="height" constant="64" id="waO-2c-IN0"/>
                     </constraints>
                 </imageView>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Enquadre o seu cartão na moldura." textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="oHM-Rk-qUx" customClass="RotatableView" customModule="BioFace">
-                    <rect key="frame" x="148.66666666666666" y="455.66666666666669" width="265.33333333333337" height="21"/>
-                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                    <nil key="textColor"/>
+                <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Enquadre o seu cartão na moldura." textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="oHM-Rk-qUx" customClass="RotatableView" customModule="BioFace">
+                    <rect key="frame" x="263.66666666666674" y="455.66666666666669" width="282.33333333333326" height="21"/>
+                    <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                    <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <nil key="highlightedColor"/>
                     <userDefinedRuntimeAttributes>
                         <userDefinedRuntimeAttribute type="number" keyPath="rotationDegrees">
@@ -176,7 +182,7 @@
                 <constraint firstAttribute="bottom" secondItem="ORW-NT-ZeE" secondAttribute="bottom" id="VVY-ne-i3h"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="SNe-mh-T8n" secondAttribute="trailing" constant="16" id="ZoJ-Es-ZQ2"/>
                 <constraint firstItem="Shc-Cc-vs7" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="16" id="fxr-va-nQy"/>
-                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="oHM-Rk-qUx" secondAttribute="trailing" constant="16" id="g8g-B2-cp7"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="oHM-Rk-qUx" secondAttribute="trailing" constant="-116" id="g8g-B2-cp7"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="5jR-hf-YSl" secondAttribute="bottom" constant="16" id="ghg-eR-pQq"/>
                 <constraint firstItem="ICS-Rk-DpE" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="heX-z6-NCG"/>
                 <constraint firstItem="oHM-Rk-qUx" firstAttribute="centerY" secondItem="i5M-Pr-FkT" secondAttribute="centerY" id="iIK-V3-M63"/>
@@ -188,11 +194,17 @@
             <point key="canvasLocation" x="12" y="-11"/>
         </view>
     </objects>
+    <designables>
+        <designable name="oHM-Rk-qUx">
+            <size key="intrinsicContentSize" width="282.33333333333331" height="20.333333333333332"/>
+        </designable>
+    </designables>
     <resources>
         <image name="Frame" width="1080" height="1920"/>
         <image name="arrowshape.backward.fill" catalog="system" width="128" height="104"/>
         <image name="camera.aperture" catalog="system" width="128" height="123"/>
         <image name="camera.rotate.fill" catalog="system" width="128" height="93"/>
+        <image name="frame_oval" width="270" height="480"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
