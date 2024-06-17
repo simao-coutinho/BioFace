@@ -88,6 +88,8 @@ public class IcaoOptions {
         case "ICAO_FACE_NOT_DETECTED": "Não foi detetada uma face na imagem"
         case "FACE_DETECTED": "Não foi detetada uma face. Por favor, tente outra vez."
         case "LIVENESS": "Possível ataque de apresentação detetado"
+        case "LIVENESS_YES": "Possível ataque de apresentação detetado"
+        case "GENERAL_BIOMETRIC_DATA_COMP": "A face detetada não corresponde à de registo"
         default: "\(icaoOption) retornou falso"
         }
     }

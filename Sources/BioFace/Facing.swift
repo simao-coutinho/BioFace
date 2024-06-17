@@ -22,6 +22,8 @@ public class Facing {
     
     private var newTemplate : [Float] = []
     private let serverConnection = ServerConnection()
+    private var functionality : ServiceType = .makeRegistration
+    private var firstTime = true
     
     public init() {}
     
@@ -51,6 +53,7 @@ public class Facing {
         
         vc = FacingViewController.init()
         vc?.frontCameraCurrent = false
+        functionality = .addCard
         
         guard let vc = vc else { return completion(.failed, nil, _error(for:.invalidApiTokenErrorCode))}
         
@@ -71,6 +74,7 @@ public class Facing {
         
         vc = FacingViewController.init()
         self.icaoOptions = icaoOptions
+        functionality = .verifyUser
         
         guard let vc = vc else { return completion(.failed, nil, _error(for:.invalidApiTokenErrorCode))}
         
@@ -143,7 +147,10 @@ extension Facing : ImageResultListener {
                 self.vc?.dismiss(animated: true)
                 
                 if !self.checkVerdictFor(response) {
-                    completion(.failed, nil, nil)
+                    let error = IcaoOptions().getMessage(icaoOption: response?.data?.name ?? "")
+                    
+                    self.vc?.dismiss(animated: true)
+                    completion(.failed, nil, _error(for: .veredictNotValid, apiErrorCode: error))
                     return
                 }
                 
@@ -162,17 +169,25 @@ extension Facing : ImageResultListener {
                     if currentEndpoint.endpoint == FacingEndpoint.COMPLIANCE {
                         for block in blocks {
                             if block.verdict == 0 {
-                                self.vc?.alertLabel.text = IcaoOptions().getMessage(icaoOption: block.name ?? "")
-                                self.vc?.alertView.isHidden = false
-                                
-                                let when = DispatchTime.now() + 3
-                                DispatchQueue.main.asyncAfter(deadline: when){
-                                    self.vc?.alertView.isHidden = true
+                                if self.functionality == .makeRegistration {
+                                    self.vc?.alertLabel.text = IcaoOptions().getMessage(icaoOption: block.name ?? "")
+                                    self.vc?.alertView.isHidden = false
+                                    
+                                    let when = DispatchTime.now() + 3
+                                    DispatchQueue.main.asyncAfter(deadline: when){
+                                        self.vc?.alertView.isHidden = true
+                                    }
+                                    
+                                    self.vc?.hideProgress()
+                                    self.vc?.startTimer()
+                                    return
+                                } else {
+                                    let error = IcaoOptions().getMessage(icaoOption: block.name ?? "")
+                                    
+                                    self.vc?.dismiss(animated: true)
+                                    completion(.failed, nil, _error(for: .veredictNotValid, apiErrorCode: error))
+                                    return
                                 }
-                                
-                                self.vc?.hideProgress()
-                                self.vc?.startTimer()
-                                return
                             }
                         }
                     } else {
@@ -211,6 +226,13 @@ extension Facing : ImageResultListener {
             var endpoints : [FacingEndpoint] = [
                 FacingEndpoint(endpoint: FacingEndpoint.UPLOAD_IMAGE, parameters: parameters)
             ]
+            
+            if firstTime && ENDPOINT_LIVENESS {
+                endpoints.append(
+                    FacingEndpoint(endpoint: FacingEndpoint.LIVENESS, parameters: parameters)
+                )
+                firstTime = false
+            }
             
             if ENDPOINT_COMPLIANCE {
                 let parametersWithOptions: [String : Any] = [
@@ -295,15 +317,6 @@ extension Facing : ImageResultListener {
                 self.makeCallToServerFor(endpoints, counter: 1, completion: completion)
             }
         case .verifyUser:
-            var counter : Float = 3
-            if ENDPOINT_COMPLIANCE {
-                counter += 1
-            }
-            
-            if ENDPOINT_LIVENESS {
-                counter += 1
-            }
-            
             let sessionId = UUID().uuidString
             let parameters = ["session_id": sessionId]
             
@@ -313,6 +326,12 @@ extension Facing : ImageResultListener {
                 FacingEndpoint(endpoint: FacingEndpoint.UPLOAD_IMAGE, parameters: parameters)
             ]
             
+            if ENDPOINT_LIVENESS {
+                endpoints.append(
+                    FacingEndpoint(endpoint: FacingEndpoint.LIVENESS, parameters: parameters)
+                )
+            }
+            
             if ENDPOINT_COMPLIANCE {
                 let parametersWithOptions: [String : Any] = [
                     "session_id": sessionId,
@@ -321,11 +340,6 @@ extension Facing : ImageResultListener {
                 
                 endpoints.append(
                     FacingEndpoint(endpoint: FacingEndpoint.COMPLIANCE, parameters: parametersWithOptions)
-                )
-            }
-            if ENDPOINT_LIVENESS {
-                endpoints.append(
-                    FacingEndpoint(endpoint: FacingEndpoint.LIVENESS, parameters: parameters)
                 )
             }
             
