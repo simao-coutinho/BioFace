@@ -41,4 +41,8 @@ public enum Endpoint: String, CaseIterable {
     case SMAD = "morphing/smad"
     case EXTRACT = "extract"
     case COMPARE = "compare"
+    
+    func fromRawValue(value: String) -> Endpoint? {
+        return Endpoint(rawValue: value)
+    }
 }
