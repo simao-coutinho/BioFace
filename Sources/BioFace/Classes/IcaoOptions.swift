@@ -39,6 +39,11 @@ public class IcaoOptions {
         case ICAO_NO_PIXELATED_IMAGE = 23
         case ICAO_NO_WASHED_OUT_IMAGE = 24
         case ICAO_NO_INK_MARKED_CREASED_IMAGE = 25
+        
+        public static func fromRawValue(value: String) -> Option {
+            let intValue = Int(value) ?? 1
+            return Option(rawValue: intValue) ?? ICAO_EYES_OPENED
+        }
     }
     
     

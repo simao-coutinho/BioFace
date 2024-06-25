@@ -42,7 +42,7 @@ public enum Endpoint: String, CaseIterable {
     case EXTRACT = "extract"
     case COMPARE = "compare"
     
-    public static func fromRawValue(value: String) -> Endpoint? {
-        return Endpoint(rawValue: value)
+    public static func fromRawValue(value: String) -> Endpoint {
+        return Endpoint(rawValue: value) ?? LIVENESS
     }
 }
