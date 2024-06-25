@@ -6,19 +6,14 @@ public class Facing {
     public static var apiToken: String?
     public static let sharedHandler: Facing = Facing()
     
-    public var ENDPOINT_COMPLIANCE = true
-    public var ENDPOINT_LIVENESS = true
-    public var ENDPOINT_DICA = true
-    public var ENDPOINT_CDTA = true
-    public var ENDPOINT_SMAD = true
-    
-    
     private var vc : FacingViewController? = nil
     
     private let secureDataKey = "GENERAL_BIOMETRIC_DATA_EXTR"
     
     private var icaoOptions : [Int] = []
+    private var endpoints : [Endpoint: Bool] = [:]
     private var cardTemplateId: String = ""
+    private var timerCountdown: Int = 0
     
     private var newTemplate : [Float] = []
     private let serverConnection = ServerConnection()
@@ -27,12 +22,25 @@ public class Facing {
     
     public init() {}
     
-    public func makeRegistration(viewController: UIViewController, icaoOptions: [Int] = IcaoOptions().getRegistrationDefaults(), completion: @escaping FacingResponse) {
+    public func makeRegistration(viewController: UIViewController, icaoOptions: IcaoOptions = IcaoOptions(), endpoints : [Endpoint: Bool] = [:], timerCountdown: Int = 5, completion: @escaping FacingResponse) {
         guard Facing.apiToken != nil else {
             return completion(.failed, nil, _error(for: .invalidApiTokenErrorCode)) }
         
         vc = FacingViewController.init()
-        self.icaoOptions = icaoOptions
+        
+        self.icaoOptions = if icaoOptions.getOptions().isEmpty {
+            IcaoOptions().getRegistrationDefaults()
+        } else {
+            icaoOptions.getOptions()
+        }
+        
+        self.endpoints = if endpoints.isEmpty {
+            FacingEndpoint.getRegistrationAndVerifyDefaults()
+        } else {
+            endpoints
+        }
+        
+        self.timerCountdown = timerCountdown
         
         guard let vc = vc else { return completion(.failed, nil, _error(for:.invalidApiTokenErrorCode))}
         
@@ -41,7 +49,7 @@ public class Facing {
         viewController.present(vc, animated: true, completion: nil)
     }
     
-    public func addCard(viewController: UIViewController, cardTemplateId: String = "", completion: @escaping FacingResponse) {
+    public func addCard(viewController: UIViewController,  endpoints : [Endpoint: Bool] = [:], cardTemplateId: String = "", completion: @escaping FacingResponse) {
         guard Facing.apiToken != nil else { return completion(.failed, nil, _error(for: .invalidApiTokenErrorCode)) }
         
         let currentTemplate = SecureData().retrieveFloatArrayFromKeychain(forKey: self.secureDataKey)
@@ -49,6 +57,12 @@ public class Facing {
         if (currentTemplate == nil || currentTemplate == []) {
             completion(.failed, nil, _error(for: .invalidTemplateFromSecureKey))
             return
+        }
+        
+        self.endpoints = if endpoints.isEmpty {
+            FacingEndpoint.getAddCardDefaults()
+        } else {
+            endpoints
         }
         
         vc = FacingViewController.init()
@@ -62,7 +76,7 @@ public class Facing {
         viewController.present(vc, animated: true, completion: nil)
     }
     
-    public func verifyUser(viewController: UIViewController, icaoOptions: [Int] = IcaoOptions().getVerificationDefaults(), completion: @escaping FacingResponse) {
+    public func verifyUser(viewController: UIViewController,  icaoOptions: IcaoOptions = IcaoOptions(), endpoints : [Endpoint: Bool] = [:], completion: @escaping FacingResponse) {
         guard Facing.apiToken != nil else { return completion(.failed, nil, _error(for: .invalidApiTokenErrorCode)) }
         
         let currentTemplate = SecureData().retrieveFloatArrayFromKeychain(forKey: self.secureDataKey)
@@ -72,8 +86,19 @@ public class Facing {
             return
         }
         
+        self.icaoOptions = if icaoOptions.getOptions().isEmpty {
+            IcaoOptions().getVerificationDefaults()
+        } else {
+            icaoOptions.getOptions()
+        }
+        
+        self.endpoints = if endpoints.isEmpty {
+            FacingEndpoint.getRegistrationAndVerifyDefaults()
+        } else {
+            endpoints
+        }
+        
         vc = FacingViewController.init()
-        self.icaoOptions = icaoOptions
         functionality = .verifyUser
         
         guard let vc = vc else { return completion(.failed, nil, _error(for:.invalidApiTokenErrorCode))}
@@ -103,8 +128,8 @@ extension Facing : ImageResultListener {
         let currentEndpoint = endpoints[counter]
         
         switch currentEndpoint.endpoint {
-        case FacingEndpoint.EXTRACT :
-            serverConnection.makeGetConnection(url: currentEndpoint.endpoint,parameters: currentEndpoint.parameters) { status, response, error in
+        case Endpoint.EXTRACT :
+            serverConnection.makeGetConnection(url: currentEndpoint.endpoint.rawValue,parameters: currentEndpoint.parameters) { status, response, error in
                 self.vc?.setProgress(progress: Float(counter), total: Float(endpoints.count))
                 guard status == .succeeded else {
                     self.vc?.dismiss(animated: true)
@@ -134,7 +159,7 @@ extension Facing : ImageResultListener {
                     completion(.succeeded, nil, nil)
                 }
             }
-        case FacingEndpoint.COMPARE:
+        case Endpoint.COMPARE:
             guard let currentTemplate = SecureData().retrieveFloatArrayFromKeychain(forKey: self.secureDataKey) else {
                 self.vc?.dismiss(animated: true)
                 completion(.failed, nil, _error(for: .invalidTemplateFromSecureKey))
@@ -157,7 +182,7 @@ extension Facing : ImageResultListener {
                 completion(status, response, error)
             }
         default :
-            serverConnection.makeGetConnection(url: currentEndpoint.endpoint,parameters: currentEndpoint.parameters) { status, response, error in
+            serverConnection.makeGetConnection(url: currentEndpoint.endpoint.rawValue,parameters: currentEndpoint.parameters) { status, response, error in
                 self.vc?.setProgress(progress: Float(counter), total: Float(endpoints.count))
                 guard status == .succeeded else {
                     self.vc?.dismiss(animated: true)
@@ -166,7 +191,7 @@ extension Facing : ImageResultListener {
                 }
                 
                 if !self.checkVerdictFor(response), let blocks = response?.data?.blocks {
-                    if currentEndpoint.endpoint == FacingEndpoint.COMPLIANCE {
+                    if currentEndpoint.endpoint == Endpoint.COMPLIANCE {
                         for block in blocks {
                             if block.verdict == 0 {
                                 if self.functionality == .makeRegistration {
@@ -220,38 +245,31 @@ extension Facing : ImageResultListener {
             let sessionId = UUID().uuidString
             let parameters = ["session_id": sessionId]
             
-            print("SESSION_ID: \(sessionId)")
-            
-            
             var endpoints : [FacingEndpoint] = [
-                FacingEndpoint(endpoint: FacingEndpoint.UPLOAD_IMAGE, parameters: parameters)
+                FacingEndpoint(endpoint: Endpoint.UPLOAD_IMAGE, parameters: parameters)
             ]
             
-            if firstTime && ENDPOINT_LIVENESS {
-                endpoints.append(
-                    FacingEndpoint(endpoint: FacingEndpoint.LIVENESS, parameters: parameters)
-                )
-                firstTime = false
-            }
-            
-            if ENDPOINT_COMPLIANCE {
-                let parametersWithOptions: [String : Any] = [
-                    "session_id": sessionId,
-                    "requirements": "[\(self.icaoOptions.map { option in String(option) }.joined(separator: ","))]"
-                ]
-                
-                endpoints.append(
-                    FacingEndpoint(endpoint: FacingEndpoint.COMPLIANCE, parameters: parametersWithOptions)
-                )
-            }
-            if ENDPOINT_LIVENESS {
-                endpoints.append(
-                    FacingEndpoint(endpoint: FacingEndpoint.LIVENESS, parameters: parameters)
-                )
+            self.endpoints.forEach { endpoint in
+                if (endpoint.value) {
+                    if endpoint.key == Endpoint.COMPLIANCE {
+                        let parametersWithOptions: [String : Any] = [
+                            "session_id": sessionId,
+                            "requirements": "[\(self.icaoOptions.map { option in String(option) }.joined(separator: ","))]"
+                        ]
+                        
+                        endpoints.append(
+                            FacingEndpoint(endpoint: endpoint.key, parameters: parametersWithOptions)
+                        )
+                    } else {
+                        endpoints.append(
+                            FacingEndpoint(endpoint: endpoint.key, parameters: parameters)
+                        )
+                    }
+                }
             }
             
             endpoints.append(
-                FacingEndpoint(endpoint: FacingEndpoint.EXTRACT, parameters: parameters)
+                FacingEndpoint(endpoint: Endpoint.EXTRACT, parameters: parameters)
             )
             
             vc?.setProgress(progress: 0, total: Float(endpoints.count))
@@ -269,41 +287,35 @@ extension Facing : ImageResultListener {
             let sessionId = UUID().uuidString
             let parameters = ["session_id": sessionId]
             
-            print("SESSION_ID: \(sessionId)")
-            
             var endpoints : [FacingEndpoint] = [
-                FacingEndpoint(endpoint: FacingEndpoint.UPLOAD_IMAGE, parameters: parameters)
+                FacingEndpoint(endpoint: Endpoint.UPLOAD_IMAGE, parameters: parameters)
             ]
             
-            if ENDPOINT_DICA {
-                endpoints.append(
-                    FacingEndpoint(endpoint: FacingEndpoint.DICA, parameters: parameters)
-                )
-            }
-            
-            if ENDPOINT_CDTA {
-                let cdtaParameters = [
-                    "session_id": sessionId,
-                    "template_id": self.cardTemplateId
-                ]
-                
-                endpoints.append(
-                    FacingEndpoint(endpoint: FacingEndpoint.CDTA, parameters: cdtaParameters)
-                )
-            }
-            
-            if ENDPOINT_SMAD {
-                endpoints.append(
-                    FacingEndpoint(endpoint: FacingEndpoint.SMAD, parameters: parameters)
-                )
+            self.endpoints.forEach { endpoint in
+                if (endpoint.value) {
+                    if endpoint.key == Endpoint.CDTA {
+                        let cdtaParameters = [
+                            "session_id": sessionId,
+                            "template_id": self.cardTemplateId
+                        ]
+                        
+                        endpoints.append(
+                            FacingEndpoint(endpoint: endpoint.key, parameters: cdtaParameters)
+                        )
+                    } else {
+                        endpoints.append(
+                            FacingEndpoint(endpoint: endpoint.key, parameters: parameters)
+                        )
+                    }
+                }
             }
             
             endpoints.append(
-                FacingEndpoint(endpoint: FacingEndpoint.EXTRACT, parameters: parameters)
+                FacingEndpoint(endpoint: Endpoint.EXTRACT, parameters: parameters)
             )
             
             endpoints.append(
-                FacingEndpoint(endpoint: FacingEndpoint.COMPARE, parameters: parameters)
+                FacingEndpoint(endpoint: Endpoint.COMPARE, parameters: parameters)
             )
             
             vc?.setProgress(progress: 0, total: Float(endpoints.count))
@@ -320,34 +332,34 @@ extension Facing : ImageResultListener {
             let sessionId = UUID().uuidString
             let parameters = ["session_id": sessionId]
             
-            print("SESSION_ID: \(sessionId)")
-            
             var endpoints : [FacingEndpoint] = [
-                FacingEndpoint(endpoint: FacingEndpoint.UPLOAD_IMAGE, parameters: parameters)
+                FacingEndpoint(endpoint: Endpoint.UPLOAD_IMAGE, parameters: parameters)
             ]
             
-            if ENDPOINT_LIVENESS {
-                endpoints.append(
-                    FacingEndpoint(endpoint: FacingEndpoint.LIVENESS, parameters: parameters)
-                )
-            }
-            
-            if ENDPOINT_COMPLIANCE {
-                let parametersWithOptions: [String : Any] = [
-                    "session_id": sessionId,
-                    "requirements": "[\(self.icaoOptions.map { option in String(option) }.joined(separator: ","))]"
-                ]
-                
-                endpoints.append(
-                    FacingEndpoint(endpoint: FacingEndpoint.COMPLIANCE, parameters: parametersWithOptions)
-                )
+            self.endpoints.forEach { endpoint in
+                if (endpoint.value) {
+                    if endpoint.key == Endpoint.COMPLIANCE {
+                        let parametersWithOptions: [String : Any] = [
+                            "session_id": sessionId,
+                            "requirements": "[\(self.icaoOptions.map { option in String(option) }.joined(separator: ","))]"
+                        ]
+                        
+                        endpoints.append(
+                            FacingEndpoint(endpoint: endpoint.key, parameters: parametersWithOptions)
+                        )
+                    } else {
+                        endpoints.append(
+                            FacingEndpoint(endpoint: endpoint.key, parameters: parameters)
+                        )
+                    }
+                }
             }
             
             endpoints.append(
-                FacingEndpoint(endpoint: FacingEndpoint.EXTRACT, parameters: parameters)
+                FacingEndpoint(endpoint: Endpoint.EXTRACT, parameters: parameters)
             )
             endpoints.append(
-                FacingEndpoint(endpoint: FacingEndpoint.COMPARE, parameters: parameters)
+                FacingEndpoint(endpoint: Endpoint.COMPARE, parameters: parameters)
             )
             
             vc?.setProgress(progress: 0, total: Float(endpoints.count))

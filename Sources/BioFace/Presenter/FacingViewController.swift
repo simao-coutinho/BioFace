@@ -21,6 +21,7 @@ class FacingViewController: UIViewController {
     @IBOutlet weak var ProgressView: UIView!
     @IBOutlet weak var progressBar: UIProgressView!
     
+    @IBOutlet weak var timerLabel: UILabel!
     @IBOutlet weak var titlePortraitLabel: RotatableView!
     @IBOutlet weak var alertLabel: UILabel!
     @IBOutlet weak var alertView: UIView!
@@ -44,6 +45,7 @@ class FacingViewController: UIViewController {
     
     private var timer: Timer?
     private var timerCountdown = 5
+    private var timerCounter = 5
     
     init() {
             super.init(nibName: "FacingViewController", bundle: Bundle.module)
@@ -53,10 +55,11 @@ class FacingViewController: UIViewController {
             super.init(coder: coder)
         }
     
-    public func setData(serviceType: ServiceType, imageResultListener: ImageResultListener, completion: @escaping FacingResponse) {
+    public func setData(serviceType: ServiceType, imageResultListener: ImageResultListener, timerCountdown: Int = 5, completion: @escaping FacingResponse) {
         self.serviceType = serviceType
         self.completion = completion
         self.imageResultListener = imageResultListener
+        self.timerCountdown = timerCountdown
     }
     
     public func setProgress(progress: Float, total: Float) {
@@ -79,8 +82,9 @@ class FacingViewController: UIViewController {
     
     @objc func updateCounter() {
         //example functionality
-        if timerCountdown > 0 {
-            timerCountdown -= 1
+        if timerCounter > 0 {
+            timerCounter -= 1
+            timerLabel.text = "\(timerCounter)"
         } else {
             takePicture()
         }
@@ -164,8 +168,7 @@ class FacingViewController: UIViewController {
     
     private func takePicture() {
         timer?.invalidate()
-        timerCountdown = 5
-        
+        timerCounter = timerCountdown
         
         // Set photo settings
         let photoSettings = AVCapturePhotoSettings(format: [AVVideoCodecKey: AVVideoCodecType.jpeg])

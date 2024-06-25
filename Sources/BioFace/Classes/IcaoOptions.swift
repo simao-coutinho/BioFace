@@ -13,7 +13,7 @@ public class IcaoOptions {
     
     private var options : [Int] = []
     
-    public enum Option: Int {
+    public enum Option: Int, CaseIterable {
         case ICAO_EYES_OPENED = 1
         case ICAO_NEUTRAL_EXPRESSION = 2
         case ICAO_MOUTH_CLOSED = 3
