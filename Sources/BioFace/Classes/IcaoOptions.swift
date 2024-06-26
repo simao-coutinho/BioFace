@@ -44,6 +44,17 @@ public class IcaoOptions {
             let intValue = Int(value) ?? 1
             return Option(rawValue: intValue) ?? ICAO_EYES_OPENED
         }
+        
+        public static func fromDiscribingValue(value: String) -> Option {
+            for option in Option.allCases {
+                if String(describing: option) == value {
+                    return option
+                }
+            }
+            
+            let intValue = Int(value) ?? 1
+            return Option(rawValue: intValue) ?? ICAO_EYES_OPENED
+        }
     }
     
     

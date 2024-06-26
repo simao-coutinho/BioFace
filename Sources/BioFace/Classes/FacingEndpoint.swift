@@ -45,4 +45,14 @@ public enum Endpoint: String, CaseIterable {
     public static func fromRawValue(value: String) -> Endpoint {
         return Endpoint(rawValue: value) ?? LIVENESS
     }
+    
+    public static func fromDescribingValue(value: String) -> Endpoint {
+        for endpoint in Endpoint.allCases {
+            if String(describing: endpoint) == value {
+                return endpoint
+            }
+        }
+        
+        return Endpoint(rawValue: value) ?? LIVENESS
+    }
 }
