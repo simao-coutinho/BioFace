@@ -26,8 +26,12 @@ class ServerConnection {
     func makeImageUpload(with image: UIImage,sessionId: String, completion: @escaping FacingResponse) {
         if ServerConnection.apiToken == nil {
             getUrlAndApiToken { status, response, error in
-                self.makeImageUpload(with: image,sessionId: sessionId, completion: completion)
-                return
+                if status == .succeeded {
+                    self.makeImageUpload(with: image,sessionId: sessionId, completion: completion)
+                    return
+                } else {
+                    return completion(.failed, nil, _error(for: .invalidApiTokenErrorCode))
+                }
             }
         }
         
