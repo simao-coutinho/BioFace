@@ -215,6 +215,33 @@ extension Facing : ImageResultListener {
                                 }
                             }
                         }
+                    } else if currentEndpoint.endpoint == Endpoint.LIVENESS && self.functionality == .makeRegistration {
+                        for block in blocks {
+                            if block.verdict == 0 {
+                                if block.name == "FACE_DETECTED" {
+                                    self.vc?.alertLabel.text = IcaoOptions().getMessage(icaoOption: block.name ?? "")
+                                    self.vc?.alertView.isHidden = false
+                                    
+                                    let when = DispatchTime.now() + 3
+                                    DispatchQueue.main.asyncAfter(deadline: when){
+                                        self.vc?.alertView.isHidden = true
+                                    }
+                                    
+                                    self.vc?.hideProgress()
+                                    self.vc?.startTimer()
+                                    return
+                                } else {
+                                    let error = IcaoOptions().getMessage(icaoOption: block.name ?? "")
+                                    
+                                    self.vc?.dismiss(animated: true)
+                                    completion(.failed, nil, _error(for: .veredictNotValid, apiErrorCode: error))
+                                    return
+                                }
+                            }
+                        }
+                        self.vc?.dismiss(animated: true)
+                        completion(.failed, nil, nil)
+                        return
                     } else {
                         for block in blocks {
                             if block.verdict == 0 {

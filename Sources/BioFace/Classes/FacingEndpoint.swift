@@ -19,7 +19,8 @@ public class FacingEndpoint {
     public static func getRegistrationAndVerifyDefaults() -> [Endpoint: Bool] {
         return [
             Endpoint.LIVENESS: true,
-            Endpoint.COMPLIANCE: true
+            Endpoint.COMPLIANCE: true,
+            Endpoint.LIVENESS: true,
         ]
     }
     
