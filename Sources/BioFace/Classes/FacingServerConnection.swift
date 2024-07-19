@@ -27,8 +27,12 @@ class ServerConnection {
         if ServerConnection.apiToken == nil {
             getUrlAndApiToken { status, response, error in
                 if status == .succeeded {
-                    self.makeImageUpload(with: image,sessionId: sessionId, completion: completion)
-                    return
+                    if ServerConnection.apiToken == nil {
+                        return completion(.failed, nil, _error(for: .invalidApiTokenErrorCode))
+                    } else {
+                        self.makeImageUpload(with: image,sessionId: sessionId, completion: completion)
+                        return
+                    }
                 } else {
                     return completion(.failed, nil, _error(for: .invalidApiTokenErrorCode))
                 }
