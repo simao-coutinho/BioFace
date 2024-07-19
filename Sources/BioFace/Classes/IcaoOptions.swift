@@ -71,7 +71,7 @@ public class IcaoOptions {
     }
     
     public func getVerificationDefaults() -> [Int] {
-        return [10, 11, 1, 6, 5]
+        return [1]
     }
     
     public func getMessage(icaoOption: String) -> String {
