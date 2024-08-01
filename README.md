@@ -48,7 +48,7 @@ Facing.apiToken = token
 
 3. **Utilizar as funcionalidades:**
 ```swift
-Facing().makeRegistration(viewController: self! as UIViewController) { status, response, error in
+Facing().makeRegistration(viewController: self, icaoOptions: icaoOptions, endpoints: endpoints, timerCountdown: countdownTimer) { status, response, error in
     switch status {
         case .succeeded:
             // The registration was made successfully
@@ -61,14 +61,14 @@ Facing().makeRegistration(viewController: self! as UIViewController) { status, r
 }
 ```
 
-There is three methods:
-1. makeRegistration()
+There are three methods:
+1. Facing().makeRegistration(viewController: self, icaoOptions: icaoOptions, endpoints: endpoints, timerCountdown: countdownTimer)
 In this method you make the registration of the user biometry
 
-2. addCard()
+2. Facing().addCard(viewController: self, endpoints: endpointsAddCard)
 In this method you verify if the card photo is compatible with the registration biometry
 
-3. verifyUser()
+3. Facing().verifyUser(viewController: self, icaoOptions: icaoOptions, endpoints: endpoints)
 In This method you verify if the current user biometry is the same of the registration biometry
 
 ## License

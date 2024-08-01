@@ -18,7 +18,6 @@ public class Facing {
     private var newTemplate : [Float] = []
     private let serverConnection = ServerConnection()
     private var functionality : ServiceType = .makeRegistration
-    private var firstTime = true
     
     public init() {}
     
@@ -126,6 +125,7 @@ extension Facing : ImageResultListener {
         vc?.setProgress(progress: Float(counter), total: Float(endpoints.count))
         
         let currentEndpoint = endpoints[counter]
+        print("ENDPOINT CALLED: \(currentEndpoint.endpoint)")
         
         switch currentEndpoint.endpoint {
         case Endpoint.EXTRACT :
