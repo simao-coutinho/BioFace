@@ -277,6 +277,7 @@ extension Facing : ImageResultListener {
             ]
             
             self.endpoints.forEach { endpoint in
+                print("ENDPOINT LIST: \(endpoint)")
                 if (endpoint.value) {
                     if endpoint.key == Endpoint.COMPLIANCE {
                         let parametersWithOptions: [String : Any] = [
