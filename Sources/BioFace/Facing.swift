@@ -11,7 +11,7 @@ public class Facing {
     private let secureDataKey = "GENERAL_BIOMETRIC_DATA_EXTR"
     
     private var icaoOptions : [Int] = []
-    private var endpoints : [Endpoint: Bool] = [:]
+    private var endpoints : [(Endpoint, Bool)] = []
     private var cardTemplateId: String = ""
     private var timerCountdown: Int = 0
     
@@ -21,7 +21,7 @@ public class Facing {
     
     public init() {}
     
-    public func makeRegistration(viewController: UIViewController, icaoOptions: IcaoOptions = IcaoOptions(), endpoints : [Endpoint: Bool] = [:], timerCountdown: Int = 5, completion: @escaping FacingResponse) {
+    public func makeRegistration(viewController: UIViewController, icaoOptions: IcaoOptions = IcaoOptions(), endpoints : [(Endpoint, Bool)] = [], timerCountdown: Int = 5, completion: @escaping FacingResponse) {
         guard Facing.apiToken != nil else {
             return completion(.failed, nil, _error(for: .invalidApiTokenErrorCode)) }
         
@@ -49,7 +49,7 @@ public class Facing {
         viewController.present(vc, animated: true, completion: nil)
     }
     
-    public func addCard(viewController: UIViewController,  endpoints : [Endpoint: Bool] = [:], cardTemplateId: String = "", completion: @escaping FacingResponse) {
+    public func addCard(viewController: UIViewController,  endpoints : [(Endpoint, Bool)] = [], cardTemplateId: String = "", completion: @escaping FacingResponse) {
         guard Facing.apiToken != nil else { return completion(.failed, nil, _error(for: .invalidApiTokenErrorCode)) }
         
         let currentTemplate = SecureData().retrieveFloatArrayFromKeychain(forKey: self.secureDataKey)
@@ -76,7 +76,7 @@ public class Facing {
         viewController.present(vc, animated: true, completion: nil)
     }
     
-    public func verifyUser(viewController: UIViewController,  icaoOptions: IcaoOptions = IcaoOptions(), endpoints : [Endpoint: Bool] = [:], completion: @escaping FacingResponse) {
+    public func verifyUser(viewController: UIViewController,  icaoOptions: IcaoOptions = IcaoOptions(), endpoints : [(Endpoint, Bool)] = [], completion: @escaping FacingResponse) {
         guard Facing.apiToken != nil else { return completion(.failed, nil, _error(for: .invalidApiTokenErrorCode)) }
         
         let currentTemplate = SecureData().retrieveFloatArrayFromKeychain(forKey: self.secureDataKey)
@@ -280,19 +280,19 @@ extension Facing : ImageResultListener {
             print("ENDPOINT LIST: \(self.endpoints)")
             self.endpoints.forEach { endpoint in
                 print("ENDPOINT LIST: \(endpoint)")
-                if (endpoint.value) {
-                    if endpoint.key == Endpoint.COMPLIANCE {
+                if (endpoint.1) {
+                    if endpoint.0 == Endpoint.COMPLIANCE {
                         let parametersWithOptions: [String : Any] = [
                             "session_id": sessionId,
                             "requirements": "[\(self.icaoOptions.map { option in String(option) }.joined(separator: ","))]"
                         ]
                         
                         endpoints.append(
-                            FacingEndpoint(endpoint: endpoint.key, parameters: parametersWithOptions)
+                            FacingEndpoint(endpoint: endpoint.0, parameters: parametersWithOptions)
                         )
                     } else {
                         endpoints.append(
-                            FacingEndpoint(endpoint: endpoint.key, parameters: parameters)
+                            FacingEndpoint(endpoint: endpoint.0, parameters: parameters)
                         )
                     }
                 }
@@ -322,19 +322,19 @@ extension Facing : ImageResultListener {
             ]
             
             self.endpoints.forEach { endpoint in
-                if (endpoint.value) {
-                    if endpoint.key == Endpoint.CDTA {
+                if (endpoint.1) {
+                    if endpoint.0 == Endpoint.CDTA {
                         let cdtaParameters = [
                             "session_id": sessionId,
                             "template_id": self.cardTemplateId
                         ]
                         
                         endpoints.append(
-                            FacingEndpoint(endpoint: endpoint.key, parameters: cdtaParameters)
+                            FacingEndpoint(endpoint: endpoint.0, parameters: cdtaParameters)
                         )
                     } else {
                         endpoints.append(
-                            FacingEndpoint(endpoint: endpoint.key, parameters: parameters)
+                            FacingEndpoint(endpoint: endpoint.0, parameters: parameters)
                         )
                     }
                 }
@@ -367,19 +367,19 @@ extension Facing : ImageResultListener {
             ]
             
             self.endpoints.forEach { endpoint in
-                if (endpoint.value) {
-                    if endpoint.key == Endpoint.COMPLIANCE {
+                if (endpoint.1) {
+                    if endpoint.0 == Endpoint.COMPLIANCE {
                         let parametersWithOptions: [String : Any] = [
                             "session_id": sessionId,
                             "requirements": "[\(self.icaoOptions.map { option in String(option) }.joined(separator: ","))]"
                         ]
                         
                         endpoints.append(
-                            FacingEndpoint(endpoint: endpoint.key, parameters: parametersWithOptions)
+                            FacingEndpoint(endpoint: endpoint.0, parameters: parametersWithOptions)
                         )
                     } else {
                         endpoints.append(
-                            FacingEndpoint(endpoint: endpoint.key, parameters: parameters)
+                            FacingEndpoint(endpoint: endpoint.0, parameters: parameters)
                         )
                     }
                 }

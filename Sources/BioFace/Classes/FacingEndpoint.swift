@@ -16,20 +16,22 @@ public class FacingEndpoint {
         self.parameters = parameters
     }
     
-    public static func getRegistrationAndVerifyDefaults() -> [Endpoint: Bool] {
-        return [
-            Endpoint.LIVENESS: true,
-            Endpoint.COMPLIANCE: true,
-            Endpoint.LIVENESS: true,
-        ]
+    public static func getRegistrationAndVerifyDefaults() -> [(Endpoint, Bool)] {
+        var endpoints: [(Endpoint, Bool)] = []
+        endpoints.append((Endpoint.LIVENESS, true))
+        endpoints.append((Endpoint.COMPLIANCE, true))
+        endpoints.append((Endpoint.LIVENESS, true))
+         
+        return endpoints
     }
     
-    public static func getAddCardDefaults() -> [Endpoint: Bool] {
-        return [
-            Endpoint.DICA: true,
-            Endpoint.CDTA: true,
-            Endpoint.SMAD: true,
-        ]
+    public static func getAddCardDefaults() -> [(Endpoint, Bool)] {
+        var endpoints: [(Endpoint, Bool)] = []
+        endpoints.append((Endpoint.DICA, true))
+        endpoints.append((Endpoint.CDTA, true))
+        endpoints.append((Endpoint.SMAD, true))
+         
+        return endpoints
     }
 }
 
