@@ -33,6 +33,7 @@ public class Facing {
             icaoOptions.getOptions()
         }
         
+        print("ENDPOINTS: \(endpoints)")
         self.endpoints = if endpoints.isEmpty {
             FacingEndpoint.getRegistrationAndVerifyDefaults()
         } else {
@@ -276,6 +277,7 @@ extension Facing : ImageResultListener {
                 FacingEndpoint(endpoint: Endpoint.UPLOAD_IMAGE, parameters: parameters)
             ]
             
+            print("ENDPOINT LIST: \(self.endpoints)")
             self.endpoints.forEach { endpoint in
                 print("ENDPOINT LIST: \(endpoint)")
                 if (endpoint.value) {
