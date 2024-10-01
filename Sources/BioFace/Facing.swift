@@ -33,7 +33,6 @@ public class Facing {
             icaoOptions.getOptions()
         }
         
-        print("ENDPOINTS: \(endpoints)")
         self.endpoints = if endpoints.isEmpty {
             FacingEndpoint.getRegistrationAndVerifyDefaults()
         } else {

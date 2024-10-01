@@ -71,7 +71,7 @@ class ServerConnection {
     }
     
     func getUrlAndApiToken(completion: @escaping FacingResponse) {
-        let url = "https://dev.bioface.devcprojects.com/api/authenticate"
+        let url = "https://facing-tech.com/api/authenticate"
         
         let parameters = [
             "token" : Facing.apiToken,
